@@ -399,3 +399,5 @@ Mobile/CoffeeApp/.env*.local
 
 # typescript
 Mobile/CoffeeApp/*.tsbuildinfo
+
+AI/myenv
