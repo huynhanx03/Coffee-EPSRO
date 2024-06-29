@@ -39,8 +39,8 @@ export default function LogInScreen() {
 
     const Login = async () => {
         setIsLoading(true);
-        const account = await handleLogin(username, password);
-        if (account) {
+        const response = await handleLogin(username, password);
+        if (response.success) {
             setIsLoading(false);
             handleGetCart()
             navigation.replace('HomeTab')

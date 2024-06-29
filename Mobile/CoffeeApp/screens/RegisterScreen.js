@@ -5,9 +5,10 @@ import Button from "../components/button";
 import { colors } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput } from "react-native-paper";
-import { Register } from "../controller/RegisterController";
+import { Register, handleRegisterAccount } from "../controller/RegisterController";
 import Toast from "react-native-toast-message";
 import ShowToast from "../components/toast";
+import axios from "axios";
 
 const { width, height } = Dimensions.get("window");
 
@@ -32,19 +33,25 @@ const RegisterScreen = () => {
             ShowToast("error", "Đăng ký thất bại", "Mật khẩu không khớp!")
             return;
         }
-        const rs = await Register(username, email, password);
+
+        const response = await handleRegisterAccount(username, email, password);
+        if (response.success) {
+            Toast.show({
+                type: "success",
+                text1: 'Đăng ký thành công!',
+                text2: "Chuyển hướng đến trang đăng nhập!",
+                topOffset: 70,
+                text1Style: {fontSize: 18},
+                text2Style: {fontSize: 15},
+                visibilityTime: 2000,
+                onHide: () => navigation.navigate('Login'),
+                onPress: () => navigation.navigate('Login')
+            })
+        } else {
+            console.log(response)
+            ShowToast("error", "Đăng ký thất bại", response.errors[0].msg)
+        }
         
-        Toast.show({
-            type: rs[0] ? "success" : "error",
-            text1: rs[0] ? 'Đăng ký thành công!' : 'Đăng ký thất bại',
-            text2: rs[0] ? "Chuyển hướng đến trang đăng nhập!" : rs[1],
-            topOffset: 70,
-            text1Style: {fontSize: 18},
-            text2Style: {fontSize: 15},
-            visibilityTime: 2000,
-            onHide: () => rs[0] ? navigation.navigate('Login') : null,
-            onPress: () => rs[0] ? navigation.navigate('Login') : null
-        })
     };
     return (
         <View className="flex-1 justify-center items-center">
