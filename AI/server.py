@@ -23,27 +23,13 @@ def recommendHTTP():
         user_id = data['MaKhachHang']
 
         productRecommend = RS.recommend(user_id, product_id)
-        print(productRecommend)
+        
         # Chuyển danh sách List<Product> khuyến nghị thành chuỗi JSON và gửi trả về cho ứng dụng C#
         return jsonify(productRecommend)
     
     except Exception as e:
         return jsonify({"error": str(e)})
     
-@app.route('/chatbot', methods=['POST'])
-def chatbotHTTP():
-    try:
-        data = request.get_json()
-
-        question = data['CauHoi']
-        user_id = data['MaKhachHang']
-
-        results = chatbotCoffee.get()
-        return jsonify(results)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)})
-
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
 
