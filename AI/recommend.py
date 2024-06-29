@@ -1,5 +1,4 @@
 # Thư viện
-import pandas as pd
 import numpy as np
 
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
@@ -258,7 +257,5 @@ class HybridRecommender:
                     if product not in recommendations:
                         recommendations.append(product)
                         num_more -= 1
-
-        print(recommendations)
 
         return recommendations
