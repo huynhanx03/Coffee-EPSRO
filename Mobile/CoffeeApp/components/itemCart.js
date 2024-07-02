@@ -25,8 +25,8 @@ const ItemCart = (props) => {
 
     const getQuantityAvailable = async () => {
         try {
-            const product = await getProductDetailById(props.item.MaSanPham);
-            setAvailable(product.SoLuong);
+            const response = await getProductDetailById(props.item.MaSanPham);
+            setAvailable(response.data.SoLuong);
         } catch (err) {
             console.log(err);
         }

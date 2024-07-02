@@ -1,21 +1,19 @@
 import { child, get, getDatabase, ref } from "firebase/database";
+import { BASE_URL } from "../constants";
+const { default: axios } = require("axios");
 
 /**
  * @notice Get the categories of the products
  * @returns The result of the operation
  */
 const getCategories = async () => {
-    const dbRef = ref(getDatabase());
     try {
-        const categoriesSnapshot = await get(child(dbRef, 'LoaiSanPham/'))
-        const categories = categoriesSnapshot.val()
-
-        return categories
+        const response = await axios.get(`${BASE_URL}/product/categories`)
+        return response.data
     } catch (error) {
         console.log(error)
         return error
     }
-
 }
 
 /**
@@ -23,15 +21,11 @@ const getCategories = async () => {
  * @returns The result of the operation
  */
 const getProducts = async () => {
-    const dbRef = ref(getDatabase());
     try {
-        const productsSnapshot = await get(child(dbRef, 'SanPham/'))
-        const products = productsSnapshot.val()
-
-        return products
+        const response = await axios.get(`${BASE_URL}/product/products`)
+        return response.data
     } catch (error) {
-        console.log(error)
-        return error
+        return error.response.data
     }
 }
 
@@ -41,41 +35,13 @@ const getProducts = async () => {
  * @returns The products on sale
  */
 const getProductsSale = async () => {
-    const dbRef = ref(getDatabase());
-
     try {
-        const productsSaleSnapshot = await get(child(dbRef, 'SanPhamGiamGiaHomNay/'))
-        const productsSale = productsSaleSnapshot.val()
-
-        return productsSale
+        const response = await axios.get(`${BASE_URL}/product/productssale`)
+        return response.data
     } catch (error) {
-        console.log(error)
-        return error
+        return error.response.data
     }
 }
-
-/**
- * @notice Get the detail of the product by id
- * @returns The detail of the product by id
- */
-const getProductDetail = async () => {
-    const dbRef = ref(getDatabase());
-    const productsSale = await getProductsSale();
-
-    try {
-        const productDetailPromises = Object.values(productsSale).map(async (product) => {
-            const productDetailSnapshot = await get(child(dbRef, `SanPham/${product.MaSanPham}`));
-            const productDetail = productDetailSnapshot.val();
-            return { ...productDetail, PhanTramGiam: product.PhanTramGiam };
-        });
-
-        const productDetailList = await Promise.all(productDetailPromises);
-        return productDetailList;
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-};
 
 /**
  * @notice Get the detail of a product by id
@@ -83,16 +49,11 @@ const getProductDetail = async () => {
  * @returns 
  */
 const getProductDetailById = async (productId) => {
-    const dbRef = ref(getDatabase());
-    
     try {
-        const productSnapshot = await get(child(dbRef, `SanPham/${productId}`));
-        const product = productSnapshot.val();
-
-        return product
+        const response = await axios.get(`${BASE_URL}/product/products/${productId}`)
+        return response.data
     } catch (error) {
-        console.log(error)
-        return error
+        return error.response.data
     }
 }
 
@@ -101,43 +62,13 @@ const getProductDetailById = async (productId) => {
  * @returns The list of product Id that have been sold the most
  */
 const getProductsBestSeller = async () => {
-    const db = getDatabase();
-    let productsList = [];
     try {
-        const ordersSnapshot = await get(child(ref(db), "DonHang/"));
-        const orders = ordersSnapshot.val();
-
-        for (const key in orders) {
-            if (orders[key].TrangThai === 'Đã nhận hàng') {
-                productsList.push(...Object.values(orders[key].SanPham));
-            }
-        }
-
-        const totalSold = {};
-
-        productsList.map((product) => {
-            if (totalSold[product.MaSanPham]) {
-                totalSold[product.MaSanPham] += product.SoLuong;
-            } else {
-                totalSold[product.MaSanPham] = product.SoLuong;
-            }
-        });
-        const sortedValues = Object.values(totalSold).sort().reverse();
-        
-        for (const key in totalSold) {
-            for (let i = 0; i < sortedValues.length; i++) {
-                if (totalSold[key] === sortedValues[i]) {
-                    sortedValues[i] = key;
-                    break;
-                }
-            }
-        }
-        
-        return sortedValues;
+        const response = await axios.get(`${BASE_URL}/product/bestseller`)
+        return response.data
     } catch(err) {
-        console.log(err);
-        return err
+        console.log(err)
+        return response.error.data
     }
 }
 
-export { getCategories, getProducts, getProductsSale, getProductDetail, getProductDetailById, getProductsBestSeller }
+export { getCategories, getProducts, getProductsSale, getProductDetailById, getProductsBestSeller }

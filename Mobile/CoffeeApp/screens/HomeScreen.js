@@ -43,10 +43,15 @@ const HomeScreen = () => {
 
     const handleGetProducts = async () => {
         setIsLoading(true);
-        const listProducts = await getProducts();
-        const allProducts = handleSetProduct(listProducts)
-        setProducts([...allProducts])
-        setIsLoading(false);
+        try {
+            const response = await getProducts();
+            const allProducts = handleSetProduct(response.data)
+            setProducts([...allProducts])
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
     };
 
     const handleSetProduct = (listProducts) => {
@@ -94,8 +99,12 @@ const HomeScreen = () => {
     }
 
     const handleGetBestSeller = async () => {
-        const bestSeller = await getProductsBestSeller();
-        setProBestSeller(bestSeller)
+        try {
+            const bestSeller = await getProductsBestSeller();
+            setProBestSeller(bestSeller.data.slice(0, 6))
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleGetRecommend = async () => {

@@ -1,8 +1,10 @@
+import { BASE_URL } from "../constants"
+
 const { default: axios } = require("axios")
 
 const handleRegisterAccount = async (username, email, password) => {
     try {
-        const response = await axios.post('http://localhost:3000/users/register', {
+        const response = await axios.post(`${BASE_URL}/user/register`, {
             username: username,
             email: email,
             password: password

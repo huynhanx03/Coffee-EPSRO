@@ -162,8 +162,8 @@ const updateCartWithLastPrice = async () => {
             for (const key in carts[userData.MaNguoiDung]) {
                 const product = carts[userData.MaNguoiDung][key]
                 const detailProduct = await getProductDetailById(product.MaSanPham)
-                if (detailProduct.PhanTramGiam !== product.PhanTramGiam) {
-                    product.Gia = product.GiaGoc * (1 - detailProduct.PhanTramGiam / 100)
+                if (detailProduct.data.PhanTramGiam !== product.PhanTramGiam) {
+                    product.Gia = product.GiaGoc * (1 - detailProduct.data.PhanTramGiam / 100)
                     product.PhanTramGiam = detailProduct.PhanTramGiam
                 }
             }

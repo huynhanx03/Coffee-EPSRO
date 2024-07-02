@@ -1,4 +1,6 @@
+import axios from "axios"
 import { child, get, getDatabase, ref } from "firebase/database"
+import { BASE_URL } from "../constants"
 
 /**
  * @notice Get user by id
@@ -6,15 +8,11 @@ import { child, get, getDatabase, ref } from "firebase/database"
  * @returns user object
  */
 const getUserById = async (userId) => {
-    const dbRef = ref(getDatabase())
     try {
-        const userSnapshot = await get(child(dbRef, `NguoiDung/${userId}`))
-        const user = userSnapshot.val()
-
-        return user
+        const response = await axios.get(`${BASE_URL}/user/${userId}`)
+        return response.data.data
     } catch (error) {
-        console.log(error)
-        return error
+        return error.response.data
     }
 }
 

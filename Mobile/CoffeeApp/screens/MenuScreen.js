@@ -82,11 +82,11 @@ const MenuScreen = () => {
     const cart = useSelector((state) => state.cart.cart);
 
     const handleGetCategories = async () => {
-        const listCategories = await getCategories();
-        if (listCategories) {
+        const response = await getCategories();
+        if (response.data) {
             let allCategories = [];
-            for (const key in listCategories) {
-                allCategories.push(listCategories[key].LoaiSanPham);
+            for (const key in response.data) {
+                allCategories.push(response.data[key].LoaiSanPham);
             }
             setCategories(["Tất cả", ...allCategories]);
         }
@@ -95,37 +95,37 @@ const MenuScreen = () => {
     const handleGetProducts = async () => {
         setIsLoading(true);
         let allProducts = [];
-        const listProducts = await getProducts();
-        if (listProducts) {
-            for (const key in listProducts) {
+        const response = await getProducts();
+        if (response.data) {
+            for (const key in response.data) {
                 const productData = {
-                    MaSanPham: listProducts[key].MaSanPham,
-                    TenSanPham: listProducts[key].TenSanPham,
-                    HinhAnh: listProducts[key].HinhAnh,
-                    SoLuong: listProducts[key].SoLuong,
-                    LoaiSanPham: listProducts[key].LoaiSanPham,
-                    Mota: listProducts[key].Mota,
-                    PhanTramGiam: listProducts[key].PhanTramGiam,
+                    MaSanPham: response.data[key].MaSanPham,
+                    TenSanPham: response.data[key].TenSanPham,
+                    HinhAnh: response.data[key].HinhAnh,
+                    SoLuong: response.data[key].SoLuong,
+                    LoaiSanPham: response.data[key].LoaiSanPham,
+                    Mota: response.data[key].Mota,
+                    PhanTramGiam: response.data[key].PhanTramGiam,
                     Size: {
                         Nho: {
                             TenKichThuoc:
-                                listProducts[key]?.ChiTietKichThuocSanPham
+                                response.data[key]?.ChiTietKichThuocSanPham
                                     ?.KT0001?.TenKichThuoc,
-                            Gia: listProducts[key]?.ChiTietKichThuocSanPham
+                            Gia: response.data[key]?.ChiTietKichThuocSanPham
                                 ?.KT0001?.Gia,
                         },
                         Thuong: {
                             TenKichThuoc:
-                                listProducts[key]?.ChiTietKichThuocSanPham
+                                response.data[key]?.ChiTietKichThuocSanPham
                                     ?.KT0002?.TenKichThuoc,
-                            Gia: listProducts[key]?.ChiTietKichThuocSanPham
+                            Gia: response.data[key]?.ChiTietKichThuocSanPham
                                 ?.KT0002?.Gia,
                         },
                         Lon: {
                             TenKichThuoc:
-                                listProducts[key]?.ChiTietKichThuocSanPham
+                                response.data[key]?.ChiTietKichThuocSanPham
                                     ?.KT0003?.TenKichThuoc,
-                            Gia: listProducts[key]?.ChiTietKichThuocSanPham
+                            Gia: response.data[key]?.ChiTietKichThuocSanPham
                                 ?.KT0003?.Gia,
                         },
                     },
@@ -147,8 +147,12 @@ const MenuScreen = () => {
     };
 
     const handleGetBestSeller = async () => {
-        const bestSeller = await getProductsBestSeller();
-        setProBestSeller(bestSeller);
+        try {
+            const bestSeller = await getProductsBestSeller();
+            setProBestSeller(bestSeller.data.slice(0, 6));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleOnBlur = () => {
