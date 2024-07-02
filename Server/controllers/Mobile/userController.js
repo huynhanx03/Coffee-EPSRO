@@ -1,4 +1,4 @@
-const db = require('../config/firebase');
+const db = require('../../config/firebase');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
@@ -65,11 +65,6 @@ const register = async (req, res) => {
     }
 };
 
-const generateSecretKey = () => {
-    const secretKey = crypto.randomBytes(32).toString('hex');
-    return secretKey;
-}
-
 const login = async (req, res) => {
     const {username, password} = req.body;
     try {
@@ -84,7 +79,7 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu' });
         }
 
-        const token = jwt.sign({ username: username }, generateSecretKey(), { expiresIn: '1h' });
+        const token = jwt.sign({ username: username }, process.env.SECRET_KEY, { expiresIn: '20s' });
 
         return res.status(200).json({ success: true, token, data: userData[Object.keys(userData)[0]] });
     } catch (error) {
@@ -92,7 +87,24 @@ const login = async (req, res) => {
     }
 }
 
+const getUserById = async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const snapshot = await db.ref('NguoiDung/' + userId).once('value');
+        const userData = snapshot.val();
+
+        if (!userData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+        }
+
+        return res.status(200).json({ success: true, data: userData });
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     register,
     login,
+    getUserById
 };
