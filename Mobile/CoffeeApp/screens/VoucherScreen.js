@@ -1,19 +1,15 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getVoucher } from "../controller/VoucherController";
-import ItemVoucherList from "../components/itemVoucherList";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import * as Icons from "react-native-heroicons/outline";
+import { ScrollView, View } from "react-native";
 import Header from "../components/header";
+import ItemVoucherList from "../components/itemVoucherList";
+import { getVoucher } from "../controller/VoucherController";
 
 const VoucherScreen = () => {
-    const navigation = useNavigation()
     const [voucherList, setVoucherList] = useState([])
     const handleGetVoucher = async () => {
         try {
             const vouchers = await getVoucher();
-            setVoucherList(vouchers)
+            setVoucherList(vouchers.data)
         } catch (error) {
             console.log(error)
         }

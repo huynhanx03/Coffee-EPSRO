@@ -5,6 +5,8 @@ const getCategories = async (req, res) => {
         const snapshot = await db.ref('LoaiSanPham/').once('value');
         const categories = snapshot.val();
 
+        if (!categories) return res.status(404).json({ success: false, data: 'Không tìm thấy danh mục' });
+
         return res.status(200).json({ success: true, data: categories });
     } catch (error) {
         console.log(error);
@@ -29,6 +31,8 @@ const getProductById = async (req, res) => {
         const productId = req.params.productId;
         const snapshot = await db.ref('SanPham/' + productId).once('value');
         const product = snapshot.val();
+
+        if (!product) return res.status(404).json({ success: false, data: 'Không tìm thấy sản phẩm' });
 
         return res.status(200).json({ success: true, data: product });
     } catch (error) {
