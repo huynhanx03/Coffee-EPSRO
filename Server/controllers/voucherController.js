@@ -31,7 +31,6 @@ const getVoucher = async (req, res) => {
 const updateVoucherUsed = async (req, res) => {
     try {
         const { voucherId, userId } = req.params
-        console.log(voucherId, userId)
 
         const currentVoucher = await db.ref(`PhieuGiamGia/${voucherId}/ChiTiet/${userId}`).once('value');
         if (!currentVoucher.val()) {

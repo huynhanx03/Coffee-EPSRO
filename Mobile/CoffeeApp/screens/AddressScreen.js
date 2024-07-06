@@ -15,8 +15,8 @@ const AddressScreen = () => {
     const handleGetAddresses = async () => {
         try {
             const addresses = await getAddress();
-            if (addresses) {
-                setAddressData(addresses);
+            if (addresses.data) {
+                setAddressData(addresses.data);
             }
         } catch (err) {
             console.log(err);

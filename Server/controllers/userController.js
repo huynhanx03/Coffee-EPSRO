@@ -17,7 +17,9 @@ const getNewId = async () => {
         } else {
             return 'KH0001'
         }
-    } catch (error) {}
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const register = async (req, res) => {

@@ -23,14 +23,15 @@ const AddAddressScreen = () => {
             const result = await addAddress(name, phone, street, location);
 
             Toast.show({
-                type: result[0] ? "success" : "error",
+                type: result.success ? "success" : "error",
                 text1: 'Thông báo',
-                text2: result[1],
+                text2: result.message,
                 topOffset: 70,
+                visibilityTime: 2000,
                 text1Style: {fontSize: 18},
                 text2Style: {fontSize: 15},
-                onHide: () => result[0] ? navigation.goBack() : null,
-                onPress: () => result[0] ? navigation.goBack() : null
+                onHide: () => result.success ? navigation.goBack() : null,
+                onPress: () => result.success ? navigation.goBack() : null
             })
         } catch (err) {
             console.log(err);

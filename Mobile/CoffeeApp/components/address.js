@@ -7,14 +7,7 @@ import { setDefaultAddress } from "../controller/AddressController";
 const Address = ({ data }) => {
     addressKeys = Object.keys(data);
     const [defaultAddressUI, setDefaultAddressUI] = useState("");
-    let defaultAddress = "";
-
-    for (let i = 0; i < addressKeys.length; i++) {
-        if (data[addressKeys[i]].Default) {
-            defaultAddress = addressKeys[i];
-            break;
-        }
-    }
+    const defaultAddress = addressKeys.find((key) => data[key].Default);
 
     useEffect(() => {
         setDefaultAddressUI(defaultAddress);
