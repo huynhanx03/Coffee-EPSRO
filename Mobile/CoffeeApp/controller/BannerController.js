@@ -1,17 +1,12 @@
-import { child, get, getDatabase, ref } from "firebase/database"
+import { BASE_URL } from '../constants'
+const { default: axios } = require('axios')
 
 const getBanner = async () => {
-    const dbRef = ref(getDatabase());
     try {
-        const bannersSnapshot = await get(child(dbRef, "Banner"));
-        const banners = bannersSnapshot.val();
-
-        bannersList = Object.values(banners)
-
-        return bannersList
+        const response = await axios.get(`${BASE_URL}/banner/banners`)
+        return response.data.data
     } catch (error) {
-        console.log(error)
-        return error        
+        return error.response.data
     }
 }
 
