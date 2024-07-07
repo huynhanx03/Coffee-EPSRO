@@ -1,8 +1,6 @@
-import { View, Text } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import { getAddress } from '../controller/AddressController'
-import { useFocusEffect } from '@react-navigation/native'
-import db from "../firebase";
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import { getAddress } from '../controller/AddressController';
 
 
 const getDefaultAddress = () => {
@@ -11,11 +9,11 @@ const getDefaultAddress = () => {
     const handleGetAddresses = async () => {
         try {
             const addresses = await getAddress();
-            if (addresses) {
+            if (addresses.data) {
                 let addressDefault = null;
-                for (const address in addresses) {
-                    if (addresses[address].Default) {
-                        addressDefault = addresses[address];
+                for (const address in addresses.data) {
+                    if (addresses.data[address].Default) {
+                        addressDefault = addresses.data[address];
                         break;
                     }
                 }

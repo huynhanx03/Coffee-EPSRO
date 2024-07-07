@@ -1,5 +1,7 @@
 import { child, equalTo, get, getDatabase, orderByChild, query, ref, update } from "firebase/database";
 import { getUserData } from "./StorageController";
+import { BASE_URL } from "../constants";
+const { default: axios } = require("axios")
 
 
 /**
@@ -8,31 +10,13 @@ import { getUserData } from "./StorageController";
  * @returns The vouchers list that user obtained
  */
 const getVoucher = async () => {
-    const userData = await getUserData();
-    const dbRef = ref(getDatabase());
-    const epochCurrent = new Date().getTime();
     try {
-        const vouchersSnapshot = await get(child(dbRef, `PhieuGiamGia`))
-        const vouchers = vouchersSnapshot.val();
+        const userData = await getUserData();
+        const response = await axios.get(`${BASE_URL}/voucher/${userData.MaNguoiDung}`);
 
-        let vouchersList = [];
-        Object.keys(vouchers).forEach(key => {
-            vouchersList.push(vouchers[key]);
-        });
-
-        vouchersList = vouchersList.filter(voucher => Object.keys(voucher.ChiTiet).includes(userData.MaNguoiDung));
-        vouchersList = vouchersList.filter(voucher => voucher.ChiTiet[userData.MaNguoiDung].TrangThai == 'Chưa sử dụng')
-        vouchersList = vouchersList.filter(voucher => {
-            const formattedExpiryDate = voucher.NgayHetHan.split('/').reverse().join('-');
-            const expiredDate = new Date(formattedExpiryDate).getTime();
-
-            return expiredDate + 61199000 >= epochCurrent;
-            
-        });
-        return vouchersList
+        return response.data;
     } catch (error) {
-        console.log(error);
-        return error;
+        return response.error.data;
     }
 };
 
@@ -41,16 +25,13 @@ const getVoucher = async () => {
  * @param voucherId The id of the voucher
  */
 const updateVoucherUsed = async (voucherId) => {
-    const db = getDatabase();
-    const userData = await getUserData();
-
     try {
-        update(ref(db, `PhieuGiamGia/${voucherId}/ChiTiet/${userData.MaNguoiDung}/`), {
-            TrangThai: 'Đã sử dụng'
-        })
+        const userData = await getUserData();
+        const response = await axios.post(`${BASE_URL}/voucher/update/${voucherId}/${userData.MaNguoiDung}`);
+
+        return response.data;
     } catch (error) {
-        console.log(error);
-        return error;
+        return response.error.data;
     }
 }
 

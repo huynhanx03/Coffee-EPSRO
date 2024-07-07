@@ -53,13 +53,13 @@ const ChangeInfoScreen = ({ route }) => {
     }
 
     const handleUpdate = async () => {
-        const rs = await updateInfo(newInfo, type);
+        const response = await updateInfo(newInfo, type);
         ShowToast(
-            rs[0] ? "success" : "error",
-            rs[1],
-            rs[0] ? "Vui lòng đăng nhập lại" : "Vui lòng thử lại"
+            response.success ? "success" : "error",
+            response.message,
+            response.success ? "Vui lòng đăng nhập lại" : "Vui lòng thử lại"
         );
-        if (rs[0]) {
+        if (response.success) {
             navigation.popToTop();
             navigation.replace("Login");
         }

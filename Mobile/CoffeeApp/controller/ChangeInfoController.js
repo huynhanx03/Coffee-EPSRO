@@ -1,19 +1,19 @@
-import { getDatabase, ref, update } from "firebase/database"
-import { getUserData } from "./StorageController";
+import { getDatabase, ref, update } from 'firebase/database'
+import { getUserData } from './StorageController'
+import { BASE_URL } from '../constants'
+const { default: axios } = require('axios')
 
 const updateInfo = async (content, type) => {
-    const db = getDatabase();
-    const userData = await getUserData();
-
     try {
-        update(ref(db, `NguoiDung/${userData.MaNguoiDung}`), {
-            [type]: content
+        const userData = await getUserData()
+        const response = await axios.put(`${BASE_URL}/user/update/${userData.MaNguoiDung}`, {
+            content,
+            type
         })
 
-        return [true, "Cập nhật thông tin thành công"]
+        return response.data
     } catch (error) {
-        console.log(error);
-        return [false, "Cập nhật thông tin thất bại"]
+        return error.response.data
     }
 }
 

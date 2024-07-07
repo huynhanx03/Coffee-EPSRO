@@ -26,16 +26,18 @@ import { getUserData } from "../controller/StorageController";
 import getDefaultAddress from "../customHooks/getDefaultAddress";
 import { colors } from "../theme";
 import { blurhash } from "../utils";
+import { useNotification } from "../context/ModalContext";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [products, setProducts] = useState(null);
     const [bestSeller, setBestSeller] = useState(null);
     const [user, setUser] = useState(null);
-    const [banners, setBanners] = useState(null);
+    const [banners, setBanners] = useState([]);
     const [proBestSeller, setProBestSeller] = useState([]);
     const [recommendProduct, setRecommendProduct] = useState([])
     const [isLoading, setIsLoading] = useState(false);
+    const { showNotification } = useNotification();
 
     const addressData = getDefaultAddress();
 
@@ -50,7 +52,7 @@ const HomeScreen = () => {
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
-            console.log(error);
+            showNotification(error, 'error')
         }
     };
 
@@ -103,7 +105,7 @@ const HomeScreen = () => {
             const bestSeller = await getProductsBestSeller();
             setProBestSeller(bestSeller.data.slice(0, 6))
         } catch (error) {
-            console.log(error);
+            showNotification(error, 'error')
         }
     }
 
@@ -131,13 +133,17 @@ const HomeScreen = () => {
             const userData = await getUserData();
             setUser(userData);
         } catch (error) {
-            console.log(error);
+            showNotification(error, 'error')
         }
     };
 
     const handleGetBanners = async () => {
-        const banners = await getBanner();
-        setBanners(banners);
+        try {
+            const banners = await getBanner();
+            setBanners(banners);
+        } catch (error) {
+            showNotification(error, 'error')
+        }
     };
 
     useEffect(() => {
