@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using Coffee.Utils.Helper;
@@ -139,7 +140,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<ProductDTO>)> getListProduct()
         {
-            return await ProductDAL.Ins.getListProduct();
+            return await ProductAPI.Ins.getProducts();
         }
 
         /// <summary>

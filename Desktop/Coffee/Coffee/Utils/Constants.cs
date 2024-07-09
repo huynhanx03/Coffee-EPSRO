@@ -26,5 +26,10 @@ namespace Coffee.Utils
             public static readonly string WAITTING = "Chờ xác nhận";
             public static readonly string CONFIRMED = "Đã xác nhận";
         }
+
+        public class API
+        {
+            public static readonly string IP = "http://localhost:3000";
+        }
     }
 }

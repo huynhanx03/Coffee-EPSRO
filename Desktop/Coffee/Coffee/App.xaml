@@ -5,6 +5,7 @@
     xmlns:local="clr-namespace:Coffee"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     StartupUri="Views/Login/LoginWindow.xaml">
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

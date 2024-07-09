@@ -203,6 +203,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\BannerAPI.cs" />
+    <Compile Include="API\ProductAPI.cs" />
+    <Compile Include="API\ProductTypeAPI.cs" />
     <Compile Include="DALs\BannerDAL.cs" />
     <Compile Include="DALs\BillDAL.cs" />
     <Compile Include="DALs\BillImportDAL.cs" />
@@ -211,6 +214,7 @@
     <Compile Include="DALs\DiscountProductDAL.cs" />
     <Compile Include="DALs\EvaluateDAL.cs" />
     <Compile Include="DALs\OrderDAL.cs" />
+    <Compile Include="DSA\BinarySearch.cs" />
     <Compile Include="DTOs\CustomerDTO.cs" />
     <Compile Include="DALs\EmployeeDAL.cs" />
     <Compile Include="DALs\IngredientDAL.cs" />

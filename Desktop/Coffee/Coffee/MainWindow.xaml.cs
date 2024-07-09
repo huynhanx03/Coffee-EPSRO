@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Services;
@@ -46,8 +47,14 @@ namespace Coffee
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            addTable();
+            x();
         }
+
+        public async void x()
+        {
+            (string lb, List<ProductDTO> products) = await ProductAPI.Ins.getProducts();
+        }
+
         public async void addProduct()
         {
             string baseID = "SP0010";

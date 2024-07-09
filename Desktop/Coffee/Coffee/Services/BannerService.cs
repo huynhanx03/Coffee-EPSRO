@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.Models;
 using Coffee.Utils;
 using Coffee.Utils.Helper;
@@ -34,13 +35,13 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, BannerModel)> createBanner(BannerModel banner)
         {
-            string MaxMaBanner = await BannerDAL.Ins.getMaxMaBanner();
+            string MaxMaBanner = await BannerAPI.Ins.GetMaxMaBanner();
 
             string NewMaBanner = Helper.nextID(MaxMaBanner, "BN");
 
             banner.MaBanner = NewMaBanner;
 
-            return await BannerDAL.Ins.createBanner(banner);
+            return await BannerAPI.Ins.AddBanner(banner);
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, List<BannerModel>)> getListBanner()
         {
-            return await BannerDAL.Ins.getListBanner();
+            return await BannerAPI.Ins.getBanners();
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace Coffee.Services
         {
             string labelClound = await CloudService.Ins.DeleteImage(banner.HinhAnh);
 
-            return await BannerDAL.Ins.DeleteBanner(banner.MaBanner);
+            return await BannerAPI.Ins.DeleteBanner(banner.MaBanner);
         }
     }
 }
