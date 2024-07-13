@@ -1,5 +1,7 @@
 const db = require('../config/firebase');
 
+const { getVouchers, addVoucher, deleteVoucher, getMaxVoucherId } = require('../dao/voucherDAO');
+
 const getVoucher = async (req, res) => {
     const userData = req.params.userId;
     try {
@@ -46,4 +48,41 @@ const updateVoucherUsed = async (req, res) => {
     }
 }
 
-module.exports = { getVoucher, updateVoucherUsed }
+const getVouchersHandler = async (req, res) => {
+    try {
+        const vouchers = await getVouchers();
+        return res.status(200).json({ success: true, data: vouchers });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const addVoucherHandler = async (req, res) => {
+    const voucher = req.body;
+
+    try {
+        await addVoucher(voucher);
+        return res.status(201).json({ success: true, message: 'Voucher added successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const deleteVoucherHandler = async (req, res) => {
+    const { voucherId } = req.params;
+
+    try {
+        await deleteVoucher(voucherId);
+        return res.status(200).json({ success: true, message: 'Voucher deleted successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+module.exports = { 
+    getVoucher, 
+    updateVoucherUsed,
+    getVouchersHandler,
+    addVoucherHandler,
+    deleteVoucherHandler
+}

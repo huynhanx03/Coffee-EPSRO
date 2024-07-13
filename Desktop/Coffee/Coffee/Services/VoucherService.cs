@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Utils;
@@ -35,7 +36,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<VoucherDTO>)> getAllVoucher()
         {
-            return await VoucherDAL.Ins.getAllVoucher();
+            return await VoucherAPI.Ins.GetVouchers();
         }
 
         /// <summary>
@@ -45,19 +46,12 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, VoucherDTO)> createVoucher(VoucherDTO voucher)
         {
-            string MaxVouhcerID = await VoucherDAL.Ins.getMaxVoucherID();
+            (string label, bool isCreate) = await VoucherAPI.Ins.createVoucher(voucher);
 
-            string NewVoucher = Helper.nextID(MaxVouhcerID, "VC");
+            if (!isCreate)
+                return (label,  null);
 
-            voucher.MaPhieuGiamGia = NewVoucher;
-
-            (string label, VoucherDTO voucherCreate) = await VoucherDAL.Ins.createVoucher(voucher);
-
-            (string labelGetCustomerID, List<string> customerIDList) = await CustomerDAL.Ins.getCustomerIDByRankMininum(voucher.HangToiThieu);
-
-            await VoucherDAL.Ins.createDetailVoucher(voucher.MaPhieuGiamGia, customerIDList);
-
-            return (label, voucherCreate);
+            return (label, voucher);
         }
 
         /// <summary>
@@ -70,7 +64,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteVoucher(string VoucherID)
         {
-            return await VoucherDAL.Ins.DeleteVoucher(VoucherID);
+            return await VoucherAPI.Ins.DeleteVoucher(VoucherID);
         }
     }
 }
