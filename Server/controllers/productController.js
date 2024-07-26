@@ -1,4 +1,5 @@
 const db = require('../config/firebase');
+const { getDiscountProducts, updateDiscountFromProduct } = require('../dao/productDAO');
 
 const getCategories = async (req, res) => {
     try {
@@ -90,10 +91,36 @@ const getProductsBestSeller = async (req, res) => {
     }
 }
 
+const getDiscountProductsHandler = async (req, res) => {
+    try {
+        const products = await getDiscountProducts();
+
+        return res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const updateDiscountFromProductHandler = async (req, res) => {
+    try {
+        const { productID } = req.params;
+        
+        await updateDiscountFromProduct(productID, req.body.PhanTramGiam);
+
+        return res.status(200).json({ success: true, data: "Successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 module.exports = {
     getCategories,
     getProducts,
     getProductById,
     getProductsSale,
     getProductsBestSeller,
+    getDiscountProductsHandler,
+    updateDiscountFromProductHandler
 }

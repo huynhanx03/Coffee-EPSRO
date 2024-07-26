@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using System;
 using System.Collections.Generic;
@@ -29,9 +30,9 @@ namespace Coffee.Services
         /// </summary>
         /// <param name="discountProduct"></param>
         /// <returns></returns>
-        public async Task<(string, DiscountProductDTO)> createDiscountProductDTO(DiscountProductDTO discountProduct)
+        public async Task<(string, bool)> createDiscountProductDTO(DiscountProductDTO discountProduct)
         {
-            return await DiscountProductDAL.Ins.createDiscountProductDTO(discountProduct);
+            return await ProductAPI.Ins.updateDiscountProduct(discountProduct.MaSanPham, discountProduct.PhanTramGiam);
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, List<DiscountProductDTO>)> getListDiscountProduct()
         {
-            return await DiscountProductDAL.Ins.getListDiscountProduct();
+            return await ProductAPI.Ins.getDiscountProducts();
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace Coffee.Services
         {
             foreach (var product  in products)
             {
-                await DiscountProductDAL.Ins.DeleteDiscountProductToday(product.MaSanPham);
+                await ProductAPI.Ins.updateDiscountProduct(product.MaSanPham, 0);
             }
 
             return ("Xoá sản phẩm giảm giá thành công", true);
