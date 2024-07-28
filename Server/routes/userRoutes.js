@@ -8,5 +8,7 @@ router.post('/register', registerValidationRules(), validate, userController.reg
 router.post('/login', userController.login);
 router.get('/:userId', userController.getUserById);
 router.put('/update/:userId', userController.updateInfo);
+router.put('/update/password/:userId', userController.updatePassword);
+router.get('/forgot/:email', userController.getUserByEmail);
 
 module.exports = router;

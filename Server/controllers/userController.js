@@ -104,8 +104,23 @@ const getUserById = async (req, res) => {
     }
 }
 
-//Update info
+const getUserByEmail = async (req, res) => {
+    const email = req.params.email;
+    try {
+        const snapshot = await db.ref('NguoiDung/').orderByChild('Email').equalTo(email).once('value')
+        const userData = snapshot.val()
 
+        if (!userData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
+        }
+
+        return res.status(200).json({ success: true, data: userData })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server' })
+    }
+}
+
+//Update info
 const updateInfo = async (req, res) => {
     const { content, type } = req.body
     const userId = req.params.userId
@@ -121,9 +136,40 @@ const updateInfo = async (req, res) => {
     }
 }
 
+//update password
+const updatePassword = async (req, res) => {
+    const { oldPassword, newPassword, isForgot } = req.body
+    const userId = req.params.userId
+
+    try {
+        const snapshot = await db.ref('NguoiDung/' + userId).once('value')
+        const userData = snapshot.val()
+
+        if (!userData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
+        }
+
+        if (oldPassword != userData.MatKhau && !isForgot) {
+            return res.status(401).json({ success: false, message: 'Mật khẩu cũ không đúng' })
+        }
+
+        await db.ref(`NguoiDung/${userId}`).update({
+            MatKhau: newPassword
+        })
+
+        return res.status(200).json({ success: true, message: 'Đổi mật khẩu thành công' })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server' })
+    }
+}
+
+
+
 module.exports = {
     register,
     login,
     getUserById,
     updateInfo,
+    updatePassword,
+    getUserByEmail
 }
