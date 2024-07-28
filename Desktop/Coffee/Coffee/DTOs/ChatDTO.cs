@@ -9,7 +9,17 @@ namespace Coffee.DTOs
 {
     public class ChatDTO
     {
-        public string MaKH { get; set; }
+        private string _MaKH;
+        public string MaKH
+        {
+            get { return _MaKH; }
+            set
+            {
+                _MaKH = value;
+                IsReceived = !string.IsNullOrEmpty(value);
+            }
+        }
+        
         public string NoiDung { get; set; }
         private string _ThoiGian;
         public string ThoiGian

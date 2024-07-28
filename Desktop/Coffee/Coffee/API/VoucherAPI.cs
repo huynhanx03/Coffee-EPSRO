@@ -31,6 +31,7 @@ namespace Coffee.API
 
         public string beginUrl = "/voucher";
 
+
         public async Task<(string, List<VoucherDTO>)> GetVouchers()
         {
             using (HttpClient client = new HttpClient())

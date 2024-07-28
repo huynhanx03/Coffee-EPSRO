@@ -1,4 +1,5 @@
-﻿using Coffee.DTOs;
+﻿using Coffee.API;
+using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Services;
 using Coffee.Views.MessageBox;
@@ -90,7 +91,7 @@ namespace Coffee.ViewModel.AdminVM.Chat
         /// </summary>
         private async void loadUserContactList()
         {
-            (string label, List<UserContactDTO> userContactList) = await UserContactService.Ins.getAllUserContact();
+            (string label, List<UserContactDTO> userContactList) = await ChatAPI.Ins.getUserContacts();
             
             if (userContactList != null)
             {
@@ -108,7 +109,7 @@ namespace Coffee.ViewModel.AdminVM.Chat
         private async void selectUserContact(string userID)
         {
             // Load lại tin nhắn của khách hàng
-            (string label, List<ChatDTO> chats) = await ChatService.Ins.getListChat(userID);
+            (string label, List<ChatDTO> chats) = await ChatAPI.Ins.getMessage(userID, null);
 
             if (chats != null)
             {
@@ -133,7 +134,7 @@ namespace Coffee.ViewModel.AdminVM.Chat
                 ThoiGian = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")
             };
 
-            (string label, bool isCreate) = await ChatService.Ins.createChat(chat, UserID);
+            (string label, bool isCreate) = await ChatAPI.Ins.AddMessage(chat, UserID);
 
             if (isCreate)
             {
@@ -157,7 +158,7 @@ namespace Coffee.ViewModel.AdminVM.Chat
                 return;
 
             // Load tin nhắn mới nhất từ khách hàng
-            (string label, List<ChatDTO> listChat) = await ChatService.Ins.getListChatByTime(UserID, timeNow);
+            (string label, List<ChatDTO> listChat) = await ChatAPI.Ins.getMessage(UserID, timeNow);
 
             if (listChat != null && listChat.Count > 0)
             {
