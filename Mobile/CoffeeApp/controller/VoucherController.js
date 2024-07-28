@@ -1,8 +1,7 @@
 import { child, equalTo, get, getDatabase, orderByChild, query, ref, update } from "firebase/database";
 import { getUserData } from "./StorageController";
 import { BASE_URL } from "../constants";
-const { default: axios } = require("axios")
-
+import axios from 'axios'
 
 /**
  * @notice Get the vouchers list that user obtained
@@ -12,11 +11,12 @@ const { default: axios } = require("axios")
 const getVoucher = async () => {
     try {
         const userData = await getUserData();
-        const response = await axios.get(`${BASE_URL}/voucher/${userData.MaNguoiDung}`);
+        const response = await axios.get(`${BASE_URL}/vouchers/${userData.MaNguoiDung}`);
 
         return response.data;
     } catch (error) {
-        return response.error.data;
+        // return response.error.data;
+        console.log(error)
     }
 };
 

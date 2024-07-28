@@ -1,6 +1,5 @@
-import { child, get, getDatabase, ref } from "firebase/database";
-import { BASE_URL } from "../constants";
-const { default: axios } = require("axios");
+import axios from 'axios'
+import { BASE_URL } from '../constants'
 
 /**
  * @notice Get the categories of the products
@@ -29,7 +28,6 @@ const getProducts = async () => {
     }
 }
 
-
 /**
  * @notice Get the products on sale
  * @returns The products on sale
@@ -46,7 +44,7 @@ const getProductsSale = async () => {
 /**
  * @notice Get the detail of a product by id
  * @param productId The id of product
- * @returns 
+ * @returns
  */
 const getProductDetailById = async (productId) => {
     try {
@@ -65,10 +63,11 @@ const getProductsBestSeller = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/product/bestseller`)
         return response.data
-    } catch(err) {
+    } catch (err) {
         console.log(err)
         return response.error.data
     }
 }
 
-export { getCategories, getProducts, getProductsSale, getProductDetailById, getProductsBestSeller }
+export { getCategories, getProductDetailById, getProducts, getProductsBestSeller, getProductsSale }
+
