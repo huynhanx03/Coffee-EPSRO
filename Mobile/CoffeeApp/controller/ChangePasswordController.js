@@ -1,20 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getDatabase, ref, set, update } from "firebase/database";
-import {getUserData} from "./StorageController";
-
-/**
- * @notice Check if the old password is correct
- * @param oldPassword Get the old password from the user
- * @returns The result of the operation
- */
-const checkOldPassword = async (oldPassword) => {
-    const userData = await getUserData();
-    if (userData.MatKhau !== oldPassword) {
-        return false;
-    }
-
-    return true;
-};
+import { ref, update } from 'firebase/database'
+import { getUserData } from './StorageController'
+import axios from "axios"
+import { BASE_URL } from '../constants'
 
 /**
  * @notice Check if the confirm password is similar to the new password
@@ -23,12 +10,8 @@ const checkOldPassword = async (oldPassword) => {
  * @returns The result of the operation
  */
 const checkConfirmPassword = (newPassword, confirmPassword) => {
-    if (newPassword !== confirmPassword) {
-        return false;
-    }
-
-    return true;
-};
+    return newPassword === confirmPassword
+}
 
 /**
  * @notice Change password
@@ -38,26 +21,25 @@ const checkConfirmPassword = (newPassword, confirmPassword) => {
  * @returns The result of the operation
  */
 const changePassword = async (oldPassword, newPassword, confirmPassword, isForgot) => {
-    const userData = await getUserData();
-    const db = getDatabase();
+    const userData = await getUserData()
 
-    if (await checkOldPassword(oldPassword) === false && !isForgot){
-        return [false, "Mật khẩu cũ không đúng"];
-    }
-
-    if (checkConfirmPassword(newPassword, confirmPassword) === false)
-        return [false, "Mật khẩu xác nhận không đúng"];
+    if (checkConfirmPassword(newPassword, confirmPassword) === false) return [false, 'Mật khẩu xác nhận không đúng']
 
     try {
-        update(ref(db, `NguoiDung/${userData.MaNguoiDung}/`), {
-            MatKhau: newPassword,
-        });
+        const response = await axios.put(`${BASE_URL}/user/update/password/${userData.MaNguoiDung}`, {
+            oldPassword,
+            newPassword,
+            isForgot
+        })
 
-        return [true, "Đổi mật khẩu thành công"];
+        if (response.data.success === false) {
+            return [false, response.data.message]
+        } else {
+            return [true, response.data.message]
+        }
     } catch (error) {
-        console.log(error);
-        return error;
+        return response.error.data
     }
-};
+}
 
-export { changePassword };
+export { changePassword }

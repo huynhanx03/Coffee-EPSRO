@@ -19,7 +19,7 @@ const ForgotScreen = () => {
     const [email, setEmail] = useState("");
     const handleVerifyEmail = async () => {
         const result = await ForgotPassword(email);
-        ShowToast("success", "Thông báo", result[1])
+        ShowToast(result[0] ? "success" : "error", "Thông báo", result[1])
 
         if (result[0]) {
             dispatch(setOTP(result[2]))

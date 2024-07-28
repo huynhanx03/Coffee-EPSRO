@@ -1,7 +1,6 @@
-import { getDatabase, ref, update } from 'firebase/database'
 import { getUserData } from './StorageController'
 import { BASE_URL } from '../constants'
-const { default: axios } = require('axios')
+import axios from 'axios'
 
 const updateInfo = async (content, type) => {
     try {

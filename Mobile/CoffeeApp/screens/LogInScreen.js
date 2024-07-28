@@ -1,5 +1,5 @@
 import { View, Text, Image, Dimensions, Pressable, TouchableOpacity, Modal, ActivityIndicator, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors } from "../theme";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Button from "../components/button";
@@ -28,14 +28,20 @@ export default function LogInScreen() {
     };
 
     const handleGetCart = async () => {
-        const userData = await getUserData();
         const items = await updateCartWithLastPrice();
         if (items) {
-            for (const key in items[userData.MaNguoiDung]) {
-                dispatch(addToCartFromDatabase(items[userData.MaNguoiDung][key]))
+            for (const key in items.data) {
+                dispatch(addToCartFromDatabase(items.data[key]))
             }
         }
     }
+
+    // useEffect(() => {
+    //     getUser();
+    //     if (user.token) {
+    //         navigation.replace('HomeTab')
+    //     }
+    // })
 
     const Login = async () => {
         setIsLoading(true);

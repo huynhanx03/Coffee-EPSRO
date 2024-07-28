@@ -6,6 +6,7 @@ const productRoutes = require('./routes/productRoutes')
 const voucherRoutes = require('./routes/voucherRoutes')
 const bannerRoutes = require('./routes/bannerRoutes')
 const addressRoutes = require('./routes/addressRoutes')
+const cartRoutes = require('./routes/cartRoutes')
 const chatRoutes = require('./routes/chatRoutes')
 
 const app = express()
@@ -20,6 +21,7 @@ app.use('/product', productRoutes)
 app.use('/voucher', voucherRoutes)
 app.use('/banner', bannerRoutes)
 app.use('/address', addressRoutes)
+app.use('/cart', cartRoutes)
 app.use('/chat', chatRoutes)
 
 app.listen(port, () => {
