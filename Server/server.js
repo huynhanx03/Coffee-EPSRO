@@ -9,6 +9,7 @@ const addressRoutes = require('./routes/addressRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const chatRoutes = require('./routes/chatRoutes')
 const customerRoutes = require('./routes/customerRoutes')
+const employeeRoutes = require('./routes/employeeRoutes')
 
 const app = express()
 const port = 3000
@@ -25,6 +26,7 @@ app.use('/address', addressRoutes)
 app.use('/cart', cartRoutes)
 app.use('/chat', chatRoutes)
 app.use('/customer', customerRoutes)
+app.use('/employee', employeeRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)

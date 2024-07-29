@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using Coffee.Utils.Helper;
@@ -38,6 +39,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, EmployeeDTO)> createEmpoloyee(EmployeeDTO employee)
         {
+            return await EmployeeAPI.Ins.createEmployee(employee);
+
             // Tạo mã nhân viên mới nhất
             string MaxMaNhanVien = await this.getMaxMaNhanVien();
             string NewMaNhanVien = Helper.nextID(MaxMaNhanVien, "NV");
@@ -116,6 +119,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, EmployeeDTO)> updateEmpoloyee(EmployeeDTO employee)
         {
+            return await EmployeeAPI.Ins.updateEmployee(employee);
+
             // Tạo employee
             EmployeeDTO _employee = new EmployeeDTO
             {
@@ -209,7 +214,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<EmployeeDTO>)> getListEmployee()
         {
-            return await EmployeeDAL.Ins.getListEmployee();
+            return await EmployeeAPI.Ins.getEmployees();
         }
 
         /// <summary>
@@ -224,6 +229,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteEmployee(EmployeeDTO Employee)
         {
+            return await EmployeeAPI.Ins.DeleteEmployee(Employee.MaNhanVien);
+
             (string labelEmployee, bool isDeleteEmployee) = await EmployeeDAL.Ins.DeleteEmployee(Employee.MaNhanVien);
             (string labelUser, bool isDeleteUser) = await UserDAL.Ins.DeleteUser(Employee.MaNhanVien);
 

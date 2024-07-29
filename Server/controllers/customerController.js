@@ -44,17 +44,17 @@ const addCustomerHandler = async (req, res) => {
             HinhAnh: customer.HinhAnh
         };
 
-        if (!checkIDCard(user))
-            return res.status(500).json({ success: false, message: "CCCD/CMND đã tồn tại" });
+        if (await checkIDCard(user))
+            return res.status(422).json({ success: false, message: "CCCD/CMND đã tồn tại" });
 
-        if (!checkEmail(user))
-            return res.status(500).json({ success: false, message: "Email đã tồn tại" });
+        if (await checkEmail(user))
+            return res.status(422).json({ success: false, message: "Email đã tồn tại" });
 
-        if (!checkNumberPhone(user))
-            return res.status(500).json({ success: false, message: "Số điện thoại đã tồn tại" });
+        if (await checkNumberPhone(user))
+            return res.status(422).json({ success: false, message: "Số điện thoại đã tồn tại" });
 
-        if (!checkUsername(user))
-            return res.status(500).json({ success: false, message: "Tên tài khoản đã tồn tại" });
+        if (await checkUsername(user))
+            return res.status(422).json({ success: false, message: "Tên tài khoản đã tồn tại" });
 
         await addCustomer(_Customer);
         await addUser(user);
@@ -96,17 +96,17 @@ const updateCustomerHandler = async (req, res) => {
             HinhAnh: customer.HinhAnh
         };
 
-        if (!checkIDCard(user))
-            return res.status(500).json({ success: false, message: "CCCD/CMND đã tồn tại" });
+        if (await checkIDCard(user))
+            return res.status(422).json({ success: false, message: "CCCD/CMND đã tồn tại" });
 
-        if (!checkEmail(user))
-            return res.status(500).json({ success: false, message: "Email đã tồn tại" });
+        if (await checkEmail(user))
+            return res.status(422).json({ success: false, message: "Email đã tồn tại" });
 
-        if (!checkNumberPhone(user))
-            return res.status(500).json({ success: false, message: "Số điện thoại đã tồn tại" });
+        if (await checkNumberPhone(user))
+            return res.status(422).json({ success: false, message: "Số điện thoại đã tồn tại" });
 
-        if (!checkUsername(user))
-            return res.status(500).json({ success: false, message: "Tên tài khoản đã tồn tại" });
+        if (await checkUsername(user))
+            return res.status(422).json({ success: false, message: "Tên tài khoản đã tồn tại" });
 
         await updateUser(user);
 

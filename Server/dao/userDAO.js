@@ -21,6 +21,7 @@ const checkEmail = async (user) => {
             const existingUser = users.find(u => u.MaNguoiDung !== user.MaNguoiDung && u.Email === user.Email);
             return existingUser !== undefined;
         }
+
         return false;
     } catch (error) {
         console.error('Error checking email:', error);
@@ -44,21 +45,6 @@ const checkNumberPhone = async (user) => {
     }
 };
 
-const getUserByNumberphone = async (userNumberPhone) => {
-    try {
-        const response = await db.ref('NguoiDung').once('value');
-        if (response.exists()) {
-            const data = response.val();
-            const users = Object.values(data);
-            return users.find(u => u.SoDienThoai === userNumberPhone) || null;
-        }
-        return null;
-    } catch (error) {
-        console.error('Error getting user by number phone:', error);
-        return null;
-    }
-};
-
 const checkIDCard = async (user) => {
     try {
         const response = await db.ref('NguoiDung').once('value');
@@ -66,7 +52,7 @@ const checkIDCard = async (user) => {
             const data = response.val();
             const users = Object.values(data);
             const existingUser = users.find(u => u.MaNguoiDung !== user.MaNguoiDung && u.CCCD_CMND === user.CCCD_CMND);
-            return existingUser === undefined;
+            return existingUser !== undefined;
         }
 
         return false;
@@ -89,6 +75,21 @@ const checkUsername = async (user) => {
     } catch (error) {
         console.error('Error checking username:', error);
         return false;
+    }
+};
+
+const getUserByNumberphone = async (userNumberPhone) => {
+    try {
+        const response = await db.ref('NguoiDung').once('value');
+        if (response.exists()) {
+            const data = response.val();
+            const users = Object.values(data);
+            return users.find(u => u.SoDienThoai === userNumberPhone) || null;
+        }
+        return null;
+    } catch (error) {
+        console.error('Error getting user by number phone:', error);
+        return null;
     }
 };
 

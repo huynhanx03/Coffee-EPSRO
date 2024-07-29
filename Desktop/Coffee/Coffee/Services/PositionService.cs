@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using FireSharp.Response;
@@ -33,7 +34,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<PositionDTO>)> getAllPosition()
         {
-            return await PositionDAL.Ins.getAllPosition();
+            return await EmployeeAPI.Ins.getPositionEmployee();
         }
     }
 }

@@ -251,7 +251,7 @@ namespace Coffee.ViewModel.AdminVM.Employee
                         ms.ShowDialog();
                         resetEmployee();
 
-                        EmployeeList.Add(NewEmployee);
+                        loadEmployeeList();
                     }
                     else
                     {
