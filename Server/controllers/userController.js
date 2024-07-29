@@ -163,8 +163,6 @@ const updatePassword = async (req, res) => {
     }
 }
 
-
-
 module.exports = {
     register,
     login,

@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Utils;
@@ -93,81 +94,83 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, CustomerDTO)> createCustomer(CustomerDTO Customer)
         {
-            // Tạo mã nhân viên mới nhất
-            string MaxMaKhachHang = await CustomerDAL.Ins.getMaxMaKhachHang();
-            string NewMaKhachHang = Helper.nextID(MaxMaKhachHang, "KH");
+            return await CustomerAPI.Ins.createCustomer(Customer);
 
-            // Tạo Customer
-            CustomerDTO _Customer = new CustomerDTO
-            {
-                MaKhachHang = NewMaKhachHang,
-                DiemTichLuy = 0
-            };
+            //// Tạo mã nhân viên mới nhất
+            //string MaxMaKhachHang = await CustomerDAL.Ins.getMaxMaKhachHang();
+            //string NewMaKhachHang = Helper.nextID(MaxMaKhachHang, "KH");
 
-            // Thêm user
-            UserDTO user = new UserDTO
-            {
-                HoTen = Customer.HoTen,
-                CCCD_CMND = Customer.CCCD_CMND,
-                DiaChi = Customer.DiaChi,
-                Email = Customer.Email,
-                GioiTinh = Customer.GioiTinh,
-                NgaySinh = Customer.NgaySinh,
-                NgayTao = Customer.NgayTao,
-                SoDienThoai = Customer.SoDienThoai,
-                TaiKhoan = Customer.TaiKhoan,
-                MatKhau = Customer.MatKhau,
-                VaiTro = 2,
-                MaNguoiDung = NewMaKhachHang,
-                HinhAnh = Customer.HinhAnh
-            };
+            //// Tạo Customer
+            //CustomerDTO _Customer = new CustomerDTO
+            //{
+            //    MaKhachHang = NewMaKhachHang,
+            //    DiemTichLuy = 0
+            //};
 
-            //Kiểm tra có trùng CCCD/CMND không
-            bool IsCheckIDCard = await UserService.Ins.checkIDCard(user);
+            //// Thêm user
+            //UserDTO user = new UserDTO
+            //{
+            //    HoTen = Customer.HoTen,
+            //    CCCD_CMND = Customer.CCCD_CMND,
+            //    DiaChi = Customer.DiaChi,
+            //    Email = Customer.Email,
+            //    GioiTinh = Customer.GioiTinh,
+            //    NgaySinh = Customer.NgaySinh,
+            //    NgayTao = Customer.NgayTao,
+            //    SoDienThoai = Customer.SoDienThoai,
+            //    TaiKhoan = Customer.TaiKhoan,
+            //    MatKhau = Customer.MatKhau,
+            //    VaiTro = 2,
+            //    MaNguoiDung = NewMaKhachHang,
+            //    HinhAnh = Customer.HinhAnh
+            //};
 
-            if (IsCheckIDCard)
-                return ("CCCD/CMND đã tồn tại", null);
+            ////Kiểm tra có trùng CCCD/CMND không
+            //bool IsCheckIDCard = await UserService.Ins.checkIDCard(user);
 
-            //Kiểm tra có trùng email không
-            bool IsCheckEmail = await UserService.Ins.checkEmail(user);
+            //if (IsCheckIDCard)
+            //    return ("CCCD/CMND đã tồn tại", null);
 
-            if (IsCheckEmail)
-                return ("Email đã tồn tại", null);
+            ////Kiểm tra có trùng email không
+            //bool IsCheckEmail = await UserService.Ins.checkEmail(user);
 
-            //Kiểm tra có trùng số điện thoại không
-            bool IsCheckNumberPhone = await UserService.Ins.checkNumberPhone(user);
+            //if (IsCheckEmail)
+            //    return ("Email đã tồn tại", null);
 
-            if (IsCheckNumberPhone)
-                return ("Số điện thoại đã tồn tại", null);
+            ////Kiểm tra có trùng số điện thoại không
+            //bool IsCheckNumberPhone = await UserService.Ins.checkNumberPhone(user);
 
-            //Kiểm tra có trùng tên đăng nhập không
-            bool IsCheckUsername = await UserService.Ins.checkNumberPhone(user);
+            //if (IsCheckNumberPhone)
+            //    return ("Số điện thoại đã tồn tại", null);
 
-            if (IsCheckUsername)
-                return ("Tên tài khoản đã tồn tại", null);
+            ////Kiểm tra có trùng tên đăng nhập không
+            //bool IsCheckUsername = await UserService.Ins.checkUsername(user);
 
-            (string labelCustomer, CustomerDTO __Customer) = await CustomerDAL.Ins.createCustomer(_Customer);
-            (string labelUser, UserDTO _user) = await UserService.Ins.createUser(user);
+            //if (IsCheckUsername)
+            //    return ("Tên tài khoản đã tồn tại", null);
 
-            Customer.MaKhachHang = NewMaKhachHang;
+            //(string labelCustomer, CustomerDTO __Customer) = await CustomerDAL.Ins.createCustomer(_Customer);
+            //(string labelUser, UserDTO _user) = await UserService.Ins.createUser(user);
 
-            if (_user != null && __Customer != null)
-            {
-                // Thêm rank
-                DetailRankModel detailRankModel = new DetailRankModel
-                {
-                    MaMucDoThanThiet = "TT0001",
-                    NgayDatDuoc = DateTime.Now.ToString("dd/MM/yyyy")
-                };
-                
-                CustomerDAL.Ins.createRankCustomer(NewMaKhachHang, detailRankModel);
-                CustomerDAL.Ins.createRankCustomerBegin(NewMaKhachHang);
-                return ("Thêm khách hàng thành công", Customer);
-            }
-            else
-            {
-                return ("Thêm khách hàng thất bại", null);
-            }
+            //Customer.MaKhachHang = NewMaKhachHang;
+
+            //if (_user != null && __Customer != null)
+            //{
+            //    // Thêm rank
+            //    DetailRankModel detailRankModel = new DetailRankModel
+            //    {
+            //        MaMucDoThanThiet = "TT0001",
+            //        NgayDatDuoc = DateTime.Now.ToString("dd/MM/yyyy")
+            //    };
+
+            //    CustomerDAL.Ins.createRankCustomer(NewMaKhachHang, detailRankModel);
+            //    CustomerDAL.Ins.createRankCustomerBegin(NewMaKhachHang);
+            //    return ("Thêm khách hàng thành công", Customer);
+            //}
+            //else
+            //{
+            //    return ("Thêm khách hàng thất bại", null);
+            //}
         }
 
         /// <summary>
@@ -181,66 +184,68 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, CustomerDTO)> updateCustomer(CustomerDTO Customer)
         {
-            // Tạo Customer
-            CustomerDTO _Customer = new CustomerDTO
-            {
-                MaKhachHang = Customer.MaKhachHang,
-                DiemTichLuy = 0
-            };
+            return await CustomerAPI.Ins.updateCustomer(Customer);
 
-            // Thêm user
-            UserDTO user = new UserDTO
-            {
-                HoTen = Customer.HoTen,
-                CCCD_CMND = Customer.CCCD_CMND,
-                DiaChi = Customer.DiaChi,
-                Email = Customer.Email,
-                GioiTinh = Customer.GioiTinh,
-                NgaySinh = Customer.NgaySinh,
-                NgayTao = Customer.NgayTao,
-                SoDienThoai = Customer.SoDienThoai,
-                TaiKhoan = Customer.TaiKhoan,
-                MatKhau = Customer.MatKhau,
-                VaiTro = 2,
-                MaNguoiDung = Customer.MaKhachHang,
-                HinhAnh = Customer.HinhAnh
-            };
+            //// Tạo Customer
+            //CustomerDTO _Customer = new CustomerDTO
+            //{
+            //    MaKhachHang = Customer.MaKhachHang,
+            //    DiemTichLuy = 0
+            //};
 
-            //Kiểm tra có trùng CCCD/CMND không
-            bool IsCheckIDCard = await UserService.Ins.checkIDCard(user);
+            //// Thêm user
+            //UserDTO user = new UserDTO
+            //{
+            //    HoTen = Customer.HoTen,
+            //    CCCD_CMND = Customer.CCCD_CMND,
+            //    DiaChi = Customer.DiaChi,
+            //    Email = Customer.Email,
+            //    GioiTinh = Customer.GioiTinh,
+            //    NgaySinh = Customer.NgaySinh,
+            //    NgayTao = Customer.NgayTao,
+            //    SoDienThoai = Customer.SoDienThoai,
+            //    TaiKhoan = Customer.TaiKhoan,
+            //    MatKhau = Customer.MatKhau,
+            //    VaiTro = 2,
+            //    MaNguoiDung = Customer.MaKhachHang,
+            //    HinhAnh = Customer.HinhAnh
+            //};
 
-            if (IsCheckIDCard)
-                return ("CCCD/CMND đã tồn tại", null);
+            ////Kiểm tra có trùng CCCD/CMND không
+            //bool IsCheckIDCard = await UserService.Ins.checkIDCard(user);
 
-            //Kiểm tra có trùng email không
-            bool IsCheckEmail = await UserService.Ins.checkEmail(user);
+            //if (IsCheckIDCard)
+            //    return ("CCCD/CMND đã tồn tại", null);
 
-            if (IsCheckEmail)
-                return ("Email đã tồn tại", null);
+            ////Kiểm tra có trùng email không
+            //bool IsCheckEmail = await UserService.Ins.checkEmail(user);
 
-            //Kiểm tra có trùng số điện thoại không
-            bool IsCheckNumberPhone = await UserService.Ins.checkNumberPhone(user);
+            //if (IsCheckEmail)
+            //    return ("Email đã tồn tại", null);
 
-            if (IsCheckNumberPhone)
-                return ("Số điện thoại đã tồn tại", null);
+            ////Kiểm tra có trùng số điện thoại không
+            //bool IsCheckNumberPhone = await UserService.Ins.checkNumberPhone(user);
 
-            //Kiểm tra có trùng tên đăng nhập không
-            bool IsCheckUsername = await UserService.Ins.checkNumberPhone(user);
+            //if (IsCheckNumberPhone)
+            //    return ("Số điện thoại đã tồn tại", null);
 
-            if (IsCheckUsername)
-                return ("Tên tài khoản đã tồn tại", null);
+            ////Kiểm tra có trùng tên đăng nhập không
+            //bool IsCheckUsername = await UserService.Ins.checkNumberPhone(user);
 
-            (string labelCustomer, CustomerDTO __Customer) = await CustomerDAL.Ins.updateCustomer(_Customer);
-            (string labelUser, UserDTO _user) = await UserService.Ins.updateUser(user);
+            //if (IsCheckUsername)
+            //    return ("Tên tài khoản đã tồn tại", null);
 
-            if (_user != null && __Customer != null)
-            {
-                return ("Cập nhật khách hàng thành công", Customer);
-            }
-            else
-            {
-                return ("Cập nhật khách hàng thất bại", null);
-            }
+            //(string labelCustomer, CustomerDTO __Customer) = await CustomerDAL.Ins.updateCustomer(_Customer);
+            //(string labelUser, UserDTO _user) = await UserService.Ins.updateUser(user);
+
+            //if (_user != null && __Customer != null)
+            //{
+            //    return ("Cập nhật khách hàng thành công", Customer);
+            //}
+            //else
+            //{
+            //    return ("Cập nhật khách hàng thất bại", null);
+            //}
         }
 
         /// <summary>
@@ -251,7 +256,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<CustomerDTO>)> getListCustomer()
         {
-            return await CustomerDAL.Ins.getListCustomer();
+            return await CustomerAPI.Ins.getCustomers();
         }
 
         /// <summary>
@@ -266,33 +271,35 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteCustomer(CustomerDTO customer)
         {
-            (string labelEmployee, bool isDeleteEmployee) = await CustomerDAL.Ins.DeleteCustomer(customer.MaKhachHang);
-            (string labelUser, bool isDeleteUser) = await UserDAL.Ins.DeleteUser(customer.MaKhachHang);
-            (string labelRank, bool isDeleteRank) = await CustomerDAL.Ins.deleteRankCustomer(customer.MaKhachHang);
-            (string labelAddress, bool isDeleteAddress) = await CustomerDAL.Ins.deleteAddressCustomer(customer.MaKhachHang);
+            return await CustomerAPI.Ins.DeleteCustomer(customer.MaKhachHang);
 
-            if (isDeleteUser)
-            {
-                await CloudService.Ins.DeleteImage(customer.HinhAnh);
-            }
+            //(string labelEmployee, bool isDeleteEmployee) = await CustomerDAL.Ins.DeleteCustomer(customer.MaKhachHang);
+            //(string labelUser, bool isDeleteUser) = await UserDAL.Ins.DeleteUser(customer.MaKhachHang);
+            //(string labelRank, bool isDeleteRank) = await CustomerDAL.Ins.deleteRankCustomer(customer.MaKhachHang);
+            //(string labelAddress, bool isDeleteAddress) = await CustomerDAL.Ins.deleteAddressCustomer(customer.MaKhachHang);
 
-            if (isDeleteEmployee && isDeleteUser && isDeleteRank && isDeleteAddress)
-            {
-                return (labelEmployee, true);
-            }
-            else
-            {
-                if (!isDeleteEmployee)
-                    return (labelEmployee, false);
+            //if (isDeleteUser)
+            //{
+            //    await CloudService.Ins.DeleteImage(customer.HinhAnh);
+            //}
 
-                if (!isDeleteUser)
-                    return (labelUser, false);
+            //if (isDeleteEmployee && isDeleteUser && isDeleteRank && isDeleteAddress)
+            //{
+            //    return (labelEmployee, true);
+            //}
+            //else
+            //{
+            //    if (!isDeleteEmployee)
+            //        return (labelEmployee, false);
 
-                if (!isDeleteAddress)
-                    return (labelAddress, false);
+            //    if (!isDeleteUser)
+            //        return (labelUser, false);
 
-                return (labelRank, false);
-            }
+            //    if (!isDeleteAddress)
+            //        return (labelAddress, false);
+
+            //    return (labelRank, false);
+            //}
         }
 
         /// <summary>
@@ -302,7 +309,7 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, List<AddressModel>)> getListAddressCustomer(string customerID)
         {
-            return await CustomerDAL.Ins.getListAddressCustomer(customerID);
+            return await CustomerAPI.Ins.getAddressCustomer(customerID);
         }
     }
 }

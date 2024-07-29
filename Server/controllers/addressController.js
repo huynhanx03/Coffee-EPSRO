@@ -43,7 +43,7 @@ const getAddresses = async (userId) => {
     try {
         const addressesSnapshot = await db.ref(`DiaChi/${userId}`).once('value')
         const addresses = addressesSnapshot.val()
-        return addresses
+        return addresses ? Object.values(addresses) : []
     } catch (error) {
         console.log(error)
     }

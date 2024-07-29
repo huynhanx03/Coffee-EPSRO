@@ -139,7 +139,7 @@ namespace Coffee.DALs
         }
 
         /// <summary>
-        /// Tạo mức độ thân thiết mới cho khách hầng
+        /// Tạo mức độ thân thiết mới cho khách hàng
         /// </summary>
         /// <param name="customerID"></param>
         /// <param name="detailRank"></param>

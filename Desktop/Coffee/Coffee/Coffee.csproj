@@ -205,6 +205,7 @@
     </ApplicationDefinition>
     <Compile Include="API\BannerAPI.cs" />
     <Compile Include="API\ChatAPI.cs" />
+    <Compile Include="API\CustomerAPI.cs" />
     <Compile Include="API\ProductAPI.cs" />
     <Compile Include="API\ProductTypeAPI.cs" />
     <Compile Include="API\VoucherAPI.cs" />

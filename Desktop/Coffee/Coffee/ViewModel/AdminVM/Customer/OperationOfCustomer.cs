@@ -202,7 +202,7 @@ namespace Coffee.ViewModel.AdminVM.Customer
                         ms.ShowDialog();
                         resetCustomer();
 
-                        CustomerList.Add(NewCustomer);
+                        loadCustomerList();
                     }
                     else
                     {
