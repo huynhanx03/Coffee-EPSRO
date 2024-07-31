@@ -210,6 +210,7 @@
     <Compile Include="API\EvaluateAPI.cs" />
     <Compile Include="API\ProductAPI.cs" />
     <Compile Include="API\ProductTypeAPI.cs" />
+    <Compile Include="API\UserAPI.cs" />
     <Compile Include="API\VoucherAPI.cs" />
     <Compile Include="DALs\BannerDAL.cs" />
     <Compile Include="DALs\BillDAL.cs" />

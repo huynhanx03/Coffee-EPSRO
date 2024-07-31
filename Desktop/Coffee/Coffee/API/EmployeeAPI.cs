@@ -142,7 +142,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Thêm nhân viên thất bại", employee);
+                        return ("Thêm nhân viên thất bại", null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -178,7 +178,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật nhân viên thất bại", employee);
+                        return ("Cập nhật nhân viên thất bại", null);
                     }
                 }
                 catch (HttpRequestException e)

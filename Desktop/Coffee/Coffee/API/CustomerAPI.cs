@@ -179,7 +179,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Thêm khách hàng thất bại", Customer);
+                        return ("Thêm khách hàng thất bại", null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -215,7 +215,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật khách hàng thất bại", Customer);
+                        return ("Cập nhật khách hàng thất bại", null);
                     }
                 }
                 catch (HttpRequestException e)

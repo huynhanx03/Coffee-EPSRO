@@ -10,5 +10,6 @@ router.get('/:userId', userController.getUserById);
 router.put('/update/:userId', userController.updateInfo);
 router.put('/update/password/:userId', userController.updatePassword);
 router.get('/forgot/:email', userController.getUserByEmail);
+router.put('/user/:userID', userController.updateUserHandler);
 
 module.exports = router;

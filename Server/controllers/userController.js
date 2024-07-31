@@ -2,6 +2,7 @@ const db = require('../config/firebase')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const crypto = require('crypto')
+const { updateUser, checkIDCard, checkEmail, checkNumberPhone, checkUsername } = require('../dao/userDAO')
 
 dotenv.config()
 
@@ -163,11 +164,39 @@ const updatePassword = async (req, res) => {
     }
 }
 
+const updateUserHandler = async (req, res) => {
+    const user = req.body;
+    const { userID } = req.params;
+
+    user.MaNguoiDung = userID
+    
+    try {
+        if (await checkIDCard(user))
+            return res.status(422).json({ success: false, message: "CCCD/CMND đã tồn tại" });
+
+        if (await checkEmail(user))
+            return res.status(422).json({ success: false, message: "Email đã tồn tại" });
+
+        if (await checkNumberPhone(user))
+            return res.status(422).json({ success: false, message: "Số điện thoại đã tồn tại" });
+
+        if (await checkUsername(user))
+            return res.status(422).json({ success: false, message: "Tên tài khoản đã tồn tại" });
+
+        await updateUser(user);
+        
+        return res.status(201).json({ success: true, message: 'User updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
     getUserById,
     updateInfo,
     updatePassword,
-    getUserByEmail
+    getUserByEmail,
+    updateUserHandler
 }

@@ -97,7 +97,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Thêm banner thất bại", banner);
+                        return ("Thêm banner thất bại", null);
                     }
                 }
                 catch (HttpRequestException e)
