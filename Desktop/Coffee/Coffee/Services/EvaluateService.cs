@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using FireSharp.Response;
@@ -33,7 +34,7 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, bool)> DeleteEvaluate(EvaluateDTO Evaluate)
         {
-            return await EvaluateDAL.Ins.DeleteEvaluate(Evaluate.MaDanhGia);
+            return await EvaluateAPI.Ins.DeleteEvaluate(Evaluate.MaDanhGia);
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<EvaluateDTO>)> getListEvaluate()
         {
-            return await EvaluateDAL.Ins.getListEvaluate();
+            return await EvaluateAPI.Ins.getListEvaluate();
         }
     }
 }

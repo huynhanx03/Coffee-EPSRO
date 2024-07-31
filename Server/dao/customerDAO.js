@@ -64,9 +64,22 @@ const deleteCustomer = async (customerID) => {
     await db.ref(`KhachHang/${customerID}`).remove();
 };
 
+const getRankCustomer = async (customerID) => {
+    const response = await db.ref(`ChiTietMucDoThanThiet/${customerID}/ChiTiet`).once('value');
+    const detailRankData = response.val();
+
+    if (detailRankData) {
+        const detailRankArray = Object.values(detailRankData);
+        const lastRank = detailRankArray[detailRankArray.length - 1];
+
+        return lastRank.MaMucDoThanThiet
+    }
+}
+
 module.exports = {
     getCustomers,
     addCustomer,
     deleteCustomer,
-    getMaxCustomerId
+    getMaxCustomerId,
+    getRankCustomer
 };

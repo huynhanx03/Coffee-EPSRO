@@ -75,6 +75,42 @@ namespace Coffee.API
             }
         }
 
+        public async Task<(string, List<RankModel>)> getRankCustomers()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // Send a GET request to the specified URL
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/rankCustomers");
+
+                    string responseContent = resp.Content.ReadAsStringAsync().Result;
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        // Deserialize the data portion into a list
+                        var customers = JsonConvert.DeserializeObject<List<RankModel>>(data.ToString());
+
+                        return ("Lấy danh sách mức độ thân thiết khách hàng thành công", customers);
+                    }
+                    else
+                    {
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
         //// <summary>
         /// 
         /// </summary>

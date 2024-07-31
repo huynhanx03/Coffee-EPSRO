@@ -1,4 +1,4 @@
-const { getRankCustomers, getCustomerIDByRankMinimum } = require('../dao/rankCustomerDAO');
+const { getRankCustomers, getCustomerIDByRankMinimum } = require('../dao/rankDAO');
 const { binarySearchRankCustomer } = require('../dsa/binarySearch');
 const { nextID } = require('../utils/helper');
 

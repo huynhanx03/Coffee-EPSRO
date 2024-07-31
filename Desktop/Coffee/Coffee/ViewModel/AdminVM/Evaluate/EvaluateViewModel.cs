@@ -1,4 +1,5 @@
-﻿using Coffee.DTOs;
+﻿using Coffee.API;
+using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Services;
 using Coffee.Views.Admin.EvaluatePage;
@@ -191,7 +192,7 @@ namespace Coffee.ViewModel.AdminVM.Evaluate
 
         private async void loadRankList()
         {
-            (string label, List<RankModel> listRank) = await RankService.Ins.getAllRank();
+            (string label, List<RankModel> listRank) = await CustomerAPI.Ins.getRankCustomers();
 
             if (listRank != null)
             {
