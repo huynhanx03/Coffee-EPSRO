@@ -37,6 +37,7 @@ namespace Coffee.DTOs
                 DanhSachCongThuc = value.Values.ToList();
             }
         }
+
         public List<ProductSizeDetailDTO> DanhSachChiTietKichThuocSanPham { get; set; }
         public List<ProductRecipeDTO> DanhSachCongThuc { get; set; }
         

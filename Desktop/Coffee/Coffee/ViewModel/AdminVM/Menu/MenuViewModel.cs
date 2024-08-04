@@ -354,7 +354,7 @@ namespace Coffee.ViewModel.AdminVM.Menu
             await IngredientService.Ins.reduceIngredientQuantity(SelectedProduct.DanhSachCongThuc, ProductQuantity);
 
             // Thêm số lượng cho sản phẩm
-            (string label, bool isIncrease) = await ProductService.Ins.increaseQuantityProduct(SelectedProduct.MaSanPham, ProductQuantity);
+            (string label, bool isIncrease) = await ProductService.Ins.increaseQuantityProduct(SelectedProduct, ProductQuantity);
             
             IsLoading = false;
 

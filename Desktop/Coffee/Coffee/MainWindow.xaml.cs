@@ -128,7 +128,7 @@ namespace Coffee
                     product.Mota = product.TenSanPham + " siêu ngon";
                     
                     row += 1;
-                    await ProductService.Ins.createProduct(product, productSize, productRecipe);
+                    //await ProductService.Ins.createProduct(product, productSize, productRecipe);
                 }
 
             }
@@ -162,7 +162,7 @@ namespace Coffee
 
             foreach (var product in products)
             {
-                ProductService.Ins.increaseQuantityProduct(product.MaSanPham, 10);
+                //ProductService.Ins.increaseQuantityProduct(product.MaSanPham, 10);
             }
         }
 

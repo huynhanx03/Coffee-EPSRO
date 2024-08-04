@@ -1,5 +1,6 @@
 const db = require('../config/firebase');
-const { getDiscountProducts, updateDiscountFromProduct } = require('../dao/productDAO');
+const { getDiscountProducts, updateDiscountFromProduct, deleteProduct, getProductSizes, updateQuantityProduct, getMaxProductId, addProduct, updateProduct } = require('../dao/productDAO');
+const { nextID } = require('../utils/helper');
 
 const getCategories = async (req, res) => {
     try {
@@ -21,6 +22,16 @@ const getProducts = async (req, res) => {
         const products = snapshot.val();
 
         return res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const getProductSizesHandler = async (req, res) => {
+    try {
+        const data = await getProductSizes()
+
+        return res.status(200).json({ success: true, data: data });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -115,6 +126,63 @@ const updateDiscountFromProductHandler = async (req, res) => {
     }
 }
 
+const deleteProductHandler = async (req, res) => {
+    const { productID } = req.params;
+
+    try {
+        await deleteProduct(productID);
+
+        return res.status(200).json({ success: true, message: 'Product deleted successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const updateQuantityProductHandler = async (req, res) => {
+    const { quantity } = req.body;
+    const { productID } = req.params;
+
+    try {
+        await updateQuantityProduct(productID, quantity);
+
+        return res.status(201).json({ success: true, message: 'Product quantity updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const addProductHandler = async (req, res) => {
+    const product = req.body;
+
+    try {
+        const maxProductId = await getMaxProductId();
+        const newProductId = nextID(maxProductId, "SP");
+
+        product.MaSanPham = newProductId;
+
+        await addProduct(product);
+
+        return res.status(201).json({ success: true, message: 'Product added successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const updateProductHandler = async (req, res) => {
+    const product = req.body;
+    const { productID } = req.params;
+
+    try {
+        product.MaSanPham = productID;
+
+        await updateProduct(product);
+
+        return res.status(201).json({ success: true, message: 'Product added successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getCategories,
     getProducts,
@@ -122,5 +190,10 @@ module.exports = {
     getProductsSale,
     getProductsBestSeller,
     getDiscountProductsHandler,
-    updateDiscountFromProductHandler
+    updateDiscountFromProductHandler,
+    deleteProductHandler,
+    getProductSizesHandler,
+    updateQuantityProductHandler,
+    addProductHandler,
+    updateProductHandler
 }

@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
+using Coffee.API;
+using Coffee.Models;
 
 namespace Coffee.ViewModel.AdminVM.Menu
 {
@@ -234,19 +236,20 @@ namespace Coffee.ViewModel.AdminVM.Menu
             if (OriginImage != Image)
                 newImage = await CloudService.Ins.UploadImage(Image);
 
-            ProductDTO product = new ProductDTO
+            ProductModel product = new ProductModel
             {
                 TenSanPham = ProductName.Trim(),
-                LoaiSanPham = productType.LoaiSanPham,
                 MaLoaiSanPham = productType.MaLoaiSanPham,
                 HinhAnh = newImage,
-                Mota = Description.Trim()
+                Mota = Description.Trim(),
+                CongThuc = ProductRecipeList.ToDictionary(recipe => recipe.MaNguyenLieu),
+                ChiTietKichThuocSanPham = ListProductSizeDetail.ToDictionary(size => size.MaKichThuoc)
             };
 
             switch (TypeOperation)
             {
                 case 1:
-                    (string label, ProductDTO NewProduct) = await ProductService.Ins.createProduct(product, new List<ProductSizeDetailDTO>(ListProductSizeDetail), new List<ProductRecipeDTO>(ProductRecipeList));
+                    (string label, ProductModel NewProduct) = await ProductService.Ins.createProduct(product);
 
                     if (NewProduct != null)
                     {
@@ -254,7 +257,7 @@ namespace Coffee.ViewModel.AdminVM.Menu
                         ms.ShowDialog();
                         resetProduct();
 
-                        ProductList.Add(NewProduct);
+                        loadProductList();
                     }
                     else
                     {
@@ -270,7 +273,7 @@ namespace Coffee.ViewModel.AdminVM.Menu
                     product.SoLuong = Quantity;
                     product.PhanTramGiam = SelectedProduct.PhanTramGiam;
 
-                    (string labelEdit, ProductDTO NewProductEdit) = await ProductService.Ins.updateProduct(product, new List<ProductSizeDetailDTO>(ListProductSizeDetail), new List<ProductRecipeDTO>(ProductRecipeList));
+                    (string labelEdit, ProductModel NewProductEdit) = await ProductService.Ins.updateProduct(product);
 
                     if (NewProductEdit != null)
                     {

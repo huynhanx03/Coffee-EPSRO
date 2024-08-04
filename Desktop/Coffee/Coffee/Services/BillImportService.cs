@@ -130,7 +130,6 @@ namespace Coffee.Services
         /// <param name="importID"></param>
         /// <returns>
         ///     1: Thông báo
-        ///     2: True nếu xoá thành công, False xoá thất bại
         /// </returns>
         public async Task<(string, List<DetailImportDTO>)> getDetailBillImport(string importID)
         {

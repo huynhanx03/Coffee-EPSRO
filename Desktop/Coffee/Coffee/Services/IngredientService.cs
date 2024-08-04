@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Coffee.API;
 
 namespace Coffee.Services
 {
@@ -37,6 +38,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, IngredientDTO)> createIngredient(IngredientDTO ingredient)
         {
+            return await IngredientAPI.Ins.createIngredient(ingredient);
+
             // Kiểm tra tên nguyên liệu
             (string label, IngredientDTO ingredientFind) = await IngredientDAL.Ins.findIngredientByName(ingredient.TenNguyenLieu, ingredient.MaNguyenLieu);
 
@@ -62,6 +65,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, IngredientDTO)> updateIngredient(IngredientDTO ingredient)
         {
+            return await IngredientAPI.Ins.updateIngredient(ingredient);
+
             // Kiểm tra tên nguyên liệu
             (string label, IngredientDTO ingredientFind) = await IngredientDAL.Ins.findIngredientByName(ingredient.TenNguyenLieu, ingredient.MaNguyenLieu);
 
@@ -90,7 +95,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<IngredientDTO>)> getListIngredient()
         {
-            return await IngredientDAL.Ins.getListIngredient();
+            return await IngredientAPI.Ins.getIngredients();
         }
 
         /// <summary>
@@ -103,7 +108,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteIngredient(IngredientDTO Ingredient)
         {
-            return await IngredientDAL.Ins.DeleteIngredient(Ingredient.MaNguyenLieu);
+            return await IngredientAPI.Ins.DeleteIngredient(Ingredient.MaNguyenLieu);
         }
 
         /// <summary>
@@ -222,7 +227,7 @@ namespace Coffee.Services
 
                     // Update Nguyên liệu
 
-                    await this.updateIngredient(findIngredient);
+                    await IngredientAPI.Ins.updateQuantityIngredient(findIngredient.MaNguyenLieu, findIngredient.SoLuong);
                 }
             }
 

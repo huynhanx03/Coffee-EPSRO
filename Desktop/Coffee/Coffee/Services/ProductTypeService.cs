@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<ProductTypeDTO>)> getAllProductType()
         {
-            return await ProductTypeDAL.Ins.getAllProductType();
+            return await ProductTypeAPI.Ins.GetProductTypes();
         }
     }
 }

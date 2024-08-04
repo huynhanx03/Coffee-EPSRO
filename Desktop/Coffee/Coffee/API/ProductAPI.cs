@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 
 namespace Coffee.API
 {
@@ -81,6 +82,70 @@ namespace Coffee.API
                         }
 
                         return ("Lấy danh sách sản phẩm thành công", products);
+                    }
+                    else
+                    {
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
+        public async Task<(string, bool)> updateQuantityProduct(string productID, double quantity)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string json = JsonConvert.SerializeObject(quantity);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/quantity-product/" + productID, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật sản phẩm thành công", true);
+                    }
+                    else
+                    {
+                        return ("Cập nhật sản phẩm thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
+
+        public async Task<(string, List<ProductSizeDetailDTO>)> getSizes()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // Send a GET request to the specified URL
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/sizes");
+
+                    string responseContent = resp.Content.ReadAsStringAsync().Result;
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        // Deserialize the data portion into a list
+                        var sizes = JsonConvert.DeserializeObject<List<ProductSizeDetailDTO>>(data.ToString());
+
+                        return ("Lấy danh sách kích thước thành công", sizes);
                     }
                     else
                     {
@@ -170,6 +235,112 @@ namespace Coffee.API
                 catch (HttpRequestException e)
                 {
                     return (e.Message, false);
+                }
+            }
+        }
+
+        public async Task<(string, bool)> deleteProduct(string productID)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/product/{productID}");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Xoá sản phẩm thành công", true);
+                    }
+                    else
+                    {
+                        return ("Xoá sản phẩm thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Thêm sản phẩm
+        /// INPUT: ProductDTO: sản phẩm
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns>
+        ///     1: Lỗi khi thêm dữ liệu
+        ///     2: sản phẩm
+        /// </returns>
+        public async Task<(string, ProductModel)> createproduct(ProductModel product)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string json = JsonConvert.SerializeObject(product);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(Constants.API.IP + beginUrl + "/product", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Thêm sản phẩm thành công", product);
+                    }
+                    else
+                    {
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật sản phẩm
+        /// INPUT: Customer: sản phẩm
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns>
+        ///     1: Thông báo
+        ///     2: sản phẩm
+        /// </returns>
+        public async Task<(string, ProductModel)> updateProduct(ProductModel product)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string json = JsonConvert.SerializeObject(product);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/product/" + product.MaSanPham, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật sản phẩm thành công", product);
+                    }
+                    else
+                    {
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
                 }
             }
         }

@@ -11,6 +11,7 @@ const chatRoutes = require('./routes/chatRoutes')
 const customerRoutes = require('./routes/customerRoutes')
 const employeeRoutes = require('./routes/employeeRoutes')
 const evaluateRoutes = require('./routes/evaluateRoutes')
+const ingredientRoutes = require('./routes/IngredientRoutes')
 
 const app = express()
 const port = 3000
@@ -29,6 +30,7 @@ app.use('/chat', chatRoutes)
 app.use('/customer', customerRoutes)
 app.use('/employee', employeeRoutes)
 app.use('/evaluate', evaluateRoutes)
+app.use('/ingredient', ingredientRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)

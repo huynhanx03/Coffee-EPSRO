@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using FireSharp.Response;
@@ -33,7 +34,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<ProductSizeDetailDTO>)> getAllProductSzieDetail()
         {
-            return await ProductSizeDetailDAL.Ins.getAllProductSzieDetail();
+            return await ProductAPI.Ins.getSizes();
         }
 
         /// <summary>
