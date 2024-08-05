@@ -1,5 +1,7 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
+using Coffee.Models;
 using Coffee.Utils;
 using Coffee.Utils.Helper;
 using FireSharp.Response;
@@ -36,44 +38,48 @@ namespace Coffee.Services
         ///     1. Thông báo
         ///     2. True khi tạo thành công
         /// </returns>
-        public async Task<(string, bool)> createBillImport(ImportDTO import, ObservableCollection<DetailImportDTO> detailImportList)
+        public async Task<(string, bool)> createBillImport(ImportModel import)
         {
-            // Tìm mã phiếu nhập kho
-            string MaPhieuNhapKhoMax = await this.getMaxMaPhieuNhapKho();
+            return await ImportAPI.Ins.createBillImport(import);
 
-            import.MaPhieuNhapKho = Helper.nextID(MaPhieuNhapKhoMax, "NK");
+            // ImportDTO import, ObservableCollection<DetailImportDTO> detailImportList
 
-            (string labelCreateBillImport, bool isCreateBillImport) = await BillImportDAL.Ins.createBillImport(import);
+            //// Tìm mã phiếu nhập kho
+            //string MaPhieuNhapKhoMax = await this.getMaxMaPhieuNhapKho();
 
-            if (isCreateBillImport)
-            {
-                // Nếu tạo phiếu nhập kho thành công thì tạo các chi tiết nhập kho
-                foreach (DetailImportDTO detail in detailImportList)
-                    detail.MaPhieuNhapKho = import.MaPhieuNhapKho;
+            //import.MaPhieuNhapKho = Helper.nextID(MaPhieuNhapKhoMax, "NK");
 
-                (string labelCreateDetailBillImprot, bool isCreateDetailBillImprot) = await BillImportDAL.Ins.createDetailBillImport(import.MaPhieuNhapKho, detailImportList);
+            //(string labelCreateBillImport, bool isCreateBillImport) = await BillImportDAL.Ins.createBillImport(import);
 
-                if (isCreateDetailBillImprot)
-                {
-                    // Thêm số lượng vào nguyên liệu
-                    foreach (DetailImportDTO detailImport in detailImportList)
-                    {
-                        await IngredientService.Ins.updateIngredientQuantity(detailImport.MaNguyenLieu, detailImport.SoLuong, detailImport.MaDonVi);
-                    }
+            //if (isCreateBillImport)
+            //{
+            //    // Nếu tạo phiếu nhập kho thành công thì tạo các chi tiết nhập kho
+            //    foreach (DetailImportDTO detail in detailImportList)
+            //        detail.MaPhieuNhapKho = import.MaPhieuNhapKho;
 
-                    return (labelCreateBillImport, isCreateBillImport);
-                }
-                else
-                {
-                    // Tạo các chi tiết thất bại
-                    // Xoá phiếu nhập kho
-                    await this.DeleteBillImport(import.MaPhieuNhapKho);
+            //    (string labelCreateDetailBillImprot, bool isCreateDetailBillImprot) = await BillImportDAL.Ins.createDetailBillImport(import.MaPhieuNhapKho, detailImportList);
 
-                    return (labelCreateDetailBillImprot, false);
-                }
-            }
-            else
-                return (labelCreateBillImport, isCreateBillImport);
+            //    if (isCreateDetailBillImprot)
+            //    {
+            //        // Thêm số lượng vào nguyên liệu
+            //        foreach (DetailImportDTO detailImport in detailImportList)
+            //        {
+            //            await IngredientService.Ins.updateIngredientQuantity(detailImport.MaNguyenLieu, detailImport.SoLuong, detailImport.MaDonVi);
+            //        }
+
+            //        return (labelCreateBillImport, isCreateBillImport);
+            //    }
+            //    else
+            //    {
+            //        // Tạo các chi tiết thất bại
+            //        // Xoá phiếu nhập kho
+            //        await this.DeleteBillImport(import.MaPhieuNhapKho);
+
+            //        return (labelCreateDetailBillImprot, false);
+            //    }
+            //}
+            //else
+            //    return (labelCreateBillImport, isCreateBillImport);
         }
 
         /// <summary>

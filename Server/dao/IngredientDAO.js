@@ -75,6 +75,22 @@ const updateQuantityIngredient = async (ingredientID, newQuantity) => {
     await db.ref(`NguyenLieu/${ingredientID}`).update({ SoLuong: newQuantity });
 };
 
+const getIngredient = async (ingredientID) => {
+    try {
+        const snapshot = await db.ref(`NguyenLieu/${ingredientID}`).once('value');
+        
+        if (snapshot.exists()) {
+            const ingredient = snapshot.val();
+            return ingredient;
+        } else {
+            throw new Error('Nguyên liệu không tồn tại');
+        }
+    } catch (error) {
+        console.error('Error getting ingredient:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getIngredients,
     addIngredient,
@@ -82,5 +98,6 @@ module.exports = {
     getMaxIngredientId,
     updateIngredient,
     getUnits,
-    updateQuantityIngredient
+    updateQuantityIngredient,
+    getIngredient
 };

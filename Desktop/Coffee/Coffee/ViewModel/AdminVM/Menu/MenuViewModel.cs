@@ -350,11 +350,13 @@ namespace Coffee.ViewModel.AdminVM.Menu
             MaskName.Visibility = Visibility.Visible;
             IsLoading = true;
 
+            ProductDTO currentProduct = SelectedProduct;
+
             // Giảm bớt số lượng
-            await IngredientService.Ins.reduceIngredientQuantity(SelectedProduct.DanhSachCongThuc, ProductQuantity);
+            await IngredientService.Ins.reduceIngredientQuantity(currentProduct.DanhSachCongThuc, ProductQuantity);
 
             // Thêm số lượng cho sản phẩm
-            (string label, bool isIncrease) = await ProductService.Ins.increaseQuantityProduct(SelectedProduct, ProductQuantity);
+            (string label, bool isIncrease) = await ProductService.Ins.increaseQuantityProduct(currentProduct, ProductQuantity);
             
             IsLoading = false;
 
@@ -365,6 +367,7 @@ namespace Coffee.ViewModel.AdminVM.Menu
                 MessageBoxCF ms = new MessageBoxCF("Thêm số lượng sản phẩm thành công", MessageType.Accept, MessageButtons.OK);
                 ms.ShowDialog();
 
+                addQuantityProduct();
                 loadProductList();
             }
             else

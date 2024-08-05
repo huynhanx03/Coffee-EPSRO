@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Coffee.API;
+using System.Windows.Media.Animation;
 
 namespace Coffee.Services
 {
@@ -118,7 +119,7 @@ namespace Coffee.Services
         /// <returns></returns>
         public async Task<(string, IngredientDTO)> GetIngredient(string IngredientID)
         {
-            return await IngredientDAL.Ins.GetIngredient(IngredientID);
+            return await IngredientAPI.Ins.GetIngredient(IngredientID);
         }
 
         /// <summary>
@@ -147,10 +148,10 @@ namespace Coffee.Services
                         ingredient.SoLuong += (Quantity * 1000);
                 }
 
-                (string labelUpdate, IngredientDTO ingredientUpdate) = await this.updateIngredient(ingredient);
+                (string labelUpdate, bool isUpdate) = await IngredientAPI.Ins.updateQuantityIngredient(ingredient.MaNguyenLieu, ingredient.SoLuong);
 
                 // Update thành công
-                if (ingredientUpdate != null)
+                if (isUpdate)
                     return ("Tăng số lượng nguyên liệu thành công", true);
                 else
                     return (labelUpdate, false);
@@ -214,16 +215,20 @@ namespace Coffee.Services
 
                 if (findIngredient != null)
                 {
+                    double need;
+
                     // xử lý tính toán đơn vị
                     if (item.MaDonVi == findIngredient.MaDonVi)
-                        findIngredient.SoLuong -= quantity * item.SoLuong;
+                         need = quantity * item.SoLuong;
                     else
                     {
-                        if (findIngredient.MaDonVi == "DV0001" || findIngredient.MaDonVi == "DV0003")
-                            findIngredient.SoLuong -= (quantity * item.SoLuong / 1000);
+                        if (findIngredient.MaDonVi == "DV0001" || findIngredient.MaDonVi == "DV0003") 
+                            need = (quantity * item.SoLuong) / 1000;
                         else
-                            findIngredient.SoLuong -= (quantity * item.SoLuong * 1000);
+                            need = (quantity * item.SoLuong) * 1000;
                     }
+
+                    findIngredient.SoLuong -= need;
 
                     // Update Nguyên liệu
 

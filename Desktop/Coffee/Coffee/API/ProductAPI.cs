@@ -95,13 +95,18 @@ namespace Coffee.API
             }
         }
 
-        public async Task<(string, bool)> updateQuantityProduct(string productID, double quantity)
+        public async Task<(string, bool)> updateQuantityProduct(string productID, double _quantity)
         {
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    string json = JsonConvert.SerializeObject(quantity);
+                    var container = new
+                    {
+                        quantity = _quantity
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/quantity-product/" + productID, content);

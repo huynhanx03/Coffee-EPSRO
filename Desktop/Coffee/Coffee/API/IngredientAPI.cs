@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Coffee.Utils;
+using FireSharp.Response;
 
 namespace Coffee.API
 {
@@ -152,6 +153,30 @@ namespace Coffee.API
         }
 
         /// <summary>
+        /// Lấy nguyên liệu theo mã nguyên liệu
+        /// </summary>
+        /// <param name="IngredientID"></param>
+        /// <returns></returns>
+        public async Task<(string, IngredientDTO)> GetIngredient(string IngredientID)
+        {
+            try
+            {
+                using (var context = new Firebase())
+                {
+                    FirebaseResponse response = await context.Client.GetTaskAsync("NguyenLieu/" + IngredientID);
+
+                    IngredientDTO ingredient = response.ResultAs<IngredientDTO>();
+
+                    return ("Lấy nguyên liệu thành công", ingredient);
+                }
+            }
+            catch (Exception ex)
+            {
+                return (ex.Message, null);
+            }
+        }
+
+        /// <summary>
         /// Cập nhật nguyên liệu
         /// INPUT: ingredient: nguyên liệu
         /// </summary>
@@ -187,13 +212,18 @@ namespace Coffee.API
             }
         }
 
-        public async Task<(string, bool)> updateQuantityIngredient(string ingredientID, double quantity)
+        public async Task<(string, bool)> updateQuantityIngredient(string ingredientID, double _quantity)
         {
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    string json = JsonConvert.SerializeObject(quantity);
+                    var container = new
+                    {
+                        quantity = _quantity
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/quantity-ingredient/" + ingredientID, content);

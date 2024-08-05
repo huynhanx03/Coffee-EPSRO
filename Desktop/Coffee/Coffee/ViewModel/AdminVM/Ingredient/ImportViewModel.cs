@@ -1,4 +1,5 @@
 ﻿using Coffee.DTOs;
+using Coffee.Models;
 using Coffee.Services;
 using Coffee.Utils;
 using Coffee.Views.Admin.IngredientPage;
@@ -73,11 +74,10 @@ namespace Coffee.ViewModel.AdminVM.Ingredient
         private async void confirmImport(Window w)
         {
             // Xác định phiếu nhập kho
-            ImportDTO import = new ImportDTO
+            ImportModel import = new ImportModel
             {
                 MaNhanVien = Memory.user.MaNguoiDung,
-                NgayTaoPhieu = InvoiceDate,
-                TongTien = InvoiceValue
+                NgayTaoPhieu = InvoiceDate
             };
 
             foreach (DetailImportDTO detail in DetailImportList)
@@ -110,10 +110,18 @@ namespace Coffee.ViewModel.AdminVM.Ingredient
                 detail.MaDonVi = unit.MaDonVi;
             }
 
-            (string label, bool isCreate) = await BillImportService.Ins.createBillImport(import, DetailImportList);
+            import.ChiTietPhieuNhapKho = DetailImportList.ToDictionary(detail => detail.MaNguyenLieu);
+
+            (string label, bool isCreate) = await BillImportService.Ins.createBillImport(import);
 
             if (isCreate)
             {
+                // Thêm số lượng vào nguyên liệu
+                foreach (DetailImportDTO detailImport in DetailImportList)
+                {
+                    await IngredientService.Ins.updateIngredientQuantity(detailImport.MaNguyenLieu, detailImport.SoLuong, detailImport.MaDonVi);
+                }
+
                 DetailImportList = new ObservableCollection<DetailImportDTO>();
                 this.loadIngredientList();
 

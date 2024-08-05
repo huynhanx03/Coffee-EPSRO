@@ -65,6 +65,18 @@ const updateIngredientHandler = async (req, res) => {
     }
 };
 
+const getIngredientHandler = async (req, res) => {
+    const { ingredientID } = req.params;
+    
+    try {
+        const ingredient = await getIngredient(ingredientID);
+        
+        return res.status(200).json({ success: true, message: 'Lấy nguyên liệu thành công', ingredient });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 const updateQuantityIngredientHandler = async (req, res) => {
     const { quantity } = req.body;
     const { ingredientID } = req.params;
@@ -84,5 +96,6 @@ module.exports = {
     deleteIngredientHandler,
     updateIngredientHandler,
     getUnitsHandler,
-    updateQuantityIngredientHandler
+    updateQuantityIngredientHandler,
+    getIngredientHandler
 };
