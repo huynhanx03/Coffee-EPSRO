@@ -48,7 +48,6 @@ const RegisterScreen = () => {
                 onPress: () => navigation.navigate('Login')
             })
         } else {
-            console.log(response)
             ShowToast("error", "Đăng ký thất bại", response.errors[0].msg)
         }
         

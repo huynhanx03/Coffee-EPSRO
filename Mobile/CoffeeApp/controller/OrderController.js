@@ -1,5 +1,7 @@
 import { child, get, getDatabase, orderByChild, query, ref, set, update, equalTo } from "firebase/database";
 import { getUserData } from "./StorageController";
+import axios from 'axios';
+import { BASE_URL } from "../constants";
 
 const getNewId = async () => {
     const dbRef = ref(getDatabase());
@@ -67,19 +69,13 @@ const saveOrder = async (products, total, transFee, addressData) => {
  * @returns The order of the user
  */
 const getOrder = async () => {
-    const db = getDatabase()
-    const userData = await getUserData();
     try {
-        const orderRef = ref (db, 'DonHang')
-
-        const filteredQuery = query(orderRef, orderByChild('MaNguoiDung'), equalTo(userData.MaNguoiDung))
-        const ordersSnapshot = await get(filteredQuery)
-        const orders = ordersSnapshot.val()
-
-        return orders
+        const userData = await getUserData();
+        const response = await axios.get(`${BASE_URL}/order/${userData.MaNguoiDung}`)
+        return response.data
     } catch (error) {
-        console.log(error)
-        return error
+        console.log(error);
+        return error;
     }
 }
 
@@ -88,15 +84,12 @@ const getOrder = async () => {
  * @param orderId The id of the order
  */
 const setStatusOrder = async (orderId) => {
-    const db = getDatabase()
-
     try {
-        update(ref(db, `DonHang/${orderId}`), {
-            TrangThai: "Đã nhận hàng"
-        })
+        const response = await axios.put(`${BASE_URL}/order/${orderId}`)
+        return response.data
     } catch (error) {
-        console.log(error)
-        return error
+        console.log(error);
+        return error;
     }
 }
 

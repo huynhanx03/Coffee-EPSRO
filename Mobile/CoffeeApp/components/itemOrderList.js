@@ -11,7 +11,9 @@ const ItemOrderList = () => {
     const handleGetOrder = async () => {
         try {
             const info = await getOrder();
-            setOrderInfo(info);
+            if (info.success) {
+                setOrderInfo(info.data);
+            }
         } catch (error) {
             console.log(error);
         }
