@@ -29,39 +29,14 @@ const getNewId = async () => {
  * @notice Save order to database
  */
 const saveOrder = async (products, total, transFee, addressData) => {
-    const currentDate = new Date();
-    const options = { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit',
-        hour12: false
-      };
-    const formattedDate = currentDate.toLocaleString('vi-VN', options);
-    const newId = await getNewId();
-    const userData = await getUserData();
-    const db = getDatabase();
-
-    let productObj = {};
-    for (const product of products) {
-        productObj = {...productObj, [product.MaSanPham]: product }
+    try {
+        const userData = await getUserData();
+        const data = {products, total, transFee, addressData};
+        const response = await axios.post(`${BASE_URL}/order/${userData.MaNguoiDung}`, data)
+        return response.data
+    } catch (error) {
+        throw new Error("Lỗi khi tạo đơn hàng!")
     }
-
-
-    set(ref(db, `DonHang/${newId}/`), {
-        MaDonHang: newId,
-        MaNguoiDung: userData.MaNguoiDung,
-        TrangThai: "Chờ xác nhận",
-        SanPham: {
-            ...productObj
-        },
-        ThanhTien: total,
-        PhiVanChuyen: transFee,
-        NgayTaoDon: formattedDate,
-        DiaChiGiaoHang: addressData
-    });
 };
 
 /**

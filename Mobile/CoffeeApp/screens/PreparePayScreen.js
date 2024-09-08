@@ -81,6 +81,7 @@ const PreparePayScreen = ({ route }) => {
     }, [totalProduct, transFee, voucher])
 
     const handleCalDistance = () => {
+        if (coord.latitude == 0 && coord.longtitude == 0) return 0
         const distance = geolib.getPreciseDistance(
             { latitude: 10.8700233, longitude: 106.8025735 },
             { latitude: coord.latitude, longitude: coord.longtitude },
@@ -120,32 +121,36 @@ const PreparePayScreen = ({ route }) => {
     }
 
     const handleCheckOut = async () => {
-        if (!addressData) {
-            ShowToast('error', 'Lỗi', 'Vui lòng chọn địa chỉ nhận hàng')
-            return
-        }
-        const isDistance = handleCheckDistance()
-        if (!isDistance) {
-            showNotification('Địa chỉ nhận hàng không hỗ trợ giao hàng', 'error')
-            return
-        }
-        if (product) {
-            const productList = [product]
-            saveOrder(productList, total, transFee, addressData)
-        } else {
-            saveOrder(cart, total, transFee, addressData)
-            dispatch(clearCart())
-            await removeItemCart()
-        }
-        if (voucher) {
-            try {
-                const response = await updateVoucherUsed(voucher.MaPhieuGiamGia)
-                dispatch(removeVoucher())
-            } catch (error) {
-                console.log(error)
+        try {
+            if (!addressData) {
+                ShowToast('error', 'Lỗi', 'Vui lòng chọn địa chỉ nhận hàng')
+                return
             }
+            const isDistance = handleCheckDistance()
+            if (!isDistance) {
+                showNotification('Địa chỉ nhận hàng không hỗ trợ giao hàng', 'error')
+                return
+            }
+            if (product) {
+                const productList = [product]
+                await saveOrder(productList, total, transFee, addressData)
+            } else {
+                await saveOrder(cart, total, transFee, addressData)
+                dispatch(clearCart())
+                await removeItemCart()
+            }
+            if (voucher) {
+                try {
+                    await updateVoucherUsed(voucher.MaPhieuGiamGia)
+                    dispatch(removeVoucher())
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            navigation.navigate('OrderSuccess')
+        } catch (error) {
+            showNotification(error.message, 'error')
         }
-        navigation.navigate('OrderSuccess')
     }
 
     return (

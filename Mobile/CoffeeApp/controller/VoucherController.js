@@ -15,8 +15,11 @@ const getVoucher = async () => {
 
         return response.data;
     } catch (error) {
-        // return response.error.data;
-        console.log(error)
+        if (error.response) {
+            return error.response.data;
+        } else {
+            throw new Error("Lỗi server!");
+        }
     }
 };
 
