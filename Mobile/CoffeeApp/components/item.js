@@ -28,14 +28,22 @@ const Item = ({ product, isSale, isBestSeller }) => {
     let disabledButton = product.SoLuong === 0 ? true : false;
 
     const handleGetReview = async () => {
-        const reviews = await getReview(product.MaSanPham);
+        try {
+            const reviews = await getReview(product.MaSanPham);
 
-        let totalRatingPoint = 0;
-        reviews?.forEach((review) => {
-            totalRatingPoint += review?.DiemDanhGia;
-        });
+            if (reviews === null) {
+                setRatingPoint(0);
+                return;
+            }
+            let totalRatingPoint = 0;
+            for (const review in reviews) {
+                totalRatingPoint += reviews[review].DiemDanhGia;
+            }
 
-        setRatingPoint(totalRatingPoint > 0 ? totalRatingPoint / reviews.length : 0);
+            setRatingPoint(totalRatingPoint > 0 ? totalRatingPoint / reviews.length : 0);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {

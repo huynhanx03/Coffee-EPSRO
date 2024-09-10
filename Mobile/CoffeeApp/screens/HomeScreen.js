@@ -52,7 +52,6 @@ const HomeScreen = () => {
             setIsLoading(false);
         } catch (error) {
             setIsLoading(false);
-            showNotification(error, 'error')
         }
     };
 
@@ -105,7 +104,7 @@ const HomeScreen = () => {
             const bestSeller = await getProductsBestSeller();
             setProBestSeller(bestSeller.data.slice(0, 6))
         } catch (error) {
-            showNotification(error, 'error')
+            console.log(error)
         }
     }
 
@@ -133,7 +132,7 @@ const HomeScreen = () => {
             const userData = await getUserData();
             setUser(userData);
         } catch (error) {
-            showNotification(error, 'error')
+            console.log(error);
         }
     };
 
@@ -142,7 +141,7 @@ const HomeScreen = () => {
             const banners = await getBanner();
             setBanners(banners);
         } catch (error) {
-            showNotification(error, 'error')
+            console.log(error);
         }
     };
 

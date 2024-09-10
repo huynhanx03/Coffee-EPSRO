@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+
 const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
 const voucherRoutes = require('./routes/voucherRoutes')
@@ -15,6 +16,8 @@ const ingredientRoutes = require('./routes/IngredientRoutes')
 const billImpoortRoutes = require('./routes/billImportRoutes')
 const tableRoutes = require('./routes/tableRoutes')
 const billSellRoutes = require('./routes/billSellRouter')
+const orderRoutes = require('./routes/orderRoutes')
+const reviewRoutes = require('./routes/reviewRoutes')
 
 const app = express()
 const port = 3000
@@ -37,6 +40,8 @@ app.use('/ingredient', ingredientRoutes)
 app.use('/bill-import', billImpoortRoutes)
 app.use('/table', tableRoutes)
 app.use('/bill-sell', billSellRoutes)
+app.use('/order', orderRoutes)
+app.use('/review', reviewRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)

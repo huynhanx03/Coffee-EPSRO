@@ -58,6 +58,11 @@ const getMaxProductId = async () => {
     }
 };
 
+const handleGetProductById = async (productId) => {
+    const snapshot = await db.ref('SanPham/' + productId).once('value');
+    return snapshot.val();
+}
+
 module.exports = {
     getDiscountProducts,
     updateDiscountFromProduct,
@@ -66,5 +71,6 @@ module.exports = {
     updateQuantityProduct,
     addProduct,
     getMaxProductId,
-    updateProduct
+    updateProduct,
+    handleGetProductById
 };

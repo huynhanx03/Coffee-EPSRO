@@ -1,5 +1,5 @@
 const db = require('../config/firebase');
-const { getDiscountProducts, updateDiscountFromProduct, deleteProduct, getProductSizes, updateQuantityProduct, getMaxProductId, addProduct, updateProduct } = require('../dao/productDAO');
+const { getDiscountProducts, updateDiscountFromProduct, deleteProduct, getProductSizes, updateQuantityProduct, getMaxProductId, addProduct, updateProduct, handleGetProductById } = require('../dao/productDAO');
 const { nextID } = require('../utils/helper');
 
 const getCategories = async (req, res) => {
@@ -40,8 +40,7 @@ const getProductSizesHandler = async (req, res) => {
 const getProductById = async (req, res) => {
     try {
         const productId = req.params.productId;
-        const snapshot = await db.ref('SanPham/' + productId).once('value');
-        const product = snapshot.val();
+        const product = await handleGetProductById(productId);
 
         if (!product) return res.status(404).json({ success: false, data: 'Không tìm thấy sản phẩm' });
 
@@ -98,6 +97,7 @@ const getProductsBestSeller = async (req, res) => {
         return res.status(200).json({ success: true, data: Object.keys(sortObj) });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ success: false, message: "Lỗi server!" });
     }
 }

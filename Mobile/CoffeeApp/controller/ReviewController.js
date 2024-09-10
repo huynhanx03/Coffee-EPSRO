@@ -1,33 +1,7 @@
 import { child, get, getDatabase, ref, set } from "firebase/database"
 import { getUserData } from "./StorageController"
-
-/**
- * @notice Get new review id in the database
- * @returns new review id in the database
- */
-const getNewId = async () => {
-    const dbRef = ref(getDatabase())
-    const userData = await getUserData()
-
-    try {
-        const reviewsSnapshot = await get(child(dbRef, `DanhGia/`))
-        const reviews = reviewsSnapshot.val()
-
-        if (reviews) {
-            const currentId = parseInt(
-                Object.keys(reviews)[Object.keys(reviews).length - 1].slice(2)
-            )
-            const newId = "DG" + String(currentId + 1).padStart(4, "0")
-            return newId
-        } else {
-            return "DG0001"
-        }
-    } catch (error) {
-        console.log(error)
-        return error
-    }
-
-}
+import axios from 'axios'
+import { BASE_URL } from "../constants"
 
 /**
  * @notice Set review for product
@@ -35,34 +9,19 @@ const getNewId = async () => {
  * @param review The review that cus give to the product
  */
 const setReview = async (productId, rating, review) => {
-    const userData = await getUserData()
-    const newId = await getNewId()
-    const db = getDatabase()
-
-    const currentDate = new Date();
-    const options = { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit',
-        hour12: false
-      };
-    const formattedDate = currentDate.toLocaleString('vi-VN', options);
-
     try {
-        set(ref(db, `DanhGia/${newId}`), {
-            MaDanhGia: newId,
-            MaNguoiDung: userData.MaNguoiDung,
-            MaSanPham: productId,
-            DiemDanhGia: rating,
-            VanBanDanhGia: review,
-            ThoiGianDanhGia: formattedDate,
+        const userData = await getUserData()
+        console.log(userData.MaNguoiDung)
+        const response = await axios.post(`${BASE_URL}/review/${userData.MaNguoiDung}/${productId}`, {
+            rating: rating,
+            content: review
         })
-        return true
+        if (response.data.success) {
+            return true
+        }
+        return false
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
         return false
     }
 }
@@ -72,18 +31,15 @@ const setReview = async (productId, rating, review) => {
  * @param productId The id of the product that we want to get review
  */
 const getReview = async (productId) => {
-    const dbRef = ref(getDatabase())
     try {
-        const reviewsSnapshot = await get(child(dbRef, `DanhGia/`))
-        const reviews = reviewsSnapshot.val()
+        const response = await axios.get(`${BASE_URL}/review/${productId}`)
+        const reviews = response.data.data
 
-        let reviewsProductId = []
-        for (const key in reviews) {
-            if (reviews[key].MaSanPham === productId) {
-                reviewsProductId.push(reviews[key])
-            }
+        if (reviews === null) {
+            return []
         }
-        return reviewsProductId
+
+        return Object.values(reviews)
     } catch (error) {
         console.log(error)
         return error

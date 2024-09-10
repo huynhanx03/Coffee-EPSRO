@@ -400,4 +400,6 @@ Mobile/CoffeeApp/.env*.local
 # typescript
 Mobile/CoffeeApp/*.tsbuildinfo
 
+.DS_Store
+
 AI/myenv
