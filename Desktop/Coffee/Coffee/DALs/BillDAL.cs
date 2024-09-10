@@ -416,7 +416,6 @@ namespace Coffee.DALs
                         {
                             await detailBill.LoadProductName();
                             await detailBill.LoadSizeName();
-                            await detailBill.LoadTinhTongTien();
                         }
 
                         return ("Lấy danh sách chi tiết thành công", detailBillList);

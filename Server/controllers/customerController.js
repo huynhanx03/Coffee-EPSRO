@@ -1,5 +1,5 @@
 const { deleteAddress } = require('../dao/addressDAO');
-const { getCustomers, getMaxCustomerId, addCustomer, deleteCustomer } = require('../dao/customerDAO');
+const { getCustomers, getMaxCustomerId, addCustomer, deleteCustomer, updateCustomerRank, plusPointRankCustomer } = require('../dao/customerDAO');
 const { addCustomerRank, addInitialCustomerRank, deleteDetailRank, getRankCustomers } = require('../dao/rankDAO');
 const { addUser, checkEmail, checkNumberPhone, checkIDCard, checkUsername, updateUser, deleteUser } = require('../dao/userDAO')
 const { nextID } = require('../utils/helper');
@@ -141,10 +141,30 @@ const deleteCustomerHandler = async (req, res) => {
     }
 };
 
+const updateCustomerPointsAndRankHandler = async (req, res) => {
+    const { customerID } = req.params;
+    const { pointRank } = req.body;
+
+    try {
+        await plusPointRankCustomer(customerID, pointRank)
+
+        var isTrue = true;
+
+        while (isTrue) {
+            isTrue = await updateCustomerRank(customerID)
+        }
+
+        return res.status(200).json({ success: true, message: 'Customer points and rank updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getCustomersHandle,
     addCustomerHandler,
     updateCustomerHandler,
     deleteCustomerHandler,
-    getRankCustomersHandle
+    getRankCustomersHandle,
+    updateCustomerPointsAndRankHandler
 };

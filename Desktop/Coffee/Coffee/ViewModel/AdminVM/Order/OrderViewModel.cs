@@ -238,10 +238,12 @@ namespace Coffee.ViewModel.AdminVM.Order
                     // Thêm mã hoá đơn vào trong đơn hàng
                     (string labelUpdateBillIDOrder, bool isUpdateBillIDOrder) = await OrderService.Ins.updateBillIDOrder(Order.MaDonHang, bill.MaHoaDon);
 
-                    // Tăng điểm
-                    (string labelUpdatePoint, double point) = await CustomerService.Ins.updatePointRankCustomer(Order.MaNguoiDung, (double)bill.TongTien / 10000);
+                    (string labelUpdatePoint, bool isUpdate) = await CustomerService.Ins.updatePointRankCustomer(Order.MaNguoiDung, (double)bill.TongTien / 10000);
 
-                    CustomerService.Ins.checkUpdateRankCustomer(Order.MaNguoiDung, point);
+                    //// Tăng điểm
+                    //(string labelUpdatePoint, double point) = await CustomerService.Ins.updatePointRankCustomer(Order.MaNguoiDung, (double)bill.TongTien / 10000);
+
+                    //CustomerService.Ins.checkUpdateRankCustomer(Order.MaNguoiDung, point);
 
                     (string label, bool isConfirmOrder) = await OrderService.Ins.updateStatusOrder(Order.MaDonHang, Constants.StatusOrder.CONFIRMED);
 

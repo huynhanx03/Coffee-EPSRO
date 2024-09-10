@@ -1,4 +1,6 @@
 const db = require('../config/firebase');
+const { nextID } = require('../utils/helper');
+const { getRank } = require('./rankDAO');
 
 const getCustomers = async () => {
     const customerSnapshot = await db.ref('KhachHang').once('value');
@@ -76,10 +78,78 @@ const getRankCustomer = async (customerID) => {
     }
 }
 
+const plusPointRankCustomer = async (customerID, point) => {
+    try {
+        const customerRef = db.ref('KhachHang/' + customerID);
+        
+        // Get current customer data
+        const snapshot = await customerRef.once('value');
+        const customer = snapshot.val();
+
+        if (!customer) {
+            throw new Error("Customer not found");
+        }
+
+        // Update points
+        customer.DiemTichLuy += point;
+
+        await customerRef.update(customer);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getCustomer = async (customerID) => {
+    try {
+        const snapshot = await db.ref('KhachHang/' + customerID).once('value');
+        const customer = snapshot.val();
+
+        if (!customer) {
+            throw new Error("Customer not found");
+        }
+
+        return customer;
+    } catch (error) {
+        console.error("Error getting customer:", error);
+        throw error;
+    }
+};
+
+const updateCustomerRank = async (customerID) => {
+    try {
+        const customer = await getCustomer(customerID)
+
+        const currentRankID = await getRankCustomer(customerID);
+        const nextRankID = nextID(currentRankID, "TT");
+
+        const nextRank = await getRank(nextRankID);
+
+        if (nextRank && customer.DiemTichLuy >= nextRank.DiemMucDoThanThiet) {
+            const detailRank = {
+                MaMucDoThanThiet: nextRank.MaMucDoThanThiet,
+                NgayDatDuoc: new Date().toLocaleDateString('vi-VN') // Format: dd/MM/yyyy
+            };
+
+            await db.ref(`ChiTietMucDoThanThiet/${customerID}/ChiTiet/${detailRank.MaMucDoThanThiet}`).set(detailRank);
+
+            return true;
+        }
+        else {
+            return false;
+
+            throw new Error('Không đủ điểm để cập nhật hạng');
+        }
+    } catch (error) {
+        throw error
+    }
+};
+
 module.exports = {
     getCustomers,
     addCustomer,
     deleteCustomer,
     getMaxCustomerId,
-    getRankCustomer
+    getRankCustomer,
+    updateCustomerRank,
+    plusPointRankCustomer
 };

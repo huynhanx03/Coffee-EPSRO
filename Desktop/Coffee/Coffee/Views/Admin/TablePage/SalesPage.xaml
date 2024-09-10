@@ -273,7 +273,7 @@
                                                         DisplayMemberPath="TenKichThuoc"
                                                         Foreground="{DynamicResource ForegroundCF}"
                                                         ItemsSource="{Binding DanhSachChiTietKichThuocSanPham, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        SelectedItem="{Binding SelectedProductSize, UpdateSourceTrigger=PropertyChanged}"
+                                                        SelectedItem="{Binding SelectedProductSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         SelectedValue="TenKichThuoc">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="SelectionChanged">

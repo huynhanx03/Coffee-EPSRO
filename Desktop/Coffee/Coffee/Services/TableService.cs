@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Utils;
 using Coffee.Utils.Helper;
@@ -37,6 +38,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, TableDTO)> createTable(TableDTO table)
         {
+            return await TableAPI.Ins.createTable(table);
+
             // Kiểm tra tên bàn
             (string label, TableDTO tableFind) = await TableDAL.Ins.findTableByName(table.TenBan, table.MaBan);
 
@@ -65,6 +68,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, TableDTO)> updateTable(TableDTO table)
         {
+            return await TableAPI.Ins.updateTable(table);
+
             // Kiểm tra tên bàn
             (string label, TableDTO tableFind) = await TableDAL.Ins.findTableByName(table.TenBan, table.MaBan);
 
@@ -100,7 +105,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteTable(string TableID)
         {
-            return await TableDAL.Ins.DeleteTable(TableID);
+            return await TableAPI.Ins.deleteTable(TableID);
         }
 
         /// <summary>
@@ -111,7 +116,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<TableDTO>)> getListTable()
         {
-            return await TableDAL.Ins.getListTable();
+            return await TableAPI.Ins.getTables();
         }
 
         /// <summary>

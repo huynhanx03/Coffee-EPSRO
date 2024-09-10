@@ -154,16 +154,16 @@ namespace Coffee.ViewModel.AdminVM.Table
                 MaskName.Visibility = Visibility.Visible;
                 IsLoading = true;
 
-                (string label, BillModel bill, List<DetailBillDTO> listDetailBill) = await BillService.Ins.findBillByTableBooking(currentTable.MaBan);
+                (string label, BillDTO bill) = await BillService.Ins.findBillByTableBooking(currentTable.MaBan);
 
-                if (listDetailBill != null)
+                if (bill != null)
                 {
-                    DetailBillList = new ObservableCollection<DetailBillDTO>(listDetailBill);
+                    DetailBillList = new ObservableCollection<DetailBillDTO>(bill.ChiTietHoaDon.Values);
 
                     TotalBill = bill.TongTien;
                 }
 
-                billCurrent = bill;
+                billCurrent = new BillModel(bill);
 
                 MaskName.Visibility = Visibility.Collapsed;
                 IsLoading = false;
@@ -234,11 +234,11 @@ namespace Coffee.ViewModel.AdminVM.Table
             if (isUpdate)
             {
                 // Chuyển đổi trạng thái bàn
-                TableMoveSelected.TrangThai = Constants.StatusTable.FREE;
-                TableTransferSelected.TrangThai = Constants.StatusTable.BOOKED;
+                //TableMoveSelected.TrangThai = Constants.StatusTable.FREE;
+                //TableTransferSelected.TrangThai = Constants.StatusTable.BOOKED;
 
-                (string labelUpdateTableMove, TableDTO tableMove) = await TableService.Ins.updateTable(TableMoveSelected);
-                (string labelUpdateTableTransfer, TableDTO tableTransfer) = await TableService.Ins.updateTable(TableTransferSelected);
+                //(string labelUpdateTableMove, TableDTO tableMove) = await TableService.Ins.updateTable(TableMoveSelected);
+                //(string labelUpdateTableTransfer, TableDTO tableTransfer) = await TableService.Ins.updateTable(TableTransferSelected);
 
                 loadTableList();
 

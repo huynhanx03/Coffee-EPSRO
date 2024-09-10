@@ -35,11 +35,13 @@ namespace Coffee.Services
         /// <param name="customerID"></param>
         /// <param name="pointRank"></param>
         /// <returns></returns>
-        public async Task<(string, double)> updatePointRankCustomer(string customerID, double pointRank)
+        public async Task<(string, bool)> updatePointRankCustomer(string customerID, double pointRank)
         {
-            (string label, CustomerDTO customer) = await CustomerDAL.Ins.getCustomer(customerID);
+            return await CustomerAPI.Ins.plusPoint(customerID, pointRank);
 
-            return await CustomerDAL.Ins.updatePointRankCustomer(customerID, customer.DiemTichLuy + pointRank);
+            //(string label, CustomerDTO customer) = await CustomerDAL.Ins.getCustomer(customerID);
+
+            //return await CustomerDAL.Ins.updatePointRankCustomer(customerID, customer.DiemTichLuy + pointRank);
         }
 
         /// <summary>

@@ -144,7 +144,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<UserDTO> getUserByNumberphone(string userNumberPhone)
         {
-            return await UserDAL.Ins.getUserByNumberphone(userNumberPhone);
+            return (await UserAPI.Ins.getUserByNumberPhone(userNumberPhone)).Item2;
         }
     }
 }

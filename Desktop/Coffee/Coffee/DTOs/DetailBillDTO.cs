@@ -46,7 +46,7 @@ namespace Coffee.DTOs
             set
             {
                 _SelectedProductSize = value;
-                ThanhTien = SelectedProductSize.Gia;
+                ThanhTien = SelectedProductSize.Gia * SoLuong;
                 OnPropertyChanged(nameof(SelectedProductSize));
             }
         }

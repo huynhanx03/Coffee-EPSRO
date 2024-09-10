@@ -7,5 +7,6 @@ router.get('/rankCustomers', customerController.getRankCustomersHandle)
 router.post('/customer', customerController.addCustomerHandler)
 router.put('/customer/:customerID', customerController.updateCustomerHandler)
 router.delete('/customer/:customerID', customerController.deleteCustomerHandler)
+router.put('/point/:customerID', customerController.updateCustomerPointsAndRankHandler)
 
 module.exports = router

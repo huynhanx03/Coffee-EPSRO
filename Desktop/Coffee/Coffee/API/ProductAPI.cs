@@ -95,6 +95,41 @@ namespace Coffee.API
             }
         }
 
+        public async Task<(string, ProductDTO)> getProduct(string productID)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // Send a GET request to the specified URL
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + $"/products/{productID}");
+
+                    string responseContent = resp.Content.ReadAsStringAsync().Result;
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        var product = JsonConvert.DeserializeObject<ProductDTO>(data.ToString());
+
+                        return ("Lấy danh sách sản phẩm thành công", product);
+                    }
+                    else
+                    {
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
         public async Task<(string, bool)> updateQuantityProduct(string productID, double _quantity)
         {
             using (HttpClient client = new HttpClient())

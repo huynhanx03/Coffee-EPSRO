@@ -1,6 +1,7 @@
 ﻿using Coffee.DTOs;
 using Coffee.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,45 @@ namespace Coffee.API
         }
 
         public string beginUrl = "/user";
+
+        public async Task<(string, UserDTO)> getUserByNumberPhone(string numberPhone)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    // Send a GET request to the specified URL
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + $"/number-phone/{numberPhone}");
+
+                    string responseContent = resp.Content.ReadAsStringAsync().Result;
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        // Since data contains a nested object, we need to get the first property value
+                        var userToken = data.First().First();
+
+                        // Deserialize the nested object to UserDTO
+                        var user = userToken.ToObject<UserDTO>();
+
+                        return ("Lấy thông tin người dùng thành công", user);
+                    }
+                    else
+                    {
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
 
         public async Task<(string, UserDTO)> updateUser(UserDTO user)
         {

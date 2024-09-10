@@ -239,24 +239,33 @@ namespace Coffee.ViewModel.AdminVM.Table
                 MaBan = currentTable.MaBan,
                 MaNhanVien = Memory.user.MaNguoiDung,
                 NgayTao = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"),
-                TongTien = TotalBill,
+                //TongTien = TotalBill,
                 TrangThai = StatusBill.UNPAID,
-                MaKhachHang = ""
+                MaKhachHang = "",
+                ChiTietHoaDon = DetailBillList.ToDictionary(
+                    detail => detail.MaSanPham + "-" + detail.SelectedProductSize.MaKichThuoc,
+                    detail => new DetailBillModel
+                    {
+                        MaSanPham = detail.MaSanPham,
+                        MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
+                        SoLuong = detail.SoLuong,
+                        ThanhTien = detail.ThanhTien
+                    })
             };
 
             if (Customer != null)
                 bill.MaKhachHang = Customer.MaNguoiDung;
 
-            (string label, bool isCreate) = await BillService.Ins.createBill(bill, DetailBillList);
+            (string label, bool isCreate) = await BillService.Ins.createBill(bill);
         
             if (isCreate)
             {
                 // Cộng điểm cho khách hàng
                 if (Customer != null)
                 {
-                    (string labelUpdatePoint, double point) = await CustomerService.Ins.updatePointRankCustomer(Customer.MaNguoiDung, (double)bill.TongTien / 10000);
+                    (string labelUpdatePoint, bool isUpdate) = await CustomerService.Ins.updatePointRankCustomer(Customer.MaNguoiDung, (double)bill.TongTien / 10000);
 
-                    await CustomerService.Ins.checkUpdateRankCustomer(Customer.MaNguoiDung, point);
+                    //await CustomerService.Ins.checkUpdateRankCustomer(Customer.MaNguoiDung, point);
                 }
 
                 // Thành công: Xoá số lượng sản phẩm
@@ -297,27 +306,36 @@ namespace Coffee.ViewModel.AdminVM.Table
                 //Lưu thế thông tin chi tiết hoá đơn lên trên cơ sở dữ liệu
                 BillModel bill = new BillModel
                 {
-                   MaBan = "",
-                   MaNhanVien = Memory.user.MaNguoiDung,
-                   NgayTao = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"),
-                   TongTien = TotalBill,
-                   TrangThai = StatusBill.PAID,
-                   MaKhachHang = ""
+                    MaBan = currentTable == null ? "" : currentTable.MaBan,
+                    MaNhanVien = Memory.user.MaNguoiDung,
+                    NgayTao = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"),
+                    //TongTien = TotalBill,
+                    TrangThai = StatusBill.PAID,
+                    MaKhachHang = "",
+                    ChiTietHoaDon = DetailBillList.ToDictionary(
+                    detail => detail.MaSanPham + "-" + detail.SelectedProductSize.MaKichThuoc,
+                    detail => new DetailBillModel
+                    {
+                        MaSanPham = detail.MaSanPham,
+                        MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
+                        SoLuong = detail.SoLuong,
+                        ThanhTien = detail.ThanhTien
+                    })
                 };
 
                 if (Customer != null)
                     bill.MaKhachHang = Customer.MaNguoiDung;
 
-                (string label, bool isCreate) = await BillService.Ins.createBill(bill, DetailBillList);
+                (string label, bool isCreate) = await BillService.Ins.createBill(bill);
 
                 if (isCreate)
                 {
                     // Cộng điểm cho khách hàng
                     if (Customer != null)
                     {
-                        (string labelUpdatePoint, double point) = await CustomerService.Ins.updatePointRankCustomer(Customer.MaNguoiDung, (double)bill.TongTien / 10000);
+                        (string labelUpdatePoint, bool isUpdate) = await CustomerService.Ins.updatePointRankCustomer(Customer.MaNguoiDung, (double)bill.TongTien / 10000);
 
-                        await CustomerService.Ins.checkUpdateRankCustomer(Customer.MaNguoiDung, point);
+                        //await CustomerService.Ins.checkUpdateRankCustomer(Customer.MaNguoiDung, point);
                     }
 
                     // Giảm số lượng sản phẩm
@@ -337,10 +355,26 @@ namespace Coffee.ViewModel.AdminVM.Table
             }
             else // Thanh toán hoá đơn trước
             {
-                billCurrent.TrangThai = Constants.StatusBill.PAID;
-                billCurrent.MaNhanVien = Memory.user.MaNguoiDung;
+                BillModel billUpdate = new BillModel
+                {
+                    MaBan = currentTable == null ? "" : currentTable.MaBan,
+                    MaNhanVien = Memory.user.MaNguoiDung,
+                    NgayTao = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"),
+                    //TongTien = TotalBill,
+                    TrangThai = StatusBill.PAID,
+                    MaKhachHang = "",
+                    ChiTietHoaDon = DetailBillList.ToDictionary(
+                    detail => detail.MaSanPham + "-" + detail.SelectedProductSize.MaKichThuoc,
+                    detail => new DetailBillModel
+                    {
+                        MaSanPham = detail.MaSanPham,
+                        MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
+                        SoLuong = detail.SoLuong,
+                        ThanhTien = detail.ThanhTien
+                    })
+                };
 
-                (string label, BillModel bill) = await BillService.Ins.updateBill(billCurrent, DetailBillList);
+                (string label, BillModel bill) = await BillService.Ins.updateBill(billUpdate);
 
                 if (bill != null)
                 {
@@ -373,7 +407,7 @@ namespace Coffee.ViewModel.AdminVM.Table
                                 {
                                     MaSanPham = group.Key,
                                     SoLuong = group.Sum(item => item.SoLuong)
-                                });
+                                }).ToList();
 
             foreach (var group in groupedData)
             {

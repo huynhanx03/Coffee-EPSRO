@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Coffee.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,17 @@ namespace Coffee.Models
         public string NgayTao { get; set; }
         public decimal TongTien { get; set; }
         public string TrangThai { get; set; }
+        public Dictionary<string, DetailBillModel> ChiTietHoaDon { get; set; }
+
+        public BillModel () { }
+        public BillModel(BillDTO bill)
+        {
+            this.MaHoaDon = bill.MaHoaDon;
+            this.MaBan = bill.MaBan;
+            this.MaNhanVien = bill.MaNhanVien;
+            this.MaKhachHang = bill.MaKhachHang;
+            this.NgayTao = bill.NgayTao;
+            this.TrangThai = bill.TrangThai;
+        }
     }
 }

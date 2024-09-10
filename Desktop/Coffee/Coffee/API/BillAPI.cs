@@ -1,0 +1,217 @@
+﻿using Coffee.DTOs;
+using Coffee.Models;
+using Coffee.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Documents;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+namespace Coffee.API
+{
+    public class BillAPI
+    {
+        private static BillAPI _ins;
+        public static BillAPI Ins
+        {
+            get
+            {
+                if (_ins == null)
+                    _ins = new BillAPI();
+                return _ins;
+            }
+            private set
+            {
+                _ins = value;
+            }
+        }
+
+        public string beginUrl = "/bill-sell";
+
+        //public async Task<(string, List<BillDTO>)> GetBillSells()
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        try
+        //        {
+        //            HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/bill-sells");
+        //            string responseContent = await resp.Content.ReadAsStringAsync();
+
+        //            if (resp.IsSuccessStatusCode)
+        //            {
+        //                var data = JsonConvert.DeserializeObject<List<BillDTO>>(responseContent);
+        //                return ("Lấy danh sách hóa đơn thành công", data);
+        //            }
+        //            else
+        //            {
+        //                return ("Lấy danh sách hóa đơn thất bại", null);
+        //            }
+        //        }
+        //        catch (HttpRequestException e)
+        //        {
+        //            return (e.Message, null);
+        //        }
+        //    }
+        //}
+
+        public async Task<(string, bool)> CreateBillSell(BillModel billSell)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string json = JsonConvert.SerializeObject(billSell);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync(Constants.API.IP + beginUrl + "/bill-sell", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Thêm hóa đơn thành công", true);
+                    }
+                    else
+                    {
+                        return ("Thêm hóa đơn thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
+        public async Task<(string, BillModel)> UpdateBillSell(BillModel billSell)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string json = JsonConvert.SerializeObject(billSell);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + $"/bill-sell/{billSell.MaHoaDon}", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật hoá đơn thành công", billSell);
+                    }
+                    else
+                    {
+                        return ("Cập nhật hoá đơn thất bại", null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
+        public async Task<(string, bool)> updateTableBooking(string tableIDBooking, string tableIDFree)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var container = new
+                    {
+                        tableID1 = tableIDBooking,
+                        tableID2 = tableIDFree
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/bill-sell-table-booking", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật hoá đơn thành công", true);
+                    }
+                    else
+                    {
+                        return ("Cập nhật hoá đơn thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
+        public async Task<(string, BillDTO)> getBillSellUnpaid(string tableID, string status)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var container = new
+                    {
+                        MaBan = tableID,
+                        TrangThai = status
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    // Send a GET request to the specified URL
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + $"/bill-sell-unpaid?status={status}&tableID={tableID}");
+
+                    string responseContent = resp.Content.ReadAsStringAsync().Result;
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        var bill = JsonConvert.DeserializeObject<BillDTO>(data.ToString());
+
+                        return ("Lấy hoá đơn thành công", bill);
+                    }
+                    else
+                    {
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
+
+        public async Task<(string, bool)> DeleteBillSell(string billSellID)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/bill-sell/{billSellID}");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Xóa hóa đơn thành công", true);
+                    }
+                    else
+                    {
+                        return ("Xóa hóa đơn thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+    }
+
+}

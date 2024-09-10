@@ -121,6 +121,22 @@ const getUserByEmail = async (req, res) => {
     }
 }
 
+const getUserByNumberphoneHandler = async (req, res) => {
+    const { numberPhone } = req.params;
+    try {
+        const snapshot = await db.ref('NguoiDung/').orderByChild('SoDienThoai').equalTo(numberPhone).once('value')
+        const userData = snapshot.val()
+
+        if (!userData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
+        }
+
+        return res.status(200).json({ success: true, data: userData })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server' })
+    }
+}
+
 //Update info
 const updateInfo = async (req, res) => {
     const { content, type } = req.body
@@ -198,5 +214,6 @@ module.exports = {
     updateInfo,
     updatePassword,
     getUserByEmail,
-    updateUserHandler
+    updateUserHandler,
+    getUserByNumberphoneHandler
 }

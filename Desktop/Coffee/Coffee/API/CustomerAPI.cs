@@ -153,6 +153,38 @@ namespace Coffee.API
             }
         }
 
+        public async Task<(string, bool)> plusPoint(string customerID, double point)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var container = new
+                    {
+                        pointRank = point
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/point/" + customerID, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật điểm thành công", true);
+                    }
+                    else
+                    {
+                        return ("Cập nhật điểm thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
         /// <summary>
         /// Thêm Khách hàng
         /// INPUT: Customer: Khách hàng

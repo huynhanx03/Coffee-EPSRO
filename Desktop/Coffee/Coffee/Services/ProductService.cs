@@ -205,14 +205,22 @@ namespace Coffee.Services
         ///     1. Thông báo
         ///     2. True nếu xoá thành công, False xoá thất bại
         /// </returns>
+        public async Task<(string, bool)> reduceQuantityProduct(ProductDTO product, int quantity)
+        {
+            //(string label, ProductDTO product) = await ProductDAL.Ins.findProduct(productID);
+
+            product.SoLuong -= quantity;
+            return await ProductAPI.Ins.updateQuantityProduct(product.MaSanPham, product.SoLuong);
+        }
+
         public async Task<(string, bool)> reduceQuantityProduct(string productID, int quantity)
         {
-            (string label, ProductDTO product) = await ProductDAL.Ins.findProduct(productID);
+            (string label, ProductDTO product) = await ProductAPI.Ins.getProduct(productID);
 
             if (product != null)
             {
                 product.SoLuong -= quantity;
-                return await ProductDAL.Ins.updateQuantityProduct(productID, product.SoLuong);
+                return await ProductAPI.Ins.updateQuantityProduct(productID, product.SoLuong);
             }
             else
                 return (label, false);

@@ -1,4 +1,5 @@
-﻿using Coffee.DALs;
+﻿using Coffee.API;
+using Coffee.DALs;
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Utils;
@@ -38,48 +39,51 @@ namespace Coffee.Services
         ///     1. Thông báo
         ///     2. True khi tạo thành công
         /// </returns>
-        public async Task<(string, bool)> createBill(BillModel bill, ObservableCollection<DetailBillDTO> detailBillList)
+        public async Task<(string, bool)> createBill(BillModel bill)
         {
+            return await BillAPI.Ins.CreateBillSell(bill);
+
+            // BillModel bill, ObservableCollection<DetailBillDTO> detailBillList
             // Tìm mã hoá đơn
-            string MaHoaDonMax = await this.getMaxMaHoaDon();
-            bill.MaHoaDon = Helper.nextID(MaHoaDonMax, "HD");
+            //string MaHoaDonMax = await this.getMaxMaHoaDon();
+            //bill.MaHoaDon = Helper.nextID(MaHoaDonMax, "HD");
 
-            (string labelCreateBill, bool isCreateBill) = await BillDAL.Ins.createBill(bill);
+            //(string labelCreateBill, bool isCreateBill) = await BillDAL.Ins.createBill(bill);
 
-            if (isCreateBill)
-            {
-                // Nếu tạo hoá đơn thành công thì tạo các chi tiết hoá đơn
-                List<DetailBillModel> listDetailBill = new List<DetailBillModel>();
+            //if (isCreateBill)
+            //{
+            //    // Nếu tạo hoá đơn thành công thì tạo các chi tiết hoá đơn
+            //    List<DetailBillModel> listDetailBill = new List<DetailBillModel>();
 
-                foreach (DetailBillDTO detail in detailBillList)
-                {
-                    listDetailBill.Add(new DetailBillModel
-                    {
-                        MaHoaDon = bill.MaHoaDon,
-                        MaSanPham = detail.MaSanPham,
-                        MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
-                        SoLuong = detail.SoLuong,
-                        ThanhTien = detail.ThanhTien
-                    });
-                }
+            //    foreach (DetailBillDTO detail in detailBillList)
+            //    {
+            //        listDetailBill.Add(new DetailBillModel
+            //        {
+            //            MaHoaDon = bill.MaHoaDon,
+            //            MaSanPham = detail.MaSanPham,
+            //            MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
+            //            SoLuong = detail.SoLuong,
+            //            ThanhTien = detail.ThanhTien
+            //        });
+            //    }
 
-                (string labelCreateDetailBillImprot, bool isCreateDetailBillImprot) = await this.createDetailBill(bill.MaHoaDon, listDetailBill);
+            //    (string labelCreateDetailBillImprot, bool isCreateDetailBillImprot) = await this.createDetailBill(bill.MaHoaDon, listDetailBill);
 
-                if (isCreateDetailBillImprot)
-                {
-                    return (labelCreateBill, isCreateBill);
-                }
-                else
-                {
-                    // Tạo các chi tiết thất bại
-                    // Xoá hoá đơn
-                    await this.DeleteBill(bill.MaHoaDon);
+            //    if (isCreateDetailBillImprot)
+            //    {
+            //        return (labelCreateBill, isCreateBill);
+            //    }
+            //    else
+            //    {
+            //        // Tạo các chi tiết thất bại
+            //        // Xoá hoá đơn
+            //        await this.DeleteBill(bill.MaHoaDon);
 
-                    return (labelCreateDetailBillImprot, false);
-                }
-            }
-            else
-                return (labelCreateBill, isCreateBill);
+            //        return (labelCreateDetailBillImprot, false);
+            //    }
+            //}
+            //else
+            //    return (labelCreateBill, isCreateBill);
         }
 
         /// <summary>
@@ -207,21 +211,23 @@ namespace Coffee.Services
         /// 
         /// </param>
         /// <returns></returns>
-        public async Task<(string, BillModel, List<DetailBillDTO>)> findBillByTableBooking(string tableID)
+        public async Task<(string, BillDTO)> findBillByTableBooking(string tableID)
         {
-            (string label, BillModel bill) = await BillDAL.Ins.findBillByTableBooking(tableID);
+            return await BillAPI.Ins.getBillSellUnpaid(tableID, Constants.StatusBill.UNPAID);
 
-            if (bill != null)
-            {
-                (string labelDetailBIll, List<DetailBillDTO> detailBillDTOList) = await BillDAL.Ins.getDetailBillById(bill.MaHoaDon);
+            //(string label, BillModel bill) = await BillDAL.Ins.findBillByTableBooking(tableID);
 
-                if (detailBillDTOList != null)
-                    return ("Tìm thành công", bill, detailBillDTOList);
-                else
-                    return (labelDetailBIll, null, null);
-            }
-            else
-                return (label, null, null);
+            //if (bill != null)
+            //{
+            //(string labelDetailBIll, List<DetailBillDTO> detailBillDTOList) = await BillDAL.Ins.getDetailBillById(bill.MaHoaDon);
+
+            //    if (detailBillDTOList != null)
+            //        return ("Tìm thành công", bill, detailBillDTOList);
+            //    else
+            //        return (labelDetailBIll, null, null);
+            //}
+            //else
+            //    return (label, null, null);
         }
 
         /// <summary>
@@ -233,25 +239,27 @@ namespace Coffee.Services
         ///     1. Thông báo
         ///     2. Hoá đơn
         /// </returns>
-        public async Task<(string, BillModel)> updateBill(BillModel bill, ObservableCollection<DetailBillDTO> detailBillList)
+        public async Task<(string, BillModel)> updateBill(BillModel bill)
         {
-            List<DetailBillModel> listDetailBill = new List<DetailBillModel>();
+            return await BillAPI.Ins.UpdateBillSell(bill);
 
-            foreach (DetailBillDTO detail in detailBillList)
-            {
-                listDetailBill.Add(new DetailBillModel
-                {
-                    MaHoaDon = bill.MaHoaDon,
-                    MaSanPham = detail.MaSanPham,
-                    MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
-                    SoLuong = detail.SoLuong,
-                    ThanhTien = detail.ThanhTien
-                });
-            }
+            //List<DetailBillModel> listDetailBill = new List<DetailBillModel>();
 
-            (string label, bool isCreate) = await BillDAL.Ins.updateDetailBill(bill.MaHoaDon, listDetailBill);
+            //foreach (DetailBillDTO detail in detailBillList)
+            //{
+            //    listDetailBill.Add(new DetailBillModel
+            //    {
+            //        MaHoaDon = bill.MaHoaDon,
+            //        MaSanPham = detail.MaSanPham,
+            //        MaKichThuoc = detail.SelectedProductSize.MaKichThuoc,
+            //        SoLuong = detail.SoLuong,
+            //        ThanhTien = detail.ThanhTien
+            //    });
+            //}
 
-            return await BillDAL.Ins.updateBill(bill);
+            //(string label, bool isCreate) = await BillDAL.Ins.updateDetailBill(bill.MaHoaDon, listDetailBill);
+
+            //return await BillDAL.Ins.updateBill(bill);
         }
 
         /// <summary>
@@ -281,19 +289,21 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> updateBillByTableID(string tableID, string tableIDNew)
         {
-            (string labelFindBill, BillModel bill) = await BillDAL.Ins.findBillByTableBooking(tableID);
+            return await BillAPI.Ins.updateTableBooking(tableID, tableIDNew);
 
-            if (bill != null)
-            {
-                (string labelUpdate, bool isUpdate) = await BillDAL.Ins.updateTableIDInBill(bill.MaHoaDon, tableIDNew);
+            //(string labelFindBill, BillModel bill) = await BillDAL.Ins.findBillByTableBooking(tableID);
+
+            //if (bill != null)
+            //{
+            //    (string labelUpdate, bool isUpdate) = await BillDAL.Ins.updateTableIDInBill(bill.MaHoaDon, tableIDNew);
             
-                if (isUpdate)
-                    return (labelFindBill, true);
-                else
-                    return (labelUpdate, false);
-            }
-            else
-                return (labelFindBill, false);
+            //    if (isUpdate)
+            //        return (labelFindBill, true);
+            //    else
+            //        return (labelUpdate, false);
+            //}
+            //else
+            //    return (labelFindBill, false);
         }
 
         /// <summary>

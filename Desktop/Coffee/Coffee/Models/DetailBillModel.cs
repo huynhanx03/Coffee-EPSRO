@@ -17,8 +17,8 @@ namespace Coffee.Models
         public string TenKichThuoc { get; set; }
         public int SoLuong {  get; set; }
         public decimal ThanhTien { get; set; }
-        public decimal TinhTongTien { get; set; }
     
+
         // lấy tên sản phẩm từ mã sản phẩm
         public async Task LoadProductName()
         {
@@ -30,11 +30,6 @@ namespace Coffee.Models
         {
             ProductSizeDetailDTO s = await ProductSizeDetailService.Ins.getNameSize(this.MaKichThuoc);
             this.TenKichThuoc = s.TenKichThuoc;
-        }
-        // tính tổng tiền
-        public async Task LoadTinhTongTien()
-        {
-            this.TinhTongTien = ThanhTien * SoLuong;
         }
     }
 }

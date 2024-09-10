@@ -1,4 +1,5 @@
-﻿using Coffee.Services;
+﻿using Coffee.Models;
+using Coffee.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,12 @@ namespace Coffee.DTOs
         public string TenKhachHang { get; set; }
         public string TenBan { get; set; }
         public Dictionary<string, DetailBillDTO> ChiTietHoaDon { get; set; }
+        public List<DetailBillDTO> DanhSachChiTietHoaDon { get; set; }
+
+        public BillDTO() { }
+        public BillDTO(BillModel bill)
+        {
+
+        }
     }
 }
