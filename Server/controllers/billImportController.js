@@ -1,4 +1,4 @@
-const { getMaxBillImportId, addBillImport, deleteBillImport } = require('../dao/billImportDAO');
+const { getMaxBillImportId, addBillImport, deleteBillImport, getImportBills } = require('../dao/billImportDAO');
 const { nextID } = require('../utils/helper');
 
 const calculateTotalPrice = (details) => {
@@ -44,7 +44,20 @@ const deleteBillImportHandler = async (req, res) => {
     }
 };
 
+const getImportBillsHandler = async (req, res) => {
+    const { fromDate, toDate } = req.query;
+
+    try {
+        const importBills = await getImportBills(new Date(fromDate), new Date(toDate));
+
+        return res.status(200).json({ success: true, data: importBills });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     addBillImportHandler,
-    deleteBillImportHandler
+    deleteBillImportHandler,
+    getImportBillsHandler
 };

@@ -114,7 +114,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<ImportDTO>)> getListBillImporttime(DateTime FromDate,DateTime ToDate)
         {
-            return await BillImportDAL.Ins.getListBillImporttime(FromDate, ToDate);
+            return await ImportAPI.Ins.GetImports(FromDate, ToDate);
+            //return await BillImportDAL.Ins.getListBillImporttime(FromDate, ToDate);
         }
 
         /// <summary>
@@ -127,7 +128,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteBillImport(string importID)
         {
-            return await BillImportDAL.Ins.DeleteBillImport(importID);
+            return await ImportAPI.Ins.deleteBillImport(importID);
+            //return await BillImportDAL.Ins.DeleteBillImport(importID);
         }
 
         /// <summary>

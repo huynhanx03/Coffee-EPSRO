@@ -13,6 +13,17 @@ namespace Coffee.DTOs
         public string TenNhanVien { get; set; }
         public string NgayTaoPhieu { get; set; } 
         public decimal TongTien { get; set; }
-        public List<DetailImportDTO> DetailImportList { get; set; }
+        public Dictionary<string, DetailImportDTO> _ChiTietPhieuNhapKho;
+
+        public Dictionary<string, DetailImportDTO> ChiTietPhieuNhapKho
+        {
+            get { return _ChiTietPhieuNhapKho; }
+            set
+            {
+                _ChiTietPhieuNhapKho = value;
+                DanhSachChiTietPhieuNhapKho = value.Values.ToList();
+            }
+        }
+        public List<DetailImportDTO> DanhSachChiTietPhieuNhapKho;
     }
 }

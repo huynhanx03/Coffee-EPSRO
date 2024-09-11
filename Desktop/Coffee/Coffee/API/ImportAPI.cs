@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Coffee.Models;
+using Coffee.DTOs;
 
 namespace Coffee.API
 {
@@ -73,6 +74,37 @@ namespace Coffee.API
             }
         }
 
+        public async Task<(string, List<ImportDTO>)> GetImports(DateTime fromDate, DateTime toDate)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/bill-imports/" + "?fromDate=" + fromDate.ToString("yyyy-MM-ddTHH:mm:ss") + "&toDate=" + toDate.ToString("yyyy-MM-ddTHH:mm:ss"));
+                    string responseContent = await resp.Content.ReadAsStringAsync();
+
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        var imports = JsonConvert.DeserializeObject<List<ImportDTO>>(data.ToString());
+                        return ("Lấy danh sách hóa đơn nhập khoa thành công", imports);
+                    }
+                    else
+                    {
+                        return ("Lấy danh sách hóa đơn thất bại", null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
 
         public async Task<(string, bool)> deleteBillImport(string billImportID)
         {

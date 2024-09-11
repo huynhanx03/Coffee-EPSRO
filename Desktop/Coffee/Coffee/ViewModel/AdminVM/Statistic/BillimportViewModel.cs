@@ -26,8 +26,8 @@ namespace Coffee.ViewModel.AdminVM.Statistic
             get { return _NgayTaoPhieu; }
             set { _NgayTaoPhieu = value; OnPropertyChanged(); }
         }
-        public int _TongTienNhap { get; set; }
-        public int TongTienNhap
+        public decimal _TongTienNhap { get; set; }
+        public decimal TongTienNhap
         {
             get { return _TongTienNhap; }
             set { _TongTienNhap = value; OnPropertyChanged(); }

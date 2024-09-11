@@ -20,8 +20,18 @@ namespace Coffee.DTOs
         public string MaKhachHang { get; set; }
         public string TenKhachHang { get; set; }
         public string TenBan { get; set; }
-        public Dictionary<string, DetailBillDTO> ChiTietHoaDon { get; set; }
-        public List<DetailBillDTO> DanhSachChiTietHoaDon { get; set; }
+        public Dictionary<string, DetailBillDTO> _ChiTietHoaDon;
+
+        public Dictionary<string, DetailBillDTO> ChiTietHoaDon
+        {
+            get { return _ChiTietHoaDon; }
+            set
+            {
+                _ChiTietHoaDon = value;
+                DanhSachChiTietHoaDon = value.Values.ToList();
+            }
+        }
+        public List<DetailBillDTO> DanhSachChiTietHoaDon;
 
         public BillDTO() { }
         public BillDTO(BillModel bill)

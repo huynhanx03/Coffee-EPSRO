@@ -158,9 +158,9 @@ namespace Coffee.ViewModel.AdminVM.Statistic
         {
             MaskName.Visibility = Visibility.Visible;
             NgayTao = bill.NgayTao;
-            TongTien = Convert.ToInt32(bill.TongTien);
-            await getNameEmployee(bill.MaNhanVien);
-            await getListDetailBill(bill.MaHoaDon);
+            TongTien = bill.TongTien;
+            TenNhanVien = bill.TenNhanVien;
+            DetailBillList = new ObservableCollection<DetailBillDTO>(bill.DanhSachChiTietHoaDon);
             MaskName.Visibility = Visibility.Collapsed;
         } 
 
@@ -178,8 +178,8 @@ namespace Coffee.ViewModel.AdminVM.Statistic
             MaskName.Visibility = Visibility.Visible;
             NgayTaoPhieu = import.NgayTaoPhieu;
             TongTienNhap = Convert.ToInt32(import.TongTien);
-            await getNameEmployeeImport(import.MaNhanVien);
-            await getListDetailBillImport(import.MaPhieuNhapKho);
+            TenNhanVienNhapKho = import.TenNhanVien;
+            DetailImportBillList = new ObservableCollection<DetailImportDTO>(import.DanhSachChiTietPhieuNhapKho);
             MaskName.Visibility = Visibility.Collapsed;
         }
         //load dữ liệu các sản phẩm bán chạy

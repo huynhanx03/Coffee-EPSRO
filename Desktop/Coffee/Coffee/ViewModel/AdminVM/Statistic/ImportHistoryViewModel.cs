@@ -62,7 +62,7 @@ namespace Coffee.ViewModel.AdminVM.Statistic
                 if (isDeleteBillImportList)
                 {
                     MessageBoxCF msn = new MessageBoxCF(label, MessageType.Accept, MessageButtons.OK);
-                    loadBillImportList();
+                    loadData();
                     msn.ShowDialog();
                 }
                 else

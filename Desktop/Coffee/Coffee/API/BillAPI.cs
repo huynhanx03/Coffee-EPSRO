@@ -33,31 +33,37 @@ namespace Coffee.API
 
         public string beginUrl = "/bill-sell";
 
-        //public async Task<(string, List<BillDTO>)> GetBillSells()
-        //{
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        try
-        //        {
-        //            HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/bill-sells");
-        //            string responseContent = await resp.Content.ReadAsStringAsync();
+        public async Task<(string, List<BillDTO>)> GetBillSells(DateTime fromDate, DateTime toDate)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/bill-sells/" + "?fromDate=" + fromDate.ToString("yyyy-MM-ddTHH:mm:ss") + "&toDate=" + toDate.ToString("yyyy-MM-ddTHH:mm:ss"));
+                    string responseContent = await resp.Content.ReadAsStringAsync();
 
-        //            if (resp.IsSuccessStatusCode)
-        //            {
-        //                var data = JsonConvert.DeserializeObject<List<BillDTO>>(responseContent);
-        //                return ("Lấy danh sách hóa đơn thành công", data);
-        //            }
-        //            else
-        //            {
-        //                return ("Lấy danh sách hóa đơn thất bại", null);
-        //            }
-        //        }
-        //        catch (HttpRequestException e)
-        //        {
-        //            return (e.Message, null);
-        //        }
-        //    }
-        //}
+                    // Parse the JSON
+                    var jsonObj = JObject.Parse(responseContent);
+
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        // Extract the data portion
+                        var data = jsonObj["data"];
+
+                        var billsells = JsonConvert.DeserializeObject<List<BillDTO>>(data.ToString());
+                        return ("Lấy danh sách hóa đơn thành công", billsells);
+                    }
+                    else
+                    {
+                        return ("Lấy danh sách hóa đơn thất bại", null);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, null);
+                }
+            }
+        }
 
         public async Task<(string, bool)> CreateBillSell(BillModel billSell)
         {
@@ -204,6 +210,39 @@ namespace Coffee.API
                     else
                     {
                         return ("Xóa hóa đơn thất bại", false);
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    return (e.Message, false);
+                }
+            }
+        }
+
+        public async Task<(string, bool)> mergeBillOfTables(string _tableID1, string _tableID2)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var container = new
+                    {
+                        tableID1 = _tableID1,
+                        tableID2 = _tableID2
+                    };
+
+                    string json = JsonConvert.SerializeObject(container);
+                    HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync(Constants.API.IP + beginUrl + "/merge-bill", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return ("Cập nhật hoá đơn thành công", true);
+                    }
+                    else
+                    {
+                        return ("Cập nhật hoá đơn thất bại", false);
                     }
                 }
                 catch (HttpRequestException e)

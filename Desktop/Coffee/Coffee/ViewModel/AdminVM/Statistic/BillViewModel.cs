@@ -27,14 +27,14 @@ namespace Coffee.ViewModel.AdminVM.Statistic
             get { return _NgayTao; }
             set { _NgayTao = value; OnPropertyChanged(); }
         }
-        public int _TongTien { get; set; }
-        public int TongTien
+        public decimal _TongTien { get; set; }
+        public decimal TongTien
         {
             get { return _TongTien; }
             set { _TongTien = value; OnPropertyChanged(); }
         }
-        private ObservableCollection<DetailBillModel> _DetailBillList;
-        public ObservableCollection<DetailBillModel> DetailBillList
+        private ObservableCollection<DetailBillDTO> _DetailBillList;
+        public ObservableCollection<DetailBillDTO> DetailBillList
         {
             get { return _DetailBillList; }
             set { _DetailBillList = value; OnPropertyChanged(); }
@@ -62,12 +62,12 @@ namespace Coffee.ViewModel.AdminVM.Statistic
         /// </summary>
         public async Task getListDetailBill(string MaHoaDon)
         {
-            (string label, List<DetailBillModel> detailbilllist) = await BillService.Ins.getDetailBill(MaHoaDon);
+            //(string label, List<DetailBillModel> detailbilllist) = await BillService.Ins.getDetailBill(MaHoaDon);
 
-            if (detailbilllist != null)
-            {
-                DetailBillList = new ObservableCollection<DetailBillModel>(detailbilllist);
-            }
+            //if (detailbilllist != null)
+            //{
+            //    DetailBillList = new ObservableCollection<DetailBillModel>(detailbilllist);
+            //}
         }
     }
 }

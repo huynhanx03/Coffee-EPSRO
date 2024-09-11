@@ -1,4 +1,4 @@
-const { getMaxBillSellId, addBillSell, updateBillSell, deleteBillSell, getBillSellByTableAndStatus, updateTableBooking } = require('../dao/billSellDAO');
+const { getMaxBillSellId, addBillSell, updateBillSell, deleteBillSell, getBillSellByTableAndStatus, updateTableBooking, mergeTables, getBills } = require('../dao/billSellDAO');
 const { nextID } = require('../utils/helper');
 
 const calculateTotalPrice = (details) => {
@@ -96,9 +96,21 @@ const mergeTablesHandler = async (req, res) => {
     const { tableID1, tableID2 } = req.body;
 
     try {
-        await updateTableBooking(tableID1, tableID2)
+        await mergeTables(tableID1, tableID2)
 
         return res.status(200).json({ success: true, message: 'Bill Sell updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const getBillSellsHandler = async (req, res) => {
+    const { fromDate, toDate } = req.query;
+
+    try {
+        const billsells = await getBills(new Date(fromDate), new Date(toDate));
+
+        return res.status(200).json({ success: true, data: billsells });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
@@ -109,5 +121,7 @@ module.exports = {
     deleteBillSellHandler,
     updateBillSellHandler,
     getBillSellByTableAndStatusHandler,
-    updateTableBookingHandler
+    updateTableBookingHandler,
+    mergeTablesHandler,
+    getBillSellsHandler
 };

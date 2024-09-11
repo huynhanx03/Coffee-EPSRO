@@ -114,7 +114,7 @@ namespace Coffee.ViewModel.AdminVM.Statistic
                     if (indexBill < sizeBill)
                         DateTime.ParseExact(BillList[indexBill].NgayTao, "HH:mm:ss dd/MM/yyyy", null);
 
-                if (indexBill < sizeBill && billDate.Day == currentDate.Day && billDate.Month == currentDate.Month && billDate.Year == currentDate.Year)
+                while (indexBill < sizeBill && billDate.Day == currentDate.Day && billDate.Month == currentDate.Month && billDate.Year == currentDate.Year)
                 {
                     profit += BillList[indexBill].TongTien;
                     sumMoneyIn += BillList[indexBill].TongTien;
@@ -126,7 +126,7 @@ namespace Coffee.ViewModel.AdminVM.Statistic
                 if (indexImport < sizeImport) 
                     importDate = DateTime.ParseExact(BillImportList[indexImport].NgayTaoPhieu, "HH:mm:ss dd/MM/yyyy", null);
 
-                if (indexImport < sizeImport && importDate.Day == currentDate.Day && importDate.Month == currentDate.Month && importDate.Year == currentDate.Year)
+                while (indexImport < sizeImport && importDate.Day == currentDate.Day && importDate.Month == currentDate.Month && importDate.Year == currentDate.Year)
                 {
                     profit -= BillImportList[indexImport].TongTien;
                     sumMoneyOut += BillImportList[indexImport].TongTien;

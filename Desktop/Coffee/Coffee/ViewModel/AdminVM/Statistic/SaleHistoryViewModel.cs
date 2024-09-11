@@ -105,7 +105,7 @@ namespace Coffee.ViewModel.AdminVM.Statistic
                     }
 
                     MessageBoxCF msn = new MessageBoxCF(label, MessageType.Accept, MessageButtons.OK);
-                    LoadBillList();
+                    loadData();
                     msn.ShowDialog();
                 }
                 else

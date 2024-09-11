@@ -1,6 +1,15 @@
 const db = require('../config/firebase');
 const { binarySearchProduct } = require('../dsa/binarySearch');
+const { convertToDateTime } = require('../utils/helper');
 const Constants = require('../utils/constants');
+
+const calculateTotalPrice = (details) => {
+    details = Object.values(details);
+
+    return details.reduce((total, detail) => {
+        return total + detail.ThanhTien;
+    }, 0);
+};
 
 const getMaxBillSellId = async () => {
     try {
@@ -31,6 +40,79 @@ const deleteBillSell = async (billSellID) => {
     await db.ref(`HoaDon/${billSellID}`).remove();
 };
 
+const getBills = async (fromDate, toDate) => {
+    try {
+        // Lấy dữ liệu từ nút "HoaDon" trong Firebase
+        const billSnapshot = await db.ref('HoaDon').once('value');
+        const billData = billSnapshot.val();
+
+        // Lấy dữ liệu từ nút "NguoiDung" trong Firebase
+        const userSnapshot = await db.ref('NguoiDung').once('value');
+        const userData = userSnapshot.val();
+
+        // Lấy dữ liệu từ nút "Ban" trong Firebase
+        const tableSnapshot = await db.ref('Ban').once('value');
+        const tableData = tableSnapshot.val();
+
+        // Chuyển đổi sang dạng mảng
+        const bills = Object.values(billData);
+        const users = Object.values(userData);
+        const tables = Object.values(tableData);
+
+        // Retrieve all products
+        const productSnapshot = await db.ref('SanPham').once('value');
+        const productsData = productSnapshot.val();
+        const productsArray = Object.values(productsData);
+        const productsSize = productsArray.length;
+
+        // Lọc và map các hoá đơn theo thời gian và dữ liệu cần thiết
+        const result = bills
+            .filter(bill => {
+                const billDate = convertToDateTime(bill.NgayTao); // Parse only the date part
+                return billDate >= fromDate && billDate <= toDate;
+            })
+            .map(bill => {
+                const employee = users.find(user => user.MaNguoiDung === bill.MaNhanVien);
+                const customer = users.find(user => user.MaNguoiDung === bill.MaKhachHang) || { HoTen: 'Khách vãng lai' };
+                const table = tables.find(table => table.MaBan === bill.MaBan) || { TenBan: 'Mang về' };
+
+                // Map detail bill information with product details
+                const listDetailBill = Object.values(bill.ChiTietHoaDon);
+
+                listDetailBill.forEach(detailBill => {
+                    const index = binarySearchProduct(productsArray, productsSize, detailBill.MaSanPham);
+                    
+                    if (index !== -1) {
+                        const product = productsArray[index]
+
+                        detailBill.TenSanPham = product.TenSanPham;
+                        detailBill.DanhSachChiTietKichThuocSanPham = Object.values(product.ChiTietKichThuocSanPham);
+                        detailBill.SelectedProductSize = detailBill.DanhSachChiTietKichThuocSanPham.find(x => x.MaKichThuoc === detailBill.MaKichThuoc);
+                    }
+                });
+
+                return {
+                    MaBan: bill.MaBan,
+                    MaHoaDon: bill.MaHoaDon,
+                    MaNhanVien: bill.MaNhanVien,
+                    NgayTao: bill.NgayTao,
+                    TongTien: bill.TongTien,
+                    TrangThai: bill.TrangThai,
+                    MaKhachHang: bill.MaKhachHang,
+                    TenNhanVien: employee.HoTen,
+                    TenKhachHang: customer.HoTen,
+                    TenBan: table.TenBan,
+                    DanhSachChiTietHoaDon: listDetailBill
+                };
+            });
+
+        return result
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 const getBillSellByTableAndStatus = async (tableID, status) => {
     try {
         // Retrieve the bill by ID
@@ -56,7 +138,7 @@ const getBillSellByTableAndStatus = async (tableID, status) => {
         listDetailBill.forEach(detailBill => {
             const index = binarySearchProduct(productsArray, productsSize, detailBill.MaSanPham);
             
-            if (index !== 1) {
+            if (index !== -1) {
                 const product = productsArray[index]
 
                 detailBill.TenSanPham = product.TenSanPham;
@@ -97,29 +179,57 @@ const mergeTables = async (tableID, tableIDNew) => {
         const bill1 = await getBillSellByTableAndStatus(tableID, Constants.StatusBill.UNPAID);
         const bill2 = await getBillSellByTableAndStatus(tableIDNew, Constants.StatusBill.UNPAID);
 
-
         if (bill1 && bill2) {
-            let list = [];
+            // Create a map to store merged details
+            const mergedMap = new Map();
 
-            for (let detailBill1 of detailBillList1) {
-                let isFind = false;
-
-                for (let detailBill2 of detailBillList2) {
-                    if (detailBill2.MaSanPham === detailBill1.MaSanPham && detailBill2.MaKichThuoc === detailBill1.MaKichThuoc) {
-                        detailBill2.SoLuong += detailBill1.SoLuong;
-                        detailBill2.ThanhTien += detailBill1.ThanhTien;
-
-                        isFind = true;
-                        break;
+            // Helper function to add items to the map
+            const addToMap = (list) => {
+                list.forEach(detail => {
+                    const key = `${detail.MaSanPham}-${detail.MaKichThuoc}`;
+                    if (mergedMap.has(key)) {
+                        // If the item already exists, update the quantity and total price
+                        const existingDetail = mergedMap.get(key);
+                        existingDetail.SoLuong += detail.SoLuong;
+                        existingDetail.ThanhTien += detail.ThanhTien;
+                    } else {
+                        // If it doesn't exist, add it to the map
+                        mergedMap.set(key, { ...detail });
                     }
-                }
+                });
+            };
 
-                if (!isFind) list.push(detailBill1);
-            }
+            addToMap(bill1.DanhSachChiTietHoaDon)
+            addToMap(bill2.DanhSachChiTietHoaDon)
 
-            // await deleteBillSell(bill1.MaHoaDon);
+            const newbill2 = {
+                MaHoaDon: bill2.MaHoaDon,
+                MaBan: bill2.MaBan,
+                MaNhanVien: bill2.MaNhanVien,
+                NgayTao: bill2.NgayTao,
+                TrangThai: bill2.TrangThai,
+                MaKhachHang: bill2.MaKhachHang,
+                ChiTietHoaDon: Array.from(mergedMap.values()).reduce((acc, detail) => {
+                    const key = `${detail.MaSanPham}-${detail.MaKichThuoc}`;
+                    acc[key] = {
+                        MaSanPham: detail.MaSanPham,
+                        MaKichThuoc: detail.MaKichThuoc,
+                        SoLuong: detail.SoLuong,
+                        ThanhTien: detail.ThanhTien
+                    };
+                    return acc;
+                }, {})
+            };
 
-            return bill2
+            // Calculate total price
+            const totalPrice = calculateTotalPrice(newbill2.ChiTietHoaDon);
+                
+            // Update the billSell object with the total price
+            newbill2.TongTien = totalPrice;
+
+            await deleteBillSell(bill1.MaHoaDon);
+            await deleteBillSell(bill2.MaHoaDon);
+            await addBillSell(newbill2)
         } else {
             return null
         }
@@ -135,5 +245,6 @@ module.exports = {
     updateBillSell,
     getBillSellByTableAndStatus,
     updateTableBooking,
-    mergeTables
+    mergeTables,
+    getBills
 };

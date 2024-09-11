@@ -109,7 +109,7 @@
                                     SortMemberPath="KichThuoc">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Style="{DynamicResource txblInDtg}" Text="{Binding TenKichThuoc}" />
+                                            <TextBlock Style="{DynamicResource txblInDtg}" Text="{Binding SelectedProductSize.TenKichThuoc}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -127,22 +127,11 @@
 
                                 <DataGridTemplateColumn
                                     Width="auto"
-                                    Header="{DynamicResource InvoiceValue}"
+                                    Header="{DynamicResource IntoMoney}"
                                     SortMemberPath="ThanhTien">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Style="{DynamicResource txblInDtg}" Text="{Binding ThanhTien}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <DataGridTemplateColumn
-                                    Width="auto"
-                                    Header="{DynamicResource IntoMoney}"
-                                    SortMemberPath="TongTien">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Style="{DynamicResource txblInDtg}" Text="{Binding TinhTongTien}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

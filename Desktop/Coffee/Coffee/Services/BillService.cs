@@ -164,7 +164,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> DeleteBill(string BillID)
         {
-            return await BillDAL.Ins.DeleteBill(BillID);
+            return await BillAPI.Ins.DeleteBillSell(BillID);
         }
 
         /// <summary>
@@ -188,7 +188,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, List<BillDTO>)> getListBilltime(DateTime fromdate,DateTime todate)
         {
-            return await BillDAL.Ins.getListBilltime(fromdate,todate);
+            return await BillAPI.Ins.GetBillSells(fromdate, todate);
+            //return await BillDAL.Ins.getListBilltime(fromdate,todate);
         }
 
 
@@ -329,6 +330,8 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, bool)> mergeBillByTableID(string tableID1, string tableID2)
         {
+            return await BillAPI.Ins.mergeBillOfTables(tableID1, tableID2);
+
             (string labelFindBill1, BillModel bill1) = await BillDAL.Ins.findBillByTableBooking(tableID1);
             (string labelFindBill2, BillModel bill2) = await BillDAL.Ins.findBillByTableBooking(tableID2);
 
