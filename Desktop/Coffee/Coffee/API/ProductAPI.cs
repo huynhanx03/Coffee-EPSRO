@@ -152,7 +152,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật sản phẩm thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -293,7 +298,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Xoá sản phẩm thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)

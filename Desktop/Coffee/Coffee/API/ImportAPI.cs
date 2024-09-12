@@ -96,7 +96,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Lấy danh sách hóa đơn thất bại", null);
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -120,7 +120,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Xoá phiếu nhập kho thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)

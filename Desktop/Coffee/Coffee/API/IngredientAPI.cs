@@ -142,7 +142,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Thêm nguyên liệu thất bại", null);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -202,7 +207,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật nguyên liệu thất bại", null);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -234,7 +244,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật nguyên liệu thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -268,7 +283,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Xoá nguyên liệu thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)

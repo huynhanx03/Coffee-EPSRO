@@ -9,8 +9,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Documents;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Coffee.API
 {
@@ -55,7 +53,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Lấy danh sách hóa đơn thất bại", null);
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -81,7 +79,13 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Thêm hóa đơn thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -108,7 +112,13 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật hoá đơn thất bại", null);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -141,7 +151,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Cập nhật hoá đơn thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -209,7 +224,12 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return ("Xóa hóa đơn thất bại", false);
+                        string responseContent = response.Content.ReadAsStringAsync().Result;
+
+                        // Parse the JSON
+                        var jsonObj = JObject.Parse(responseContent);
+
+                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
                     }
                 }
                 catch (HttpRequestException e)
