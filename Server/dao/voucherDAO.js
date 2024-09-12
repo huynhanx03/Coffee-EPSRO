@@ -31,18 +31,33 @@ const getVouchers = async () => {
     return vouchers ? Object.values(vouchers) : [];
 };
 
+const checkVoucherContext = async (currentVoucher) => {
+    const vouchers = await getVouchers();  
+
+    const isDuplicate = vouchers.some(voucher => 
+        voucher.NoiDung.toLowerCase() === currentVoucher.NoiDung.toLowerCase() && 
+        voucher.MaPhieuGiamGia !== currentVoucher.MaPhieuGiamGia
+    );
+
+    return isDuplicate;
+};
+
 const addVoucher = async (voucher) => {
-    if (!(voucher.MaPhieuGiamGia)) {
-        maxVoucherId = await getMaxVoucherId()
-
-        voucher.MaPhieuGiamGia = nextID(maxVoucherId, "VC")
+    if (await checkVoucherContext(table))
+        throw new Error("Nội dung phiếu giảm giá đã tồn tại")
+    else {
+        if (!(voucher.MaPhieuGiamGia)) {
+            maxVoucherId = await getMaxVoucherId()
+    
+            voucher.MaPhieuGiamGia = nextID(maxVoucherId, "VC")
+        }
+    
+        await db.ref(`PhieuGiamGia/${voucher.MaPhieuGiamGia}`).set(voucher);
+    
+        customerIDs = await getCustomerIDByRankMinimum(voucher.HangToiThieu)
+    
+        await createDetailVoucher(voucher.MaPhieuGiamGia, customerIDs)
     }
-
-    await db.ref(`PhieuGiamGia/${voucher.MaPhieuGiamGia}`).set(voucher);
-
-    customerIDs = await getCustomerIDByRankMinimum(voucher.HangToiThieu)
-
-    await createDetailVoucher(voucher.MaPhieuGiamGia, customerIDs)
 };
 
 const createDetailVoucher = async (voucherID, customerIDList) => {

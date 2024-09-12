@@ -59,8 +59,18 @@ const getMaxIngredientId = async () => {
     }
 };
 
+const checkIngredientName = async (currentIngredient) => {
+    const ingredients = await getIngredients();  
+
+    const isDuplicate = ingredients.some(ingredient => ingredient.TenNguyenLieu.toLowerCase() === currentIngredient.TenNguyenLieu.toLowerCase() && ingredient.MaNguyenLieu !== currentIngredient.MaNguyenLieu);
+
+    return isDuplicate;
+};
+
 const addIngredient = async (ingredient) => {
-    await db.ref(`NguyenLieu/${ingredient.MaNguyenLieu}`).set(ingredient);
+    if (await checkIngredientName(ingredient)) 
+        throw new Error("Tên nguyên liệu đã tồn tại")  
+    else await db.ref(`NguyenLieu/${ingredient.MaNguyenLieu}`).set(ingredient);
 };
 
 const deleteIngredient = async (ingredientID) => {
@@ -68,7 +78,9 @@ const deleteIngredient = async (ingredientID) => {
 };
 
 const updateIngredient = async (ingredient) => {
-    await db.ref(`NguyenLieu/${ingredient.MaNguyenLieu}`).update(ingredient);
+    if (await checkIngredientName(ingredient)) 
+        throw new Error("Tên nguyên liệu đã tồn tại") 
+    else await db.ref(`NguyenLieu/${ingredient.MaNguyenLieu}`).update(ingredient);
 };
 
 const updateQuantityIngredient = async (ingredientID, newQuantity) => {

@@ -38,9 +38,23 @@ const getTypeTables = async () => {
     }
 };
 
+const checkTableName = async (currentTable) => {
+    const tables = await getTables();  
+
+    const isDuplicate = tables.some(table => 
+        table.TenBan.toLowerCase() === currentTable.TenBan.toLowerCase() && 
+        table.MaBan !== currentTable.MaBan
+    );
+
+    return isDuplicate;
+};
+
 const addTable = async (table) => {
     try {
-        await db.ref(`Ban/${table.MaBan}`).set(table);
+        if (await checkTableName(table))
+            throw new Error("Tên bàn đã tồn tại")
+        else
+            await db.ref(`Ban/${table.MaBan}`).set(table);
     } catch (error) {
         throw new Error('Error adding table: ' + error.message);
     }
@@ -48,7 +62,10 @@ const addTable = async (table) => {
 
 const updateTable = async (table) => {
     try {
-        await db.ref(`Ban/${table.MaBan}`).update(table);
+        if (await checkTableName(table))
+            throw new Error("Tên bàn đã tồn tại")
+        else
+            await db.ref(`Ban/${table.MaBan}`).update(table);
     } catch (error) {
         throw new Error('Error updating table: ' + error.message);
     }
