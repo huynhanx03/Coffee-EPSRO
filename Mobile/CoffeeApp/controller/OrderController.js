@@ -2,28 +2,7 @@ import { child, get, getDatabase, orderByChild, query, ref, set, update, equalTo
 import { getUserData } from "./StorageController";
 import axios from 'axios';
 import { BASE_URL } from "../constants";
-
-const getNewId = async () => {
-    const dbRef = ref(getDatabase());
-
-    try {
-        const ordesrSnapshot = await get(child(dbRef, `DonHang/`));
-        const orders = ordesrSnapshot.val();
-
-        if (orders) {
-            const currentId = parseInt(
-                Object.keys(orders)[Object.keys(orders).length - 1].slice(2)
-            );
-            const newId = "DH" + String(currentId + 1).padStart(4, "0");
-            return newId;
-        } else {
-            return "DH0001";
-        }
-    } catch (error) {
-        console.log(error);
-        return error
-    }
-};
+import { getAuthHeaders } from "./TokenController";
 
 /**
  * @notice Save order to database
@@ -31,8 +10,9 @@ const getNewId = async () => {
 const saveOrder = async (products, total, transFee, addressData) => {
     try {
         const userData = await getUserData();
+        const headers = await getAuthHeaders();
         const data = {products, total, transFee, addressData};
-        const response = await axios.post(`${BASE_URL}/order/${userData.MaNguoiDung}`, data)
+        const response = await axios.post(`${BASE_URL}/order/${userData.MaNguoiDung}`, data, {headers})
         return response.data
     } catch (error) {
         throw new Error("Lỗi khi tạo đơn hàng!")
@@ -60,7 +40,8 @@ const getOrder = async () => {
  */
 const setStatusOrder = async (orderId) => {
     try {
-        const response = await axios.put(`${BASE_URL}/order/${orderId}`)
+        const headers = await getAuthHeaders();
+        const response = await axios.put(`${BASE_URL}/order/${orderId}`, { headers })
         return response.data
     } catch (error) {
         console.log(error);

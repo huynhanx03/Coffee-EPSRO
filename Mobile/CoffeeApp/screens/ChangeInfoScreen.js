@@ -18,6 +18,7 @@ import ShowToast from "../components/toast";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
+import { removeToken } from "../controller/StorageController";
 
 const ChangeInfoScreen = ({ route }) => {
     const { label, content } = route.params;
@@ -61,6 +62,7 @@ const ChangeInfoScreen = ({ route }) => {
         );
         if (response.success) {
             navigation.popToTop();
+            await removeToken();
             navigation.replace("Login");
         }
     };

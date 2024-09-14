@@ -2,6 +2,7 @@ import { child, get, getDatabase, ref, set } from "firebase/database"
 import { getUserData } from "./StorageController"
 import axios from 'axios'
 import { BASE_URL } from "../constants"
+import { getAuthHeaders } from "./TokenController"
 
 /**
  * @notice Set review for product
@@ -11,11 +12,11 @@ import { BASE_URL } from "../constants"
 const setReview = async (productId, rating, review) => {
     try {
         const userData = await getUserData()
-        console.log(userData.MaNguoiDung)
+        const headers = await getAuthHeaders()
         const response = await axios.post(`${BASE_URL}/review/${userData.MaNguoiDung}/${productId}`, {
             rating: rating,
             content: review
-        })
+        }, {headers})
         if (response.data.success) {
             return true
         }

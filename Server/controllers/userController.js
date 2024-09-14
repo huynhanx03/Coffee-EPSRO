@@ -81,7 +81,7 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu' })
         }
 
-        const token = jwt.sign({ username: username }, process.env.SECRET_KEY, { expiresIn: '20s' })
+        const token = jwt.sign({ username: username }, process.env.SECRET_KEY, { expiresIn: '5h' })
 
         return res.status(200).json({ success: true, token, data: userData[Object.keys(userData)[0]] })
     } catch (error) {

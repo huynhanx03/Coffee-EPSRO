@@ -1,6 +1,7 @@
 import { BASE_URL } from '../constants'
 import { getUserData } from './StorageController'
 import axios from 'axios'
+import { getAuthHeaders } from './TokenController'
 
 /**
  * @notice Add a new item to cart
@@ -10,7 +11,8 @@ import axios from 'axios'
 const setCart = async (item) => {
     try {
         const userData = await getUserData()
-        const response = await axios.post(`${BASE_URL}/cart/${userData.MaNguoiDung}`, item)
+        const headers = await getAuthHeaders()
+        const response = await axios.post(`${BASE_URL}/cart/${userData.MaNguoiDung}`, item, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -25,7 +27,8 @@ const setCart = async (item) => {
 const deleteItemCard = async (item) => {
     try {
         const userData = await getUserData()
-        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}/${item.MaSanPham}`)
+        const headers = await getAuthHeaders()
+        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}/${item.MaSanPham}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -38,7 +41,8 @@ const deleteItemCard = async (item) => {
 const removeItemCart = async () => {
     try {
         const userData = await getUserData()
-        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}`)
+        const headers = await getAuthHeaders()
+        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -65,7 +69,8 @@ const getCart = async () => {
 const updateCartWithLastPrice = async () => {
     try {
         const userData = await getUserData()
-        const response = await axios.put(`${BASE_URL}/cart/${userData.MaNguoiDung}`)
+        const headers = await getAuthHeaders()
+        const response = await axios.put(`${BASE_URL}/cart/${userData.MaNguoiDung}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data

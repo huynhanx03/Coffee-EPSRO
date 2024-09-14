@@ -1,6 +1,5 @@
-import { getDatabase, ref, onValue, push, get, set, child, orderByChild, query } from "firebase/database";
-import { orderBy } from "firebase/firestore";
-import {getUserData} from "./StorageController";
+import { child, get, getDatabase, onValue, orderByChild, query, ref, set } from "firebase/database";
+import { getUserData } from "./StorageController";
 
 /**
  * @notice Get new message id in the database
@@ -76,4 +75,4 @@ const getMessage = async () => {
     });
 }
 
-export { sendMessage, getMessage }
+export { getMessage, sendMessage };

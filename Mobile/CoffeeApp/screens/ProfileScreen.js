@@ -1,28 +1,25 @@
-import {
-    View,
-    Text,
-    Dimensions,
-    ScrollView,
-    TouchableOpacity,
-} from "react-native";
-import { blurhash } from "../utils";
+import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import React, { useEffect, useMemo, useState } from "react";
-import Carousel from "react-native-reanimated-carousel";
 import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+    Dimensions,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import * as Icons from "react-native-heroicons/solid";
-import MenuItemProfile from "../components/menuItemProfile";
-import { useNavigation } from "@react-navigation/native";
-import Toast from "react-native-toast-message";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { useDispatch } from "react-redux";
-import { clearCart } from "../redux/slices/cartSlice";
-import { getUserData } from "../controller/StorageController";
-import { colors } from "../theme";
-import { getUserRankById } from "../controller/UserController";
 import { useNotification } from "../context/ModalContext";
+import { getUserData, removeToken } from "../controller/StorageController";
+import { getUserRankById } from "../controller/UserController";
+import { clearCart } from "../redux/slices/cartSlice";
+import { colors } from "../theme";
+import { blurhash } from "../utils";
 
 const width = Dimensions.get("window").width;
 
@@ -83,7 +80,8 @@ const ProfileScreen = () => {
         getRank();
     }, [user])
 
-    const logOut = () => {
+    const logOut = async () => {
+        await removeToken();
         navigation.replace("Login");
         dispatch(clearCart());
     }

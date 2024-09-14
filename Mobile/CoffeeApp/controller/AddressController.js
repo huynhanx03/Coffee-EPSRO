@@ -1,6 +1,7 @@
 import { BASE_URL } from "../constants";
 import { getUserData } from "./StorageController";
 import axios from 'axios'
+import { getAuthHeaders } from "./TokenController";
 
 /**
  * @notice Add a new address to the database
@@ -12,13 +13,14 @@ import axios from 'axios'
  */
 const addAddress = async (name, phone, detail_address, location) => {
     try {
+        const headers = await getAuthHeaders()
         const userData = await getUserData();
         const response = await axios.post(`${BASE_URL}/address/${userData.MaNguoiDung}`, {
             name: name,
             phone: phone,
             detail_address: detail_address,
             location: location
-        })
+        }, {headers})
 
         return response.data
     } catch (error) {
@@ -46,7 +48,8 @@ const getAddress = async () => {
 const setDefaultAddress = async (key) => {
     try {
         const userData = await getUserData();
-        const response = await axios.put(`${BASE_URL}/address/${userData.MaNguoiDung}/${key}`)
+        const headers = await getAuthHeaders();
+        const response = await axios.put(`${BASE_URL}/address/${userData.MaNguoiDung}/${key}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data

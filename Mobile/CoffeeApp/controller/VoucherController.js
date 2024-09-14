@@ -2,6 +2,7 @@ import { child, equalTo, get, getDatabase, orderByChild, query, ref, update } fr
 import { getUserData } from "./StorageController";
 import { BASE_URL } from "../constants";
 import axios from 'axios'
+import { getAuthHeaders } from "./TokenController";
 
 /**
  * @notice Get the vouchers list that user obtained
@@ -30,7 +31,8 @@ const getVoucher = async () => {
 const updateVoucherUsed = async (voucherId) => {
     try {
         const userData = await getUserData();
-        const response = await axios.post(`${BASE_URL}/voucher/update/${voucherId}/${userData.MaNguoiDung}`);
+        const headers = await getAuthHeaders();
+        const response = await axios.post(`${BASE_URL}/voucher/update/${voucherId}/${userData.MaNguoiDung}`, {headers});
 
         return response.data;
     } catch (error) {

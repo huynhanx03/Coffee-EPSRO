@@ -1,7 +1,8 @@
 import { ref, update } from 'firebase/database'
 import { getUserData } from './StorageController'
-import axios from "axios"
+import axios from 'axios'
 import { BASE_URL } from '../constants'
+import { getAuthHeaders } from './TokenController'
 
 /**
  * @notice Check if the confirm password is similar to the new password
@@ -25,12 +26,16 @@ const changePassword = async (oldPassword, newPassword, confirmPassword, isForgo
 
     if (checkConfirmPassword(newPassword, confirmPassword) === false) return [false, 'Mật khẩu xác nhận không đúng']
 
+    const headers = await getAuthHeaders()
+
+    const data = {
+        oldPassword,
+        newPassword,
+        isForgot,
+    }
+
     try {
-        const response = await axios.put(`${BASE_URL}/user/update/password/${userData.MaNguoiDung}`, {
-            oldPassword,
-            newPassword,
-            isForgot
-        })
+        const response = await axios.put(`${BASE_URL}/user/update/password/${userData.MaNguoiDung}`, data, {headers})
 
         if (response.data.success === false) {
             return [false, response.data.message]

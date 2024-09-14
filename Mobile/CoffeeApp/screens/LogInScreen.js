@@ -1,16 +1,18 @@
-import { View, Text, Image, Dimensions, Pressable, TouchableOpacity, Modal, ActivityIndicator, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
-import { colors } from "../theme";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import Button from "../components/button";
 import { useNavigation } from "@react-navigation/native";
+import "core-js/stable/atob";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { handleLogin } from "../controller/LoginController";
-import {getUserData} from "../controller/StorageController";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { useDispatch } from "react-redux";
-import { getCart, updateCartWithLastPrice } from "../controller/CartController";
-import { addToCartFromDatabase } from "../redux/slices/cartSlice";
+import Button from "../components/button";
 import ShowToast from "../components/toast";
+import { updateCartWithLastPrice } from "../controller/CartController";
+import { handleLogin } from "../controller/LoginController";
+import { getToken, getUserData } from "../controller/StorageController";
+import { isExpiredToken } from "../controller/TokenController";
+import { addToCartFromDatabase } from "../redux/slices/cartSlice";
+import { colors } from "../theme";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,24 +38,38 @@ export default function LogInScreen() {
         }
     }
 
-    // useEffect(() => {
-    //     getUser();
-    //     if (user.token) {
-    //         navigation.replace('HomeTab')
-    //     }
-    // })
+    useEffect(() => {
+        async function loginToken() {
+            const token = await getToken();
+            if (token) {
+                const isExpired = await isExpiredToken(token);
+                if (isExpired) {
+                    const user = await getUserData();
+                    if (user) {
+                        handleGetCart()
+                        navigation.replace('HomeTab')
+                    }
+                }
+            }
+        }
+        loginToken()
+    }, [])
 
     const Login = async () => {
-        setIsLoading(true);
-        const response = await handleLogin(username, password);
-        if (response.success) {
-            setIsLoading(false);
-            handleGetCart()
-            navigation.replace('HomeTab')
-        }
-        else {
-            setIsLoading(false);
-            ShowToast("error", "Đăng nhập thất bại", "Tài khoản hoặc mật khẩu không đúng!")
+        try {
+            setIsLoading(true);
+            const response = await handleLogin(username, password);
+            if (response.success) {
+                setIsLoading(false);
+                handleGetCart()
+                navigation.replace('HomeTab')
+            }
+            else {
+                setIsLoading(false);
+                ShowToast("error", "Đăng nhập thất bại", "Tài khoản hoặc mật khẩu không đúng!")
+            }
+        } catch (error) {
+            console.log(error)
         }
     };
 
