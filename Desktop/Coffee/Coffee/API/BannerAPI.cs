@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Coffee.Models;
 using Coffee.Utils;
+using Coffee.Utils.Helper;
 using FireSharp.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -65,7 +66,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -89,6 +90,11 @@ namespace Coffee.API
                     string json = JsonConvert.SerializeObject(banner);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage response = await client.PostAsync(Constants.API.IP + beginUrl + "/banner", content);
 
                     if (response.IsSuccessStatusCode)
@@ -102,7 +108,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -158,6 +164,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/banners/{bannerId}");
 
                     if (response.IsSuccessStatusCode)

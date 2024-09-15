@@ -46,7 +46,7 @@ namespace Coffee.Utils
             string endString = ".";
             if (uri.Contains(startString) && uri.Contains(endString))
             {
-                int start = uri.IndexOf(startString);
+                int start = uri.IndexOf(startString) + startString.Length + 1;
                 int end = uri.IndexOf(endString, start);
                 id = uri.Substring(start, end - start);
             }
@@ -83,9 +83,9 @@ namespace Coffee.Utils
                 var result = await cloudinary.DestroyAsync(deleteParams);
                 return "Đã xóa thành công!";
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return "Có lỗi xuất hiện!";
+                return ex.Message;
             }
 
         }

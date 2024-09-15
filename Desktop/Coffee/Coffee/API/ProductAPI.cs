@@ -2,6 +2,7 @@
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Utils;
+using Coffee.Utils.Helper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -85,7 +86,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -120,7 +121,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -136,6 +137,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     var container = new
                     {
                         quantity = _quantity
@@ -157,7 +163,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -194,7 +200,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -237,7 +243,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -260,6 +266,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     var updateData = new { PhanTramGiam = value };
                     string json = JsonConvert.SerializeObject(updateData);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -290,6 +301,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/product/{productID}");
 
                     if (response.IsSuccessStatusCode)
@@ -303,7 +319,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -328,6 +344,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(product);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -344,7 +365,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -369,6 +390,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(product);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -385,7 +411,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)

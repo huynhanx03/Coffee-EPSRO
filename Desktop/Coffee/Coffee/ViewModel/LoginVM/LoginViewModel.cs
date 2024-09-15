@@ -1,6 +1,8 @@
-﻿using Coffee.DTOs;
+﻿using Coffee.API;
+using Coffee.DTOs;
 using Coffee.Services;
 using Coffee.Utils;
+using Coffee.Utils.Helper;
 using Coffee.Views.Admin;
 using Coffee.Views.Admin.EmployeePage;
 using Coffee.Views.Login;
@@ -14,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace Coffee.ViewModel.LoginVM
 {
@@ -44,6 +47,8 @@ namespace Coffee.ViewModel.LoginVM
             set { _IsLogin = value; OnPropertyChanged(); }
         }
 
+        private bool isCheckLogin = true;
+
         #endregion
 
         #region ICommend
@@ -51,11 +56,17 @@ namespace Coffee.ViewModel.LoginVM
         public ICommand savePasswordChangedCF { get; set; }
         public ICommand loginIC { get; set; }
         public ICommand loadMaskIC { get; set; }
+        public ICommand firstLoadIC { get; set; }
 
         #endregion
 
         public LoginViewModel()
         {
+            firstLoadIC = new RelayCommand<object>((p) => { return true; }, (p) =>
+            {
+                if (isCheckLogin) checkLogin();
+            });
+
             loadMaskIC = new RelayCommand<Grid>((p) => { return true; }, (p) =>
             {
                 mask = p;
@@ -106,6 +117,38 @@ namespace Coffee.ViewModel.LoginVM
                 IsLogin = false;
                 mask.Visibility = Visibility.Collapsed;
             });
+        }
+
+        public async void checkLogin()
+        {
+            isCheckLogin = false;
+
+            IsLogin = true;
+            mask.Visibility = Visibility.Visible;
+
+            (string label, bool isCheck) = await UserService.Ins.checkToken();
+
+            if (isCheck)
+            {
+                (string labelGetUser, UserDTO user) = await UserService.Ins.GetUser(Helper.getUserID());
+
+                if (user != null)
+                {
+                    // Lưu user
+                    Memory.user = user;
+
+                    // Mở cửa sổ
+                    MainAdminWindow w = new MainAdminWindow();
+                    w.Show();
+
+                    // Đóng của sổ login
+                    LoginWindow wLogin = Application.Current.Windows.OfType<LoginWindow>().FirstOrDefault();
+                    wLogin.Close();
+                }
+            }
+
+            IsLogin = false;
+            mask.Visibility = Visibility.Collapsed;
         }
     }
 }

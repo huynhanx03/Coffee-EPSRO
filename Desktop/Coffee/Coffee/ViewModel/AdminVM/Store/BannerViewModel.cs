@@ -131,7 +131,7 @@ namespace Coffee.ViewModel.AdminVM.Store
                 }
                 else
                 {
-                    MessageBoxCF ms = new MessageBoxCF(label, MessageType.Accept, MessageButtons.OK);
+                    MessageBoxCF ms = new MessageBoxCF(label, MessageType.Error, MessageButtons.OK);
                     ms.ShowDialog();
                 }
             }

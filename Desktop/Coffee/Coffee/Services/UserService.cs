@@ -133,6 +133,7 @@ namespace Coffee.Services
         /// </returns>
         public async Task<(string, UserDTO)> findUser(string username, string password)
         {
+            return await UserAPI.Ins.login(username, password);
             return await UserDAL.Ins.findUser(username, password);
         }
 
@@ -145,6 +146,16 @@ namespace Coffee.Services
         public async Task<UserDTO> getUserByNumberphone(string userNumberPhone)
         {
             return (await UserAPI.Ins.getUserByNumberPhone(userNumberPhone)).Item2;
+        }
+
+        public async Task<(string, bool)> checkToken()
+        {
+            return await UserAPI.Ins.checkToken();
+        }
+
+        public async Task<(string, UserDTO)> GetUser(string userID)
+        {
+            return await UserAPI.Ins.GetUser(userID);
         }
     }
 }

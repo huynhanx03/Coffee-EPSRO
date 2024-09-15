@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Coffee.Utils;
 using Coffee.DTOs;
+using Coffee.Utils.Helper;
 
 namespace Coffee.API
 {
@@ -43,6 +44,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     // Send a GET request to the specified URL
                     HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/userContacts");
 
@@ -63,7 +69,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -87,6 +93,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string url = Constants.API.IP + beginUrl + "/messages/" + userID;
 
                     string formattedDateTime = datetime.HasValue ? datetime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : string.Empty;
@@ -116,7 +127,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -141,6 +152,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(chat);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -157,7 +173,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)

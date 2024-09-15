@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const crypto = require('crypto')
 const { updateUser, checkIDCard, checkEmail, checkNumberPhone, checkUsername } = require('../dao/userDAO')
+const { messaging } = require('firebase-admin')
 
 dotenv.config()
 
@@ -73,11 +74,11 @@ const login = async (req, res) => {
         const snapshot = await db.ref('NguoiDung/').orderByChild('TaiKhoan').equalTo(username).once('value')
         const userData = snapshot.val()
 
-        if (!userData) {
+        if (!userData || userData[Object.keys(userData)[0]].VaiTro !== 2) {
             return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
         }
 
-        if (password != userData[Object.keys(userData)[0]].MatKhau) {
+        if (password !== userData[Object.keys(userData)[0]].MatKhau) {
             return res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu' })
         }
 
@@ -86,6 +87,34 @@ const login = async (req, res) => {
         return res.status(200).json({ success: true, token, data: userData[Object.keys(userData)[0]] })
     } catch (error) {
         console.log(error)
+    }
+}
+
+const loginDesktopHandler = async (req, res) => {
+    const { username, password } = req.body
+    try {
+        const snapshot = await db.ref('NguoiDung/').orderByChild('TaiKhoan').equalTo(username).once('value')
+        const userData = snapshot.val()
+
+        if (!userData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
+        }
+
+        const user = userData[Object.keys(userData)[0]]
+
+        if (user.VaiTro !== 1 && user.VaiTro !== 3) {
+            return res.status(401).json({ success: false, message: 'Không tìm thấy người dùng' })
+        }
+
+        if (password !== user.MatKhau) {
+            return res.status(401).json({ success: false, message: 'Tài khoản hoặc mật khẩu không chính xác' })
+        }
+
+        const token = jwt.sign({ username: username }, process.env.SECRET_KEY, { expiresIn: '5h' })
+
+        return res.status(200).json({ success: true, token, data: user })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
     }
 }
 
@@ -207,6 +236,14 @@ const updateUserHandler = async (req, res) => {
     }
 };
 
+const checkTokenHandler = async (req, res) => {
+    try {
+        return res.status(200).json({ success: true, message: 'Token successfully' })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -215,5 +252,7 @@ module.exports = {
     updatePassword,
     getUserByEmail,
     updateUserHandler,
-    getUserByNumberphoneHandler
+    getUserByNumberphoneHandler,
+    loginDesktopHandler,
+    checkTokenHandler
 }

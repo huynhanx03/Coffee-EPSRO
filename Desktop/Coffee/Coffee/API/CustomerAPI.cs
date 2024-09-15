@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Coffee.DTOs;
 using Coffee.Utils;
 using System.Reflection;
+using Coffee.Utils.Helper;
 
 namespace Coffee.API
 {
@@ -45,6 +46,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     // Send a GET request to the specified URL
                     HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/customers");
 
@@ -65,7 +71,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -81,6 +87,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     // Send a GET request to the specified URL
                     HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/rankCustomers");
 
@@ -101,7 +112,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -123,6 +134,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     // Send a GET request to the specified URL
                     HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + "/address/" + customerID);
 
@@ -143,7 +159,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -159,6 +175,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     var container = new
                     {
                         pointRank = point
@@ -180,7 +201,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -205,6 +226,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(Customer);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -221,7 +247,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -246,6 +272,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(Customer);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -262,7 +293,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -288,6 +319,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/customer/{customerID}");
 
                     if (response.IsSuccessStatusCode)
@@ -301,7 +337,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)

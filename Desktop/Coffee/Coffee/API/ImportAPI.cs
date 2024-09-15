@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Coffee.Models;
 using Coffee.DTOs;
+using Coffee.Utils.Helper;
 
 namespace Coffee.API
 {
@@ -48,6 +49,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     string json = JsonConvert.SerializeObject(billImport);
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -64,7 +70,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)
@@ -80,6 +86,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage resp = await client.GetAsync(Constants.API.IP + beginUrl + "/bill-imports/" + "?fromDate=" + fromDate.ToString("yyyy-MM-ddTHH:mm:ss") + "&toDate=" + toDate.ToString("yyyy-MM-ddTHH:mm:ss"));
                     string responseContent = await resp.Content.ReadAsStringAsync();
 
@@ -96,7 +107,7 @@ namespace Coffee.API
                     }
                     else
                     {
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), null);
+                        return (jsonObj["message"].ToString(), null);
                     }
                 }
                 catch (HttpRequestException e)
@@ -112,6 +123,11 @@ namespace Coffee.API
             {
                 try
                 {
+                    string token = Helper.getToken();
+
+                    // Add Bearer token to Authorization header
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
                     HttpResponseMessage response = await client.DeleteAsync(Constants.API.IP + beginUrl + $"/bill-import/{billImportID}");
 
                     if (response.IsSuccessStatusCode)
@@ -125,7 +141,7 @@ namespace Coffee.API
                         // Parse the JSON
                         var jsonObj = JObject.Parse(responseContent);
 
-                        return (JsonConvert.DeserializeObject<string>(jsonObj["message"].ToString()), false);
+                        return (jsonObj["message"].ToString(), false);
                     }
                 }
                 catch (HttpRequestException e)

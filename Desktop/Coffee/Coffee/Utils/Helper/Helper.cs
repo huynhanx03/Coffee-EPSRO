@@ -160,5 +160,15 @@ namespace Coffee.Utils.Helper
                 }
             }
         }
+
+        public static string getToken()
+        {
+            return Properties.Settings.Default.Token;
+        }
+
+        public static string getUserID()
+        {
+            return Properties.Settings.Default.UserID;
+        }
     }
 }

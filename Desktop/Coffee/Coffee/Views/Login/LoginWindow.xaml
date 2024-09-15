@@ -34,6 +34,10 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding loadMaskIC}" CommandParameter="{Binding ElementName=ShadowMask}" />
         </i:EventTrigger>
+
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding firstLoadIC}" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
         <Grid Background="{DynamicResource BackgroundCF}">
@@ -68,9 +72,12 @@
                         <StackPanel
                             Grid.Row="0"
                             HorizontalAlignment="Center"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                            <TextBlock Style="{DynamicResource Header1}" Text="EPS" Foreground="{DynamicResource HoverColorCF}"/>
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Foreground="{DynamicResource HoverColorCF}"
+                                Style="{DynamicResource Header1}"
+                                Text="EPS" />
                             <TextBlock Style="{DynamicResource Header1}" Text="RO XIN CHÀO" />
                         </StackPanel>
 
