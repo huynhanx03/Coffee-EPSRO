@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as geolib from 'geolib'
-import React, { useEffect, useState } from 'react'
-import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Linking, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import * as Icons from 'react-native-heroicons/outline'
 import { Divider } from 'react-native-paper'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
@@ -20,6 +20,9 @@ import { clearCart } from '../redux/slices/cartSlice'
 import { removeVoucher } from '../redux/slices/voucherSlice'
 import { colors } from '../theme'
 import { formatPrice } from '../utils'
+import { PAYMENT_TYPE } from '../constants'
+import { getStatusTransaction, paymentByMomo } from '../controller/PaymentController'
+import ModalLoading from '../components/modalLoading'
 
 const PreparePayScreen = ({ route }) => {
     const navigation = useNavigation()
@@ -36,8 +39,10 @@ const PreparePayScreen = ({ route }) => {
         minutes: 0,
         seconds: 0,
     })
+    const [method, setMethod] = useState(PAYMENT_TYPE.COD)
     const cart = useSelector((state) => state.cart.cart)
     const voucher = useSelector((state) => state.voucher.voucher)
+    const [isLoading, setIsLoading] = useState(false)
     const { showNotification } = useNotification()
 
     useEffect(() => {
@@ -80,7 +85,7 @@ const PreparePayScreen = ({ route }) => {
         handleTotal()
     }, [totalProduct, transFee, voucher])
 
-    const handleCalDistance = () => {
+    const handleCalDistance = useMemo(() => {
         if (coord.latitude == 0 && coord.longtitude == 0) return 0
         const distance = geolib.getPreciseDistance(
             { latitude: 10.8700233, longitude: 106.8025735 },
@@ -88,7 +93,7 @@ const PreparePayScreen = ({ route }) => {
             1
         )
 
-        let time = distance / 40000
+        let time = distance / 40000 // Assume speed is 40km/h
         time = time * 3600 + 10 * 60
         setTimeDelivery({
             hour: Math.floor(time / 3600),
@@ -97,7 +102,7 @@ const PreparePayScreen = ({ route }) => {
         })
 
         return distance
-    }
+    }, [coord])
 
     useEffect(() => {
         const distance = handleCalDistance()
@@ -105,19 +110,60 @@ const PreparePayScreen = ({ route }) => {
         setTransFee(TransFee)
     }, [coord])
 
-    const handleCheckDistance = () => {
+    const handleCheckDistance = useMemo(() => {
         const isDistance = geolib.isPointWithinRadius(
-            { latitude: 10.8700233, longitude: 106.8025735 },
+            { latitude: 10.8700233, longitude: 106.8025735 }, // Default location
             { latitude: addressData.latitude, longitude: addressData.longtitude },
             5000
         )
 
         return isDistance
-    }
+    }, [addressData])
 
     const handleCancelVoucher = () => {
         dispatch(removeVoucher())
         setIsVisible(false)
+    }
+    
+    const checkStatusTransaction = async (orderId) => {
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await getStatusTransaction(orderId)   
+                if (response.resultCode === 0) {
+                    clearInterval(intervalId)
+                    showNotification('Thanh toán thành công', 'success')
+                    navigation.navigate('OrderSuccess')
+                }
+            } catch (error) {
+                clearInterval(intervalId)
+                showNotification(error.message, 'error')
+            }
+        }, 1000);
+    }
+
+    const checkOutByMomo = async () => {
+        try {
+            const response = await paymentByMomo(total + transFee)
+            if (response.payUrl) {
+                Linking.openURL(response.payUrl).catch((err) => {
+                    showNotification('Không thể mở MoMo', 'error')
+                })
+            }
+            return response.orderId
+        } catch (error) {
+            showNotification(error.message, 'error')
+        }
+    }
+
+    const prepareProductList = () => {
+        if (product) {
+            return { productList: [product], isCart: false }
+        }
+        return { productList: cart, isCart: true }
+    }
+
+    const handleMethod = (method) => {
+        setMethod(method)
     }
 
     const handleCheckOut = async () => {
@@ -131,13 +177,22 @@ const PreparePayScreen = ({ route }) => {
                 showNotification('Địa chỉ nhận hàng không hỗ trợ giao hàng', 'error')
                 return
             }
-            if (product) {
-                const productList = [product]
-                await saveOrder(productList, total, transFee, addressData)
+
+            const { productList, isCart } = prepareProductList()
+
+            if (method === PAYMENT_TYPE.MOMO) {
+                setIsLoading(true)
+                const orderId = checkOutByMomo()
+                if (orderId) {
+                    checkStatusTransaction(orderId)
+                }
+                setIsLoading(false)
             } else {
-                await saveOrder(cart, total, transFee, addressData)
-                dispatch(clearCart())
-                await removeItemCart()
+                await saveOrder(productList, total, transFee, addressData)
+                if (isCart) {
+                    dispatch(clearCart())
+                    await removeItemCart()
+                }
             }
             if (voucher) {
                 try {
@@ -147,7 +202,7 @@ const PreparePayScreen = ({ route }) => {
                     console.log(error)
                 }
             }
-            navigation.navigate('OrderSuccess')
+            method === PAYMENT_TYPE.COD ? navigation.navigate('OrderSuccess') : null
         } catch (error) {
             showNotification(error.message, 'error')
         }
@@ -289,7 +344,28 @@ const PreparePayScreen = ({ route }) => {
                             </Text>
                         </View>
                         <Divider />
-                        <Text className="text-base">Thanh toán khi nhận hàng</Text>
+                        <View className="space-y-3">
+                            <Pressable onPress={() => handleMethod(PAYMENT_TYPE.COD)}>
+                                <View className="flex-row space-x-1 items-center">
+                                    <View
+                                        className={`border-2 border-gray-500 p-2 ml-[2.5px] rounded-full ${
+                                            method === PAYMENT_TYPE.COD ? 'bg-amber-400' : 'bg-white'
+                                        }`}
+                                    />
+                                    <Text className="text-base">Thanh toán khi nhận hàng</Text>
+                                </View>
+                            </Pressable>
+                            <Pressable onPress={() => handleMethod(PAYMENT_TYPE.MOMO)}>
+                                <View className="flex-row space-x-1 items-center">
+                                    <View
+                                        className={`border-2 border-gray-500 p-2 ml-[2.5px] rounded-full ${
+                                            method === PAYMENT_TYPE.MOMO ? 'bg-amber-400' : 'bg-white'
+                                        }`}
+                                    />
+                                    <Text className="text-base">Thanh toán bằng MOMO</Text>
+                                </View>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
 
@@ -355,6 +431,7 @@ const PreparePayScreen = ({ route }) => {
                     </View>
                 </View>
             </View>
+            <ModalLoading isLoading={isLoading} />
         </View>
     )
 }

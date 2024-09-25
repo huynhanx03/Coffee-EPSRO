@@ -6,6 +6,11 @@ const MESSAGE_TYPE = Object.freeze({
     INFORM: 'inform'
 })
 
+const PAYMENT_TYPE = Object.freeze({
+    COD: 'cod',
+    MOMO: 'momo'
+})
+
 const BASE_URL = 'http://localhost:3000'
 
-export {GOOGLE_MAPS_API_KEY, MESSAGE_TYPE, BASE_URL} 
+export {GOOGLE_MAPS_API_KEY, MESSAGE_TYPE, BASE_URL, PAYMENT_TYPE} 

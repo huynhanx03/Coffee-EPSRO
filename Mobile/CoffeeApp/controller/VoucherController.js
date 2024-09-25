@@ -36,7 +36,7 @@ const updateVoucherUsed = async (voucherId) => {
 
         return response.data;
     } catch (error) {
-        return response.error.data;
+        return error.response.data;
     }
 }
 
