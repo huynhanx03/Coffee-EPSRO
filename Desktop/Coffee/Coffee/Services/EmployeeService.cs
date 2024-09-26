@@ -6,9 +6,11 @@ using Coffee.Utils.Helper;
 using FireSharp.Response;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Coffee.Services.SalaryCalculatorService;
 
 namespace Coffee.Services
 {
@@ -253,6 +255,26 @@ namespace Coffee.Services
 
                 return (labelEmployee, false);
             }
+        }
+
+        public decimal CalculateSalary(int employeeId, DateTime month, bool includeRewards, bool includePenalties)
+        {
+            // Tạo đối tượng tính lương cơ bản
+            SalaryCalculator baseCalculator = new BaseSalaryCalculator();
+
+            // Thêm tính năng tính thưởng
+            if (includeRewards)
+            {
+                baseCalculator = new RewardSalaryDecorator(baseCalculator);
+            }
+
+            // Thêm tính năng tính phạt
+            if (includePenalties)
+            {
+                baseCalculator = new PenaltySalaryDecorator(baseCalculator);
+            }
+
+            return baseCalculator.CalculateSalary(employeeId, month);
         }
     }
 }

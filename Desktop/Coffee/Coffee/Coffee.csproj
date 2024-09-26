@@ -293,6 +293,7 @@
     <Compile Include="Services\ProductSizeService.cs" />
     <Compile Include="Services\ProductTypeService.cs" />
     <Compile Include="Services\RankService.cs" />
+    <Compile Include="Services\SalaryCalculatorService.cs" />
     <Compile Include="Services\TableService.cs" />
     <Compile Include="Services\TableTypeService.cs" />
     <Compile Include="Services\UnitService.cs" />
