@@ -9,7 +9,7 @@ import { BASE_URL } from "../constants"
  */
 const getUserById = async (userId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/user/${userId}`)
+        const response = await axios.get(`${BASE_URL}/user/user/${userId}`)
         return response.data.data
     } catch (error) {
         return error.response.data
