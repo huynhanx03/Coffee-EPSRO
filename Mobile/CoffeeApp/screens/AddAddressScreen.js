@@ -87,12 +87,8 @@ const AddAddressScreen = () => {
                 }}
                 debounce={500}
                 onChangeText={(text) => {
-                    if (!sessionToken && text.length > 0) {
+                    if (!sessionToken) {
                         setSessionToken(genSessionToken());
-                    }
-
-                    if (text.length === 0) {
-                        setSessionToken(null);
                     }
                 }}
                 onPress={(data, details = null) => {
@@ -108,7 +104,7 @@ const AddAddressScreen = () => {
                     language: "en",
                     sessiontoken: sessionToken,
                 }}
-                fetchDetails={true}
+                fetchDetails={false}
                 enablePoweredByContainer={false}
             />
 

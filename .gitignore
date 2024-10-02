@@ -403,3 +403,5 @@ Mobile/CoffeeApp/*.tsbuildinfo
 .DS_Store
 
 AI/myenv
+
+.env
