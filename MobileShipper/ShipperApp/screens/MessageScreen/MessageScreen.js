@@ -1,13 +1,8 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Entypo from '@expo/vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
-import OrdersList from '../../components/Orders/OrdersList'
 
-const OrdersScreen = () => {
-    const navigation = useNavigation();
+const MessageScreen = () => {
     return (
         <View className='flex-1'>
             <SafeAreaView
@@ -20,15 +15,15 @@ const OrdersScreen = () => {
                     elevation: 6,
                 }}>
                 <View className="flex justify-between items-center">
-                    <Text className="text-xl font-semibold">Đơn hàng</Text>
+                    <Text className="text-xl font-semibold">Tin nhắn</Text>
                 </View>
             </SafeAreaView>
     
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <OrdersList />
+            <ScrollView>
+
             </ScrollView>
         </View>
     )
 }
 
-export default OrdersScreen
+export default MessageScreen

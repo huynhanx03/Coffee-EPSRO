@@ -17,6 +17,11 @@ const AddAddressScreen = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [street, setStreet] = useState("");
+    const [sessionToken, setSessionToken] = useState(null);
+
+    const genSessionToken = () => {
+        return Math.random().toString(36).substring(2, 10);
+    }
 
     const handleAddAddress = async () => {
         try {
@@ -81,16 +86,27 @@ const AddAddressScreen = () => {
                     },
                 }}
                 debounce={500}
+                onChangeText={(text) => {
+                    if (!sessionToken && text.length > 0) {
+                        setSessionToken(genSessionToken());
+                    }
+
+                    if (text.length === 0) {
+                        setSessionToken(null);
+                    }
+                }}
                 onPress={(data, details = null) => {
                     setLocation({
                         latitude: details.geometry.location.lat,
                         longtitude: details.geometry.location.lng,
                         address: details.formatted_address,
                     });
+                    setSessionToken(null);
                 }}
                 query={{
                     key: GOOGLE_MAPS_API_KEY,
                     language: "en",
+                    sessiontoken: sessionToken,
                 }}
                 fetchDetails={true}
                 enablePoweredByContainer={false}
