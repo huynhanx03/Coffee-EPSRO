@@ -29,5 +29,3 @@ CORS(app)
 # if __name__ == "__main__":
 #     app.run(port=5000, debug=True)
 
-productRecommend = RS.recommend("KH0001", "SP0001")
-print(productRecommend)
