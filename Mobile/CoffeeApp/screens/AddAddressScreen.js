@@ -86,23 +86,16 @@ const AddAddressScreen = () => {
                     },
                 }}
                 debounce={500}
-                onChangeText={(text) => {
-                    if (!sessionToken) {
-                        setSessionToken(genSessionToken());
-                    }
-                }}
                 onPress={(data, details = null) => {
                     setLocation({
                         latitude: details.geometry.location.lat,
                         longtitude: details.geometry.location.lng,
                         address: details.formatted_address,
                     });
-                    setSessionToken(null);
                 }}
                 query={{
                     key: GOOGLE_MAPS_API_KEY,
                     language: "en",
-                    sessiontoken: sessionToken,
                 }}
                 fetchDetails={false}
                 enablePoweredByContainer={false}

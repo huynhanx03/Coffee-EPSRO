@@ -4,7 +4,6 @@ const crypto = require('crypto');
 
 const payment = async (req, res) => {
     const { total } = req.body;
-    console.log(total);
 
     var accessKey = process.env.ACCESS_KEY;
     var secretKey = process.env.SECRET_KEY_MOMO;
@@ -61,7 +60,7 @@ const payment = async (req, res) => {
         result = await axios(options);
         return res.status(200).json(result.data);
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Lỗi kết nối tới MoMo' });
     }
 }
 

@@ -13,6 +13,11 @@ const OTP = () => {
 }
 
 let otpGenerate = '';
+const {
+    service_id,
+    template_id,
+    public_key
+} = process.env
 
 /**
  * @notice Send email that contain OTP to the user
@@ -23,15 +28,15 @@ let otpGenerate = '';
 const sendEmail = async (email, user, otp) => {
     try {
         await send (
-            'service_s8671sg',
-            'template_wa15s4b',
+            service_id,
+            template_id,
             {
                 to_name: user,
                 message: otp,
                 recipient: email,
             }, 
             {
-                publicKey: '_TBVrvzhnGTqwNxVm'
+                publicKey: public_key
             }
         )
     } catch (err) {

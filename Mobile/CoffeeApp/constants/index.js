@@ -1,4 +1,4 @@
-const GOOGLE_MAPS_API_KEY=process.env.GOOGLE_MAPS_API_KEY
+const GOOGLE_MAPS_API_KEY=process.env.EXPO_PUBLIC_GOOGLE_MAP_API_KEY
 
 const MESSAGE_TYPE = Object.freeze({
     SUCCESS: 'success',

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
+import { View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -117,6 +117,12 @@ const UserScreen = () => {
                             </View>
                         </LinearGradient>
                     </Pressable>
+                </View>
+
+                <View>
+                    <TouchableOpacity onPress={() => navigation.replace('Login')} className='bg-red-400 rounded-lg shadow-md p-4 mx-4' style={{marginTop: hp(15)}}>
+                        <Text className='text-lg font-bold text-center'>Đăng xuất</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>

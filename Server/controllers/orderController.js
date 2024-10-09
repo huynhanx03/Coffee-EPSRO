@@ -1,5 +1,6 @@
 const db = require('../config/firebase')
 const { handleGetProductById } = require('../dao/productDAO')
+const { getOrdersSuccessByShipperDAO } = require('../dao/shipper/orderDAO')
 const { optionsDateTime } = require('../utils/helper')
 
 const getNewId = async () => {
@@ -35,7 +36,7 @@ const calculateTotal = async (products) => {
 
 const saveOrder = async (req, res) => {
     const userId = req.params.userId
-    const { products, total, transFee, addressData } = req.body
+    const { products, total, transFee, addressData, status } = req.body
     const currentDate = new Date()
     const options = optionsDateTime
     const formattedDate = currentDate.toLocaleString('vi-VN', options)
@@ -49,7 +50,7 @@ const saveOrder = async (req, res) => {
         await db.ref('DonHang/' + newId).set({
             MaDonHang: newId,
             MaNguoiDung: userId,
-            TrangThai: 'Chờ xác nhận',
+            TrangThai: status,
             SanPham: {
                 ...productObj,
             },
@@ -91,10 +92,27 @@ const setStatusOrder = async (req, res) => {
     }
 }
 
+//shipper
+const getOrdersSuccessByShipper = async (req, res) => {
+    try {
+        const { shipperId } = req.params
+        const result = await getOrdersSuccessByShipperDAO(shipperId)
+
+        if (!result.success) {
+            return res.status(404).json({ success: true, data: [] })
+        }
+
+        return res.status(200).json({ success: true, data: result.data })
+    } catch (error) {
+        return res.status(501).json({ success: false, message: error.message });
+    }
+}
+
 
 module.exports = {
     saveOrder,
     calculateTotal,
     getOrders,
-    setStatusOrder
+    setStatusOrder,
+    getOrdersSuccessByShipper
 }

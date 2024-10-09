@@ -15,6 +15,7 @@ const BottomTab = () => {
     return (
         <Tab.Navigator screenOptions={{
             tabBarStyle: {
+                position: 'absolute',
                 marginHorizontal: 12,
                 backgroundColor: 'white',
                 borderTopLeftRadius: 20,

@@ -19,7 +19,7 @@ const MessageScreen = () => {
                 if (supported) {
                     return Linking.openURL(phoneUrl);
                 } else {
-                    console.log("Don't know how to open URI: " + phoneUrl);
+                    console.log("Không thể mở ứng dụng điện thoại: " + phoneUrl);
                 }
             })
             .catch((err) => console.error("An error occurred", err));

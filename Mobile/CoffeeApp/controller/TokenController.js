@@ -1,10 +1,10 @@
-import "core-js/stable/atob";
-import { jwtDecode } from "jwt-decode";
-import { getToken } from "./StorageController";
+import 'core-js/stable/atob'
+import { jwtDecode } from 'jwt-decode'
+import { getToken } from './StorageController'
 
 const isExpiredToken = async (token) => {
     try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token)
         if (decoded.exp >= Date.now() / 1000) {
             return true
         }
@@ -15,16 +15,11 @@ const isExpiredToken = async (token) => {
 }
 
 const getAuthHeaders = async () => {
-    const token = await getToken();
+    const token = await getToken()
     return {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        }
+        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'application/json',
     }
 }
 
-export {
-    isExpiredToken,
-    getAuthHeaders
-}
+export { isExpiredToken, getAuthHeaders }

@@ -14,5 +14,6 @@ router.get('/forgot/:email', userController.getUserByEmail);
 router.put('/user/:userID', authenticateToken, userController.updateUserHandler);
 router.get('/number-phone/:numberPhone', authenticateToken, userController.getUserByNumberphoneHandler);
 router.get('/token/check-token', authenticateToken, userController.checkTokenHandler);
+router.put('/shipper/status', userController.setStatusShipper);
 
 module.exports = router;
