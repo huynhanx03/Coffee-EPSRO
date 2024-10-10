@@ -4,20 +4,28 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen/RegisterScreen';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
-import OrdersScreen from '../screens/OrdersScreen/OrdersScreen';
+import BototmTab from './BottomTab';
+import OrderDetailScreen from '../screens/OrderDetailScreen/OrderDetailScreen';
+import ChatDetailScreen from '../screens/ChatDetailScreen/ChatDetailScreen';
+import SettingScreen from '../screens/SettingScreen/SettingScreen';
+import OrderHistoryScreen from '../screens/OrderHistoryScreen/OrderHistoryScreen';
+import EarningScreen from '../screens/EarningScreen/EarningScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
+            <Stack.Navigator initialRouteName='HomeTab' screenOptions={{headerShown: false}}>
                 <Stack.Screen name='Welcome' component={WelcomeScreen} />
                 <Stack.Screen name='Login' component={LoginScreen} />
                 <Stack.Screen name='Register' component={RegisterScreen} />
-                <Stack.Screen name='Home' component={HomeScreen} />
-                <Stack.Screen name='Orders' component={OrdersScreen} />
+                <Stack.Screen name='HomeTab' component={BototmTab} />
+                <Stack.Screen name='OrderDetail' component={OrderDetailScreen} />
+                <Stack.Screen name='ChatDetail' component={ChatDetailScreen} />
+                <Stack.Screen name='Setting' component={SettingScreen} />
+                <Stack.Screen name='OrderHistory' component={OrderHistoryScreen} />
+                <Stack.Screen name='Earning' component={EarningScreen} />
             </Stack.Navigator>
         </NavigationContainer>   
     )

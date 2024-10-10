@@ -43,7 +43,7 @@ const changePassword = async (oldPassword, newPassword, confirmPassword, isForgo
             return [true, response.data.message]
         }
     } catch (error) {
-        return response.error.data
+        return error.response.data
     }
 }
 

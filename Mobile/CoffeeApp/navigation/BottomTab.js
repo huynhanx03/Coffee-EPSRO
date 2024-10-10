@@ -1,10 +1,6 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
-import { Entypo } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import ProfileScreen from "../screens/ProfileScreen";
 import * as Icons from "react-native-heroicons/mini";
 import { colors } from "../theme";

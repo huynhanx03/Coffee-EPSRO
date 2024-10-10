@@ -32,7 +32,7 @@ const MapScreen = () => {
                     language: "en",
                 }}
                 keyboardShouldPersistTaps={"always"}
-                fetchDetails={true}
+                fetchDetails={false}
                 enablePoweredByContainer={false}
                 style={{ zIndex: 999, position: "absolute", top: wp(9) }}
             />

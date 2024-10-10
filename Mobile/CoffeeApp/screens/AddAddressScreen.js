@@ -17,6 +17,11 @@ const AddAddressScreen = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [street, setStreet] = useState("");
+    const [sessionToken, setSessionToken] = useState(null);
+
+    const genSessionToken = () => {
+        return Math.random().toString(36).substring(2, 10);
+    }
 
     const handleAddAddress = async () => {
         try {
@@ -92,7 +97,7 @@ const AddAddressScreen = () => {
                     key: GOOGLE_MAPS_API_KEY,
                     language: "en",
                 }}
-                fetchDetails={true}
+                fetchDetails={false}
                 enablePoweredByContainer={false}
             />
 

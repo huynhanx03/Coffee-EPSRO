@@ -7,11 +7,11 @@ import { getAuthHeaders } from "./TokenController";
 /**
  * @notice Save order to database
  */
-const saveOrder = async (products, total, transFee, addressData) => {
+const saveOrder = async (products, total, transFee, addressData, status) => {
     try {
         const userData = await getUserData();
         const headers = await getAuthHeaders();
-        const data = {products, total, transFee, addressData};
+        const data = {products, total, transFee, addressData, status};
         const response = await axios.post(`${BASE_URL}/order/${userData.MaNguoiDung}`, data, {headers})
         return response.data
     } catch (error) {

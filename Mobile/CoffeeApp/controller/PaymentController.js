@@ -7,10 +7,14 @@ const paymentByMomo = async (total) => {
         const headers = await getAuthHeaders()
         const response = await axios.post(`${BASE_URL}/payment`, {
             total
-        }, {headers})
+        }, { headers })
         return response.data
     } catch (error) {
-        return error.response.data
+        if (error.response) {
+            throw new Error(error.response.data.message || 'Có lỗi khi tạo đơn hàng!')
+        } else {
+            throw new Error('Có lỗi khi tạo đơn hàng!')
+        }
     }
 }
 
