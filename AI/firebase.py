@@ -3,7 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 
 # Khởi tạo kết nối với Firebase
-cred = credentials.Certificate('/home/huynhnhan2003/mysite/serviceAccountKey.json')
+cred = credentials.Certificate('serviceAccountKey.json')
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://coffee-4053c-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })
@@ -37,9 +37,9 @@ def GetEvaluate():
         {
             'MaKhachHang': evaluete['MaNguoiDung'],
             'MaSanPham': evaluete['MaSanPham'],
-            'DiemDanhGia': evaluete['DiemDanhGia']
+            'DiemDanhGia': evaluete['DiemDanhGia'] 
         }
-        for evaluete in evaluate_data.values()
+        for evaluete in evaluate_data.values() 
     ]
 
     return evaluates
