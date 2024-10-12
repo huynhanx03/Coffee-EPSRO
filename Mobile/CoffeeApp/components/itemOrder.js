@@ -35,7 +35,7 @@ const ItemOrder = (props) => {
 
     const handleReview = () => {
         const MaDonHang = props.order.MaDonHang;
-        setStatusOrder(MaDonHang);
+        setStatusOrder(MaDonHang, 'Đã nhận hàng');
         setIsReceive(true);
         setIsReview(false);
         handleStatusDelivery('Đã nhận hàng');
