@@ -72,8 +72,27 @@ const setStatusShipperDAO = async (shipperId, status) => {
     }
 }
 
+const getStatusShipperDAO = async (shipperId) => {
+    try {
+        const snapshot = await db.ref('NhanVien').orderByChild('MaNhanVien').equalTo(shipperId).once('value');
+        const shipperData = snapshot.val();
+
+        if (!shipperData) {
+            throw new Error('Không tìm thấy mã shipper');
+        }
+
+        return shipperData[Object.keys(shipperData)[0]].TrangThai;
+    } catch (error) {
+        if (error.message === 'Không tìm thấy mã shipper') {
+            throw new Error(error.message)
+        }
+        throw new Error('Lỗi server!')
+    }
+}
+
 module.exports = {
     shipperLoginDAO,
     getProfitByShipperDAO,
-    setStatusShipperDAO
+    setStatusShipperDAO,
+    getStatusShipperDAO
 }

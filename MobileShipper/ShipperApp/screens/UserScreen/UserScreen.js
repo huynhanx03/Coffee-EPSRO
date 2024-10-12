@@ -7,9 +7,12 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { colors } from '../../theme/Theme'
 import { useNavigation } from '@react-navigation/native'
+import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
 
 const UserScreen = () => {
     const navigation = useNavigation()
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004')
+
     return (
         <View className="flex-1 bg-white">
             <View
@@ -93,7 +96,7 @@ const UserScreen = () => {
                                     <Text className='font-semibold text-center' style={{fontSize: hp(2)}}>Đơn hàng đã giao</Text>
                                 </View>
                                 <View className='flex-1 justify-center items-center'>
-                                    <Text style={{fontSize: hp(3)}}>10 📦</Text>
+                                    <Text style={{fontSize: hp(3)}}>{orderSuccess?.length} 📦</Text>
                                 </View>
                             </View>
                         </LinearGradient>

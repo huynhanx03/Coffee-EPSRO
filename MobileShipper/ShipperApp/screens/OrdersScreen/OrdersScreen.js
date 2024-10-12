@@ -1,13 +1,10 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import OrdersList from '../../components/Orders/OrdersList'
 
 const OrdersScreen = () => {
-    const navigation = useNavigation();
     return (
         <View className='flex-1'>
             <SafeAreaView
@@ -24,9 +21,9 @@ const OrdersScreen = () => {
                 </View>
             </SafeAreaView>
     
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <View showsVerticalScrollIndicator={false}>
                 <OrdersList />
-            </ScrollView>
+            </View>
         </View>
     )
 }

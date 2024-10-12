@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 const crypto = require('crypto')
 const { updateUser, checkIDCard, checkEmail, checkNumberPhone, checkUsername } = require('../dao/userDAO')
 const { messaging } = require('firebase-admin')
-const { shipperLoginDAO, setStatusShipperDAO } = require('../dao/shipper/userDAO')
+const { shipperLoginDAO, setStatusShipperDAO, getStatusShipperDAO } = require('../dao/shipper/userDAO')
 
 dotenv.config()
 
@@ -269,6 +269,23 @@ const setStatusShipper = async (req, res) => {
         
         return res.status(200).json({ success: true, message: result.message });
     } catch (error) {
+        if (error.message === 'Không tìm thấy mã shipper') {
+            return res.status(404).json({ success: false, message: error.message });
+        }
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const getStatusShipper = async (req, res) => {
+    try {
+        const { shipperId } = req.params;
+        const result = await getStatusShipperDAO(shipperId);
+
+        return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+        if (error.message === 'Không tìm thấy mã shipper') {
+            return res.status(404).json({ success: false, message: error.message });
+        }
         return res.status(500).json({ success: false, message: error.message });
     }
 }
@@ -285,5 +302,6 @@ module.exports = {
     loginDesktopHandler,
     checkTokenHandler,
     shipperLogin,
-    setStatusShipper
+    setStatusShipper,
+    getStatusShipper
 }

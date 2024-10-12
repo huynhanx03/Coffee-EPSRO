@@ -41,23 +41,23 @@ const EarningScreen = () => {
                     </View>
                     <Text
                         className="text-white text-3xl font-bold"
-                        style={{ marginTop: hp(1) }}>
+                        style={{ marginTop: hp(0) }}>
                         {formatPrice(1000000)}
                     </Text>
                 </SafeAreaView>
 
                 <View className="mx-4 flex-row justify-around">
                     <View
-                        className="bg-white shadow-md rounded-lg"
-                        style={{ marginTop: -hp(2), width: wp(40) }}>
+                        className="bg-white shadow-md rounded-lg justify-center"
+                        style={{ marginTop: -hp(2), width: wp(40), height: hp(10) }}>
                         <View className="p-5">
                             <Text className="text-lg font-semibold">Đơn hàng</Text>
                             <Text className="text-base">10 📦</Text>
                         </View>
                     </View>
                     <View
-                        className="bg-white shadow-md rounded-lg"
-                        style={{ marginTop: -hp(2), width: wp(40) }}>
+                        className="bg-white shadow-md rounded-lg justify-center"
+                        style={{ marginTop: -hp(2), width: wp(40), height: hp(10) }}>
                         <View className="p-5">
                             <Text className="text-lg font-semibold">Đánh giá</Text>
                             <Text className="text-base">4.5 ⭐</Text>
@@ -66,7 +66,7 @@ const EarningScreen = () => {
                 </View>
             </View>
             
-            <View className='flex-1'>
+            <View className='flex-1 mt-4'>
                 <EarningChart />
 
             </View>

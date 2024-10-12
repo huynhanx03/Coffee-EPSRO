@@ -1,6 +1,6 @@
 const db = require('../config/firebase')
 const { handleGetProductById } = require('../dao/productDAO')
-const { getOrdersSuccessByShipperDAO } = require('../dao/shipper/orderDAO')
+const { getOrdersSuccessByShipperDAO, getOrdersDAO, takeUpOrderDAO, getOrdersByShipperDAO, getStatusOrderDAO, cancelOrderDAO } = require('../dao/shipper/orderDAO')
 const { optionsDateTime } = require('../utils/helper')
 
 const getNewId = async () => {
@@ -74,45 +74,109 @@ const getOrders = async (req, res) => {
 
         return res.status(200).json({ success: true, data: orders || 'Khách hàng chưa tạo đơn hàng' })
     } catch (error) {
-        return res.status(501).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message });
     }
 }
 
 const setStatusOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId
+        const { status } = req.body
         await db.ref('DonHang/' + orderId).update({
-            TrangThai: 'Đã nhận hàng',
+            TrangThai: status,
         })
 
         return res.status(200).json({ success: true, message: 'Cập nhật trạng thái đơn hàng thành công' })
     } catch (error) {
-        return res.status(501).json({ success: false, message: "Lỗi server!" });
+        return res.status(500).json({ success: false, message: "Lỗi server!" });
         
     }
 }
 
 //shipper
+const getAllOrders = async (req, res) => {
+    try {
+        const result = await getOrdersDAO()
+
+        return res.status(200).json({ success: true, data: result.data })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const getOrderByShipperId = async (req, res) => {
+    try {
+        const { shipperId } = req.params
+        const result = await getOrdersByShipperDAO(shipperId)
+
+        return res.status(200).json({ success: true, data: result.data })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 const getOrdersSuccessByShipper = async (req, res) => {
     try {
         const { shipperId } = req.params
         const result = await getOrdersSuccessByShipperDAO(shipperId)
 
-        if (!result.success) {
-            return res.status(404).json({ success: true, data: [] })
-        }
-
         return res.status(200).json({ success: true, data: result.data })
     } catch (error) {
-        return res.status(501).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message });
     }
 }
 
+const takeUpOrder = async (req, res) => {
+    try {
+        const { orderId, shipperId } = req.body
+        const result = await takeUpOrderDAO(orderId, shipperId)
+
+        return res.status(200).json({ success: true, message: result.message })
+    } catch (error) {
+        if (error.message === 'Mã đơn hàng không tồn tại' || error.message === 'Đơn hàng đã được nhận') {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const getStatusOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params
+        const result = await getStatusOrderDAO(orderId)
+
+        return res.status(200).json({ success: true, data: result.data })
+    } catch (error) {
+        if (error.message === 'Mã đơn hàng không tồn tại') {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId, shipperId } = req.body
+        const result = await cancelOrderDAO(orderId, shipperId)
+
+        return res.status(200).json({ success: true, message: result.message })
+    } catch (error) {
+        if (error.message === 'Mã đơn hàng không tồn tại') {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
 
 module.exports = {
     saveOrder,
     calculateTotal,
     getOrders,
     setStatusOrder,
-    getOrdersSuccessByShipper
+    getAllOrders,
+    getOrdersSuccessByShipper,
+    takeUpOrder,
+    getOrderByShipperId,
+    getStatusOrder,
+    cancelOrder
 }
