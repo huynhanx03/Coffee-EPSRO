@@ -32,7 +32,7 @@ const updateVoucherUsed = async (voucherId) => {
     try {
         const userData = await getUserData();
         const headers = await getAuthHeaders();
-        const response = await axios.post(`${BASE_URL}/voucher/update/${voucherId}/${userData.MaNguoiDung}`, {headers});
+        const response = await axios.post(`${BASE_URL}/voucher/update/${voucherId}/${userData.MaNguoiDung}`, {}, {headers});
 
         return response.data;
     } catch (error) {

@@ -10,8 +10,9 @@ import { useNavigation } from '@react-navigation/native'
 import { colors } from '../../theme/Theme'
 import OrderRecentList from '../../components/OrderRecent/OrderRecentList'
 
-const EarningScreen = () => {
+const EarningScreen = ({route}) => {
     const navigation = useNavigation()
+    const { profit, orderCount } = route.params
     return (
         <ScrollView>
             <View
@@ -42,7 +43,7 @@ const EarningScreen = () => {
                     <Text
                         className="text-white text-3xl font-bold"
                         style={{ marginTop: hp(0) }}>
-                        {formatPrice(1000000)}
+                        {formatPrice(profit)}
                     </Text>
                 </SafeAreaView>
 
@@ -52,7 +53,7 @@ const EarningScreen = () => {
                         style={{ marginTop: -hp(2), width: wp(40), height: hp(10) }}>
                         <View className="p-5">
                             <Text className="text-lg font-semibold">Đơn hàng</Text>
-                            <Text className="text-base">10 📦</Text>
+                            <Text className="text-base">{orderCount} 📦</Text>
                         </View>
                     </View>
                     <View
@@ -85,7 +86,7 @@ const EarningScreen = () => {
                     <View
                         className="p-5 py-6 bg-blue-300"
                         style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <Text>Tháng 9 / 2024</Text>
+                        <Text className='text-base font-semibold'>5 đơn hàng gần nhất</Text>
                     </View>
                     <View
                         className="bg-white shadow-lg"

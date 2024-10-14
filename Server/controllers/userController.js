@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 const crypto = require('crypto')
 const { updateUser, checkIDCard, checkEmail, checkNumberPhone, checkUsername } = require('../dao/userDAO')
 const { messaging } = require('firebase-admin')
-const { shipperLoginDAO, setStatusShipperDAO, getStatusShipperDAO } = require('../dao/shipper/userDAO')
+const { shipperLoginDAO, setStatusShipperDAO, getStatusShipperDAO, getProfitByShipperDAO } = require('../dao/shipper/userDAO')
 
 dotenv.config()
 
@@ -290,6 +290,17 @@ const getStatusShipper = async (req, res) => {
     }
 }
 
+const getProfitByShipper = async (req, res) => {
+    try {
+        const { shipperId } = req.params;
+        const result = await getProfitByShipperDAO(shipperId)
+
+        return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message })
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -303,5 +314,6 @@ module.exports = {
     checkTokenHandler,
     shipperLogin,
     setStatusShipper,
-    getStatusShipper
+    getStatusShipper,
+    getProfitByShipper
 }

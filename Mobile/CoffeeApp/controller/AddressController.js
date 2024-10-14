@@ -49,7 +49,7 @@ const setDefaultAddress = async (key) => {
     try {
         const userData = await getUserData();
         const headers = await getAuthHeaders();
-        const response = await axios.put(`${BASE_URL}/address/${userData.MaNguoiDung}/${key}`, {headers})
+        const response = await axios.put(`${BASE_URL}/address/${userData.MaNguoiDung}/${key}`, {}, {headers})
         return response.data
     } catch (error) {
         return error.response.data

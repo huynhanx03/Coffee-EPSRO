@@ -12,7 +12,7 @@ const setCart = async (item) => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.post(`${BASE_URL}/cart/${userData.MaNguoiDung}`, item, {headers})
+        const response = await axios.post(`${BASE_URL}/cart/set-cart/${userData.MaNguoiDung}`, item, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -28,7 +28,7 @@ const deleteItemCard = async (item) => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}/${item.MaSanPham}`, {headers})
+        const response = await axios.delete(`${BASE_URL}/cart/delete-item-cart/${userData.MaNguoiDung}/${item.MaSanPham}`, {}, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -42,7 +42,7 @@ const removeItemCart = async () => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.delete(`${BASE_URL}/cart/${userData.MaNguoiDung}`, {headers})
+        const response = await axios.delete(`${BASE_URL}/cart/remove-cart/${userData.MaNguoiDung}`, {}, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -55,7 +55,7 @@ const removeItemCart = async () => {
 const getCart = async () => {
     try {
         const userData = await getUserData()
-        const response = await axios.get(`${BASE_URL}/cart/${userData.MaNguoiDung}`)
+        const response = await axios.get(`${BASE_URL}/cart/get-cart/${userData.MaNguoiDung}`)
         return response.data
     } catch (err) {
         return err.response.data
@@ -70,7 +70,8 @@ const updateCartWithLastPrice = async () => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.put(`${BASE_URL}/cart/${userData.MaNguoiDung}`, {headers})
+        console.log(headers)
+        const response = await axios.put(`${BASE_URL}/cart/update-cart/${userData.MaNguoiDung}`, {}, {headers})
         return response.data
     } catch (error) {
         return error.response.data
