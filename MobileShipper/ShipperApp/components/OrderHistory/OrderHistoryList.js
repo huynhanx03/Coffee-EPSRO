@@ -3,6 +3,7 @@ import React from 'react'
 import OrderHistoryItem from './OrderHistoryItem'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
+import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
 
 const renderSeperator = () => {
     return (
@@ -11,11 +12,12 @@ const renderSeperator = () => {
 }
 
 const OrderHistoryList = () => {
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004');
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut} className='mt-4 mx-4'>
+        <Animated.View entering={FadeIn} exiting={FadeOut}>
             <FlatList 
-                data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                renderItem={() => <OrderHistoryItem />}
+                data={orderSuccess}
+                renderItem={({ item }) => <OrderHistoryItem order={item}/>}
                 keyExtractor={(item, index) => index.toString()}
                 ItemSeparatorComponent={renderSeperator}
                 showsVerticalScrollIndicator={false}

@@ -1,4 +1,5 @@
 const { getUserContacts, getMessages, addMessage } = require('../dao/chatDAO');
+const { getAllUserChatDAO, makeChatDAO } = require('../dao/shipper/chatDAO');
 
 const getUserContactsHandler = async (req, res) => {
     try {
@@ -41,8 +42,37 @@ const addMessageHandler = async (req, res) => {
     }
 };
 
+//shipper
+const getAllUserChat = async (req, res) => {
+    try {
+        const { shipperId } = req.params;
+        const allUserChat = await getAllUserChatDAO(shipperId);
+
+        if (!allUserChat) {
+            return res.status(200).json({ success: true, data: [] });
+        }
+
+        return res.status(200).json({ success: true, data: allUserChat });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });   
+    }
+}
+
+const makeChat = async (req, res) => {
+    try {
+        const { shipperId, userId } = req.body;
+        await makeChatDAO(shipperId, userId);
+
+        return res.status(200).json({ success: true, message: 'Tạo chat thành công' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 module.exports = {
     getUserContactsHandler,
     getMessagesHandler,
-    addMessageHandler
+    addMessageHandler,
+    getAllUserChat,
+    makeChat
 };

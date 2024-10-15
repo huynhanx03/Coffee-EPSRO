@@ -24,23 +24,27 @@ const shipperLoginDAO = async (username, password) => {
 
 const getProfitByShipperDAO = async (shipperId) => {
     try {
-        if (!shipperId) {
-            return { success: false, message: 'Không tìm thấy mã shipper' };
-        }
-
         const snapshot = await db.ref('DonHang').orderByChild('MaNhanVien').equalTo(shipperId).once('value');
         const profits = snapshot.val();
+        
+        if (!shipperId) {
+            throw new Error('Không tìm thấy mã shipper');
+        }
 
         if (!profits) {
             return { success: true, data: [] };
         }
 
-        const profitAndDay = Object.keys(profits).map(key => {
-            return {
-                Ngay: profits[key].Ngay,
-                DoanhThu: profits[key].PhiVanChuyen
-            }
-        })
+         const profitAndDay = Object.keys(profits)
+            .filter(key => profits[key].TrangThai === 'Giao hàng thành công' || profits[key].TrangThai === 'Đã nhận hàng')
+            .map(key => {
+                const fullDate = profits[key].NgayTaoDon.split(' ');
+                const date = fullDate[1];
+                return {
+                    Ngay: date,
+                    DoanhThu: profits[key].PhiVanChuyen
+                }
+            });
 
         return { success: true, data: profitAndDay };
     } catch (error) {
@@ -52,8 +56,6 @@ const setStatusShipperDAO = async (shipperId, status) => {
     try {
         const snapshot = await db.ref('NhanVien').orderByChild('MaNhanVien').equalTo(shipperId).once('value');
         const shipperData = snapshot.val();
-
-        console.log(shipperData[Object.keys(shipperData)[0]].MaChucVu);
 
         if (!shipperData || shipperData[Object.keys(shipperData)[0]].MaChucVu != "CD0004") {
             throw new Error('Không tìm thấy mã shipper');
@@ -72,8 +74,27 @@ const setStatusShipperDAO = async (shipperId, status) => {
     }
 }
 
+const getStatusShipperDAO = async (shipperId) => {
+    try {
+        const snapshot = await db.ref('NhanVien').orderByChild('MaNhanVien').equalTo(shipperId).once('value');
+        const shipperData = snapshot.val();
+
+        if (!shipperData) {
+            throw new Error('Không tìm thấy mã shipper');
+        }
+
+        return shipperData[Object.keys(shipperData)[0]].TrangThai;
+    } catch (error) {
+        if (error.message === 'Không tìm thấy mã shipper') {
+            throw new Error(error.message)
+        }
+        throw new Error('Lỗi server!')
+    }
+}
+
 module.exports = {
     shipperLoginDAO,
     getProfitByShipperDAO,
-    setStatusShipperDAO
+    setStatusShipperDAO,
+    getStatusShipperDAO
 }

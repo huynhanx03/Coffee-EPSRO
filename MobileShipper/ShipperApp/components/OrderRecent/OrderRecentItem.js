@@ -4,7 +4,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import React from 'react'
 import { formatPrice } from '../../utils'
 
-const OrderRecentItem = () => {
+const OrderRecentItem = (props) => {
+    const { order } = props
     return (
         <View className="px-5 py-5 space-y-3">
             <View className="flex-row justify-between items-center">
@@ -14,7 +15,7 @@ const OrderRecentItem = () => {
                         size={24}
                         color="#4185f4"
                     />
-                    <Text className="text-base">Đơn hàng 1</Text>
+                    <Text className="text-base">Đơn hàng {order.MaDonHang}</Text>
                 </View>
                 <View className="flex-row items-center space-x-3">
                     <FontAwesome6
@@ -25,7 +26,7 @@ const OrderRecentItem = () => {
                     <Text
                         numberOfLines={1}
                         className="text-base font-semibold">
-                        {formatPrice(100000)}
+                        {formatPrice(order.ThanhTien)}
                     </Text>
                 </View>
             </View>

@@ -8,12 +8,14 @@ const renderSeperator = () => {
     return <View className="bg-gray-200 h-0.5 ml-4" />
 }
 
-const OrderDetailList = () => {
+const OrderDetailList = (props) => {
+    const { orderProducts } = props
+    const products = Object.values(orderProducts)
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut} className='mt-4 mx-4'>
+        <Animated.View entering={FadeIn} exiting={FadeOut} className='mx-4'>
             <FlatList 
-                data={[1, 2, 3, 4, 5]}
-                renderItem={() => <OrderDetailItem />}
+                data={products}
+                renderItem={({ item }) => <OrderDetailItem product={item}/>}
                 keyExtractor={(item, index) => index.toString()}
                 ItemSeparatorComponent={renderSeperator}
                 showsVerticalScrollIndicator={false}

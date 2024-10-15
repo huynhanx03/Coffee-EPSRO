@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,9 +7,16 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { colors } from '../../theme/Theme'
 import { useNavigation } from '@react-navigation/native'
+import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
+import useGetProfitByShipper from '../../hooks/useGetProfitByShipper'
 
 const UserScreen = () => {
     const navigation = useNavigation()
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004')
+    const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper('NV0004')
+
+    const totalRevenue = profit.reduce((acc, item) => acc + item.DoanhThu, 0)
+
     return (
         <View className="flex-1 bg-white">
             <View
@@ -45,31 +52,31 @@ const UserScreen = () => {
                     locations={[0, 1]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}>
-                    <View className="flex-row space-x-2">
+                    <View className="flex-row space-x-2 items-center">
                         <Text
-                            className="font-semibold italic"
+                            className="font-semibold italic text-base"
                             style={{ color: colors.text_gray }}>
                             Họ và tên:{' '}
                         </Text>
-                        <Text>Nguyễn Văn A</Text>
+                        <Text className='text-lg font-semibold'>Nguyễn Văn A</Text>
                     </View>
 
-                    <View className="flex-row space-x-2 my-5">
+                    <View className="flex-row space-x-2 my-5 items-center">
                         <Text
-                            className="font-semibold italic"
+                            className="font-semibold italic text-base"
                             style={{ color: colors.text_gray }}>
                             Số điện thoại:{' '}
                         </Text>
-                        <Text>0123456789</Text>
+                        <Text className='text-lg font-semibold'>0123456789</Text>
                     </View>
 
-                    <View className="flex-row space-x-2">
+                    <View className="flex-row space-x-2 items-center">
                         <Text
-                            className="font-semibold italic"
+                            className="font-semibold italic text-base"
                             style={{ color: colors.text_gray }}>
                             Email:{' '}
                         </Text>
-                        <Text>a@gmail.com</Text>
+                        <Text className='text-lg font-semibold'>a@gmail.com</Text>
                     </View>
                 </LinearGradient>
 
@@ -92,14 +99,17 @@ const UserScreen = () => {
                                 <View>
                                     <Text className='font-semibold text-center' style={{fontSize: hp(2)}}>Đơn hàng đã giao</Text>
                                 </View>
-                                <View className='flex-1 justify-center items-center'>
-                                    <Text style={{fontSize: hp(3)}}>10 📦</Text>
+                                <View className='flex-1 justify-center items-center flex-row space-x-2'>
+                                    {
+                                        isLoading ? <ActivityIndicator /> : <Text style={{fontSize: hp(3)}}>{orderSuccess?.length}</Text>
+                                    }
+                                    <Text style={{fontSize: hp(3)}}>📦</Text>
                                 </View>
                             </View>
                         </LinearGradient>
                     </Pressable>
 
-                    <Pressable onPress={() => navigation.navigate('Earning')}>
+                    <Pressable onPress={() => navigation.navigate('Earning', {profit: totalRevenue, orderCount: orderSuccess.length})}>
                         <LinearGradient
                             className="p-5 rounded-lg"
                             style={{ width: wp(45), height: hp(15) }}
@@ -112,7 +122,7 @@ const UserScreen = () => {
                                     <Text className='font-semibold text-center' style={{fontSize: hp(2)}}>Lợi nhuận 💲 </Text>
                                 </View>
                                 <View className='flex-1 justify-center items-center'>
-                                    <Text style={{fontSize: hp(3)}}>{formatPrice(1000000)}</Text>
+                                    {isLoadingProfit ? <ActivityIndicator /> : <Text style={{fontSize: hp(3)}}>{formatPrice(totalRevenue)}</Text>}
                                 </View>
                             </View>
                         </LinearGradient>

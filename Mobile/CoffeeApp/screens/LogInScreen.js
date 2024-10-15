@@ -61,7 +61,7 @@ export default function LogInScreen() {
             const response = await handleLogin(username, password);
             if (response.success) {
                 setIsLoading(false);
-                handleGetCart()
+                await handleGetCart()
                 navigation.replace('HomeTab')
             }
             else {
