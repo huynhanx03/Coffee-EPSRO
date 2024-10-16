@@ -201,6 +201,7 @@ class CreateData:
 
     def createRecommendedProductQuestions(self):
         recommendedProductQuestions = [
+            'gợi ý sản phẩm cho "object" với'
             'gợi ý cà phê tốt nhất',
             'bạn có thể gợi ý cà phê cho "object" không',
             'cà phê nào phù hợp với "object"',
