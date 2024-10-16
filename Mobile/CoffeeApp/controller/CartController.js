@@ -70,7 +70,6 @@ const updateCartWithLastPrice = async () => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        console.log(headers)
         const response = await axios.put(`${BASE_URL}/cart/update-cart/${userData.MaNguoiDung}`, {}, {headers})
         return response.data
     } catch (error) {

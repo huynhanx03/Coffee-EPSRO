@@ -8,6 +8,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
 import { setStatusShipper } from '../../controllers/UserController'
 import { useNotification } from '../../context/NotificationContext/NotificationContext'
+import useGetAllUserChat from '../../hooks/useGetAllUserChat'
+import { useNavigation } from '@react-navigation/native'
+import { useNewMessage } from '../../context/NewMessageContext/NewMessageContext'
 
 const HomeScreen = () => {
     const [isVisible, setIsVisible] = useState(false)
@@ -15,6 +18,16 @@ const HomeScreen = () => {
     const translateY = useSharedValue(50)
     const height = useSharedValue(0)
     const { showNotification } = useNotification()
+    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('NV0004')
+    const navigation = useNavigation()
+    const { newMessage, setNewMessage } = useNewMessage()
+
+    useEffect(() => {
+        const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaKhachHang).length
+        if (count > 0) {
+            setNewMessage(count)
+        }
+    }, [allUserChat, isFetching, navigation])
 
     const setStatus = async (status) => {
         try {
