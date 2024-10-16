@@ -12,7 +12,8 @@ router.get('/status-order/:orderId', orderController.getStatusOrder)
 router.put('/cancel-order', orderController.cancelOrder)
 
 router.post('/save-order/:userId', authenticateToken, orderController.saveOrder)
-router.get('/orders/:userId', orderController.getOrders)
-router.put('/set-status-order/:orderId', orderController.setStatusOrder)
+router.get('/orders/:userId?', authenticateToken, orderController.getOrders)
+router.put('/set-status-order/:orderId', authenticateToken, orderController.setStatusOrder)
+router.put('/bill/:orderId', authenticateToken, orderController.setBillIDOrderHandler)
 
 module.exports = router

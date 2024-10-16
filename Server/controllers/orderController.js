@@ -69,8 +69,31 @@ const saveOrder = async (req, res) => {
 const getOrders = async (req, res) => {
     try {
         const userId = req.params.userId
-        const ordersSnapshot = await db.ref('DonHang/').orderByChild('MaNguoiDung').equalTo(userId).once('value')
-        const orders = ordersSnapshot.val()
+        var orders;
+
+        if (userId) {
+            ordersSnapshot = await db.ref('DonHang/').orderByChild('MaNguoiDung').equalTo(userId).once('value');
+            orders = ordersSnapshot.val()
+
+        } else {
+            const ordersSnapshot = await db.ref('DonHang/').once('value');
+            const ordersData = ordersSnapshot.val();
+            const ordersArray = Object.values(ordersData);
+
+            const userSnapshot = await db.ref('NguoiDung').once('value');
+            const userData = userSnapshot.val();
+            const usersArray = Object.values(userData);
+
+            const result = ordersArray.map(order => {
+                const user = usersArray.find(user => user.MaNguoiDung === order.MaNguoiDung);
+            
+                order.TenKhachHang = user ? user.HoTen : 'Unknown Customer';
+                
+                return order; 
+            });
+
+            orders = result;
+        }
 
         return res.status(200).json({ success: true, data: orders || 'Khách hàng chưa tạo đơn hàng' })
     } catch (error) {
@@ -92,6 +115,21 @@ const setStatusOrder = async (req, res) => {
         
     }
 }
+
+const setBillIDOrderHandler = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const { billID } = req.body;
+
+        await db.ref('DonHang/' + orderId).update({
+            MaHoaDon: billID,
+        });
+
+        return res.status(200).json({ success: true, message: 'Cập nhật đơn hàng thành công' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Lỗi server!', error: error.message });
+    }
+};
 
 //shipper
 const getAllOrders = async (req, res) => {
@@ -178,5 +216,6 @@ module.exports = {
     takeUpOrder,
     getOrderByShipperId,
     getStatusOrder,
-    cancelOrder
+    cancelOrder,
+    setBillIDOrderHandler
 }
