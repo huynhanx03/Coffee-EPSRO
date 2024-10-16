@@ -36,4 +36,4 @@ const makeChatDAO = async (shipperId, userId) => {
     }
 }
 
-export { getAllUserChatDAO, makeChatDAO }
+module.exports = { getAllUserChatDAO, makeChatDAO }

@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 using Coffee.DALs;
+using Coffee.DesignPattern.Mediator;
 using Coffee.DTOs;
 using Coffee.Models;
 using Coffee.Services;
@@ -95,7 +96,13 @@ namespace Coffee.ViewModel.AdminVM.Order
 
             loadOrderListIC = new RelayCommand<object>((p) => { return true; }, (p) =>
             {
+                MaskName.Visibility = Visibility.Visible;
+                IsLoading = true;
+
                 loadOrderList();
+
+                MaskName.Visibility = Visibility.Collapsed;
+                IsLoading = false;
             });
 
             loadStatusListIC = new RelayCommand<object>((p) => { return true; }, (p) =>
@@ -138,11 +145,8 @@ namespace Coffee.ViewModel.AdminVM.Order
         /// <summary>
         /// Load danh sách đơn hàng
         /// </summary>
-        private async void loadOrderList()
+        public async Task loadOrderList()
         {
-            MaskName.Visibility = Visibility.Visible;
-            IsLoading = true;
-
             (string label, List<OrderDTO> Orders) = await OrderService.Ins.getListOrder();
 
             if (Orders != null)
@@ -162,8 +166,9 @@ namespace Coffee.ViewModel.AdminVM.Order
                 OrderStatusList = new List<OrderDTO>();
             }
 
-            MaskName.Visibility = Visibility.Collapsed;
-            IsLoading = false;
+            await ConcreteMediator.Ins.Notify(this, "UpdateOrderCount " + __OrderList.Count(order => order.TrangThai == Constants.StatusOrder.WAITTING).ToString());
+
+
         }
 
         /// <summary>

@@ -224,6 +224,8 @@
     <Compile Include="DALs\DiscountProductDAL.cs" />
     <Compile Include="DALs\EvaluateDAL.cs" />
     <Compile Include="DALs\OrderDAL.cs" />
+    <Compile Include="DesignPattern\Mediator\ConcreteMediator .cs" />
+    <Compile Include="DesignPattern\Mediator\IMediator.cs" />
     <Compile Include="DSA\BinarySearch.cs" />
     <Compile Include="DTOs\CustomerDTO.cs" />
     <Compile Include="DALs\EmployeeDAL.cs" />
@@ -311,6 +313,7 @@
     </Compile>
     <Compile Include="Utils\CloudService.cs" />
     <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\ConverterValue\HintCountConverter.cs" />
     <Compile Include="Utils\ConverterValue\OrderConverter.cs" />
     <Compile Include="Utils\ConverterValue\RoleConverter.cs" />
     <Compile Include="Utils\ConverterValue\TableCoverter.cs" />
