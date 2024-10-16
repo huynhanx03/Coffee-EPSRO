@@ -28,8 +28,9 @@ namespace Coffee.DesignPattern.Mediator
             }
         }
 
-        public OrderViewModel orderViewModel = new OrderViewModel();
-        public MainAdminViewModel mainAdminViewModel = new MainAdminViewModel();
+        public OrderViewModel orderViewModel { get; set; }
+        public MainAdminViewModel mainAdminViewModel { get; set; }
+        
         public async Task Notify(object sender, string message)
         {
             var parts = message.Split(' ');

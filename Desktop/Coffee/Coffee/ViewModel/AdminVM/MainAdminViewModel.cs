@@ -90,6 +90,8 @@ namespace Coffee.ViewModel.AdminVM
 
         public MainAdminViewModel()
         {
+            if (ConcreteMediator.Ins.mainAdminViewModel == null) ConcreteMediator.Ins.mainAdminViewModel = this;
+
             Image = Memory.user.HinhAnh;
             Name = Memory.user.HoTen;
 
@@ -182,10 +184,12 @@ namespace Coffee.ViewModel.AdminVM
                 optionName = "Quản lý khách hàng";
             });
 
-            loadOrderPageIC = new RelayCommand<Frame>((p) => { return true; }, (p) =>
+            loadOrderPageIC = new RelayCommand<Frame>((p) => { return true; }, async (p) =>
             {
                 p.Content = new MainOrderPage();
                 optionName = "Quản lý đơn hàng";
+
+                await ConcreteMediator.Ins.Notify(this, "LoadOrderList");
             });
 
             loguoutIC = new RelayCommand<object>((p) => { return true; }, (p) =>
@@ -231,7 +235,6 @@ namespace Coffee.ViewModel.AdminVM
 
         private async void loadBeginning()
         {
-            await ConcreteMediator.Ins.Notify(this, "LoadOrderList");
         }
 
         public void UpdateOrderCount(int amount)

@@ -89,6 +89,8 @@ namespace Coffee.ViewModel.AdminVM.Order
 
         public OrderViewModel()
         {
+            if (ConcreteMediator.Ins.orderViewModel == null) ConcreteMediator.Ins.orderViewModel = this;
+
             loadShadowMaskIC = new RelayCommand<Grid>((p) => { return true; }, (p) =>
             {
                 MaskName = p;
@@ -167,8 +169,6 @@ namespace Coffee.ViewModel.AdminVM.Order
             }
 
             await ConcreteMediator.Ins.Notify(this, "UpdateOrderCount " + __OrderList.Count(order => order.TrangThai == Constants.StatusOrder.WAITTING).ToString());
-
-
         }
 
         /// <summary>

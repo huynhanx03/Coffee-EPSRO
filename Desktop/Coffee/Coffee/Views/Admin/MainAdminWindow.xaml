@@ -160,15 +160,33 @@
                             Grid.Row="0"
                             HorizontalAlignment="Left"
                             Orientation="Horizontal">
-                            <Button
-                                x:Name="OpenMenuBtn"
-                                Margin="15,0,0,0"
-                                Background="{DynamicResource MainColorCF}"
-                                BorderBrush="{x:Null}"
-                                Cursor="Hand"
-                                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
-                                <materialDesign:PackIcon Foreground="{DynamicResource BackgroundCF}" Kind="ArrowRight" />
-                            </Button>
+                            <Grid>
+                                <Button
+                                    x:Name="OpenMenuBtn"
+                                    Margin="15,0,0,0"
+                                    Background="{DynamicResource MainColorCF}"
+                                    BorderBrush="{x:Null}"
+                                    Cursor="Hand"
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                                    <materialDesign:PackIcon Foreground="{DynamicResource BackgroundCF}" Kind="ArrowRight" />
+                                </Button>
+
+                                <Border Background="{DynamicResource RedNCF}"
+                                        CornerRadius="100"
+                                        Width="20"
+                                        Height="20"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Right"
+                                        Visibility="{Binding orderCount,Converter={StaticResource CountConverter}}"
+                                        Margin="0, 5, 0, 0">
+                                    <TextBlock Text="{Binding orderCount}"
+                                               FontSize="8"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource BackgroundCF}" />
+                                </Border>
+                            </Grid>
+                            
 
                             <Image
                                 Width="70"
