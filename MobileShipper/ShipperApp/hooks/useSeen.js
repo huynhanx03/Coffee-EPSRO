@@ -9,7 +9,6 @@ const useSeen = () => {
             console.error(err.response ? err.response.data.message : err.message)
         },
         onSuccess: () => {
-            console.log('Seen message successfully')
             queryClient.invalidateQueries('allChat')
         }
     })

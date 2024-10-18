@@ -2,9 +2,11 @@ const db = require('../config/firebase')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 const { updateUser, checkIDCard, checkEmail, checkNumberPhone, checkUsername } = require('../dao/userDAO')
 const { messaging } = require('firebase-admin')
 const { shipperLoginDAO, setStatusShipperDAO, getStatusShipperDAO, getProfitByShipperDAO } = require('../dao/shipper/userDAO')
+const { hashPassword, verifyPassword } = require('../utils/helper')
 
 dotenv.config()
 
@@ -28,13 +30,14 @@ const getNewId = async () => {
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body
+        const hasPass = await hashPassword(password)
         const newId = await getNewId()
         const currentTime = new Date()
         const dateCreated = currentTime.toLocaleDateString('vi-VN')
         await db.ref('NguoiDung/' + newId).set({
             TaiKhoan: username,
             Email: email,
-            MatKhau: password,
+            MatKhau: hasPass,
             VaiTro: '2',
             CCCD_CMND: '',
             DiaChi: '',
@@ -79,7 +82,9 @@ const login = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' })
         }
 
-        if (password !== userData[Object.keys(userData)[0]].MatKhau) {
+        const verify = await verifyPassword(password, userData[Object.keys(userData)[0]].MatKhau)
+
+        if (!verify) {
             return res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu' })
         }
 
@@ -251,10 +256,6 @@ const shipperLogin = async (req, res) => {
         const {username, password} = req.body;
         
         const userData = await shipperLoginDAO(username, password);
-
-        if (!userData.success) {
-            return res.status(404).json({ success: false, message: userData.message });
-        }
 
         return res.status(200).json({ success: true, token: userData.token, data: userData.data });
     } catch (error) {

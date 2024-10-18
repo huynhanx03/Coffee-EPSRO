@@ -116,26 +116,19 @@ const getAllChatDAO = async (shipperId, userId) => {
 const setSeenDAO = async (shipperId, userId) => {
     try {
         const id = shipperId + '-' + userId
-        const snapshot = await db.ref('TinNhan/' + id).once('value')
+        const snapshot = await db.ref('TinNhan/' + id + '/NoiDung').once('value')
         const chat = snapshot.val()
-        
+
         if (!chat) {
             throw new Error('Không tìm thấy cuộc trò chuyện!')
         }
 
-        chat.NoiDung.forEach(async (message, index) => {
+        chat.forEach(async (message, index) => {
             if (!message.DaXem && message.MaKhachHang) {
                 await db.ref(`TinNhan/${id}/NoiDung/${index}`).update({ DaXem: true });
             }
         });
-
-
-        // await db.ref('TinNhan/' + id + '/NoiDung').update({
-        //     [Object.keys(chat.NoiDung).length - 1]: {
-        //         ...chat.NoiDung[Object.keys(chat.NoiDung).length - 1],
-        //         DaXem: true,
-        //     },
-        // })
+        
     } catch (error) {
         if (error.message === 'Không tìm thấy cuộc trò chuyện!') {
             throw new Error(error.message)

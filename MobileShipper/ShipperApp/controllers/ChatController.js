@@ -42,7 +42,6 @@ const getAllChat = async (shipperId, userId) => {
 
 const setSeen = async (shipperId, userId) => {
     try {
-        console.log(shipperId, userId)
         const response = await axios.put(`${baseUrl}/chat/seen`, { shipperId, userId })
         return response.data
     } catch (error) {

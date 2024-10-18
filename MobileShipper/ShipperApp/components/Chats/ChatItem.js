@@ -16,7 +16,7 @@ const ChatItem = (props) => {
         <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {userId: item.MaKhachHang, HinhAnh: item.HinhAnh, HoTen: item.HoTen, who: who})} className='mx-4'>
             <View className='flex-row space-x-3'>
                 <View>
-                    <Image source={{uri: item.HinhAnh}} contentFit='contain' style={{width: wp(15), height: wp(15), marginTop: hp(1.4)}} className='rounded-full'/>
+                    <Image source={{uri: item.HinhAnh}} contentFit='contain' style={{width: wp(13), height: wp(13), marginTop: hp(1.4)}} className='rounded-full'/>
                 </View>
 
                 <View className='space-y-1 flex-1' style={{marginTop: wp(4)}}>
@@ -32,8 +32,10 @@ const ChatItem = (props) => {
                                 <Text style={{color: colors.text}} className={`text-base ${!seen ? 'font-bold' : 'font-semibold'}`}>Bạn: </Text>
                             )
                         }
-                        <Text numberOfLines={1} style={{flex: 2, marginRight: wp(3)}} className={`text-base italic ${!seen ? 'font-bold' : ''}`}>{item.NoiDung.ChiTiet}</Text>
-                        <Text style={{flex: 1}} className={`text-base ${!seen ? 'font-bold' : ''}`}>29/09/2024</Text>
+                        <View className='flex-row justify-between items-center'>
+                            <Text numberOfLines={1} style={{flex: 2, marginRight: wp(3)}} className={`text-base ${!seen ? 'font-bold italic' : ''}`}>{item.NoiDung.ChiTiet}</Text>
+                            <Text style={{flex: 1, color: colors.text_gray}} className={`text-right`}>{item.NoiDung.ThoiGian.split(' ')[1]}</Text>
+                        </View>
                     </View>
                 </View>
             </View>
