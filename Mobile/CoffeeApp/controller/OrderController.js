@@ -26,7 +26,8 @@ const saveOrder = async (products, total, transFee, addressData, status) => {
 const getOrder = async () => {
     try {
         const userData = await getUserData();
-        const response = await axios.get(`${BASE_URL}/order/orders/${userData.MaNguoiDung}`)
+        const headers = await getAuthHeaders();
+        const response = await axios.get(`${BASE_URL}/order/orders/${userData.MaNguoiDung}`, { headers })
         return response.data
     } catch (error) {
         console.log(error);

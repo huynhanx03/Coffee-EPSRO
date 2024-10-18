@@ -28,7 +28,7 @@ const deleteItemCard = async (item) => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.delete(`${BASE_URL}/cart/delete-item-cart/${userData.MaNguoiDung}/${item.MaSanPham}`, {}, {headers})
+        const response = await axios.delete(`${BASE_URL}/cart/delete-item-cart/${userData.MaNguoiDung}/${item.MaSanPham}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data
@@ -42,7 +42,7 @@ const removeItemCart = async () => {
     try {
         const userData = await getUserData()
         const headers = await getAuthHeaders()
-        const response = await axios.delete(`${BASE_URL}/cart/remove-cart/${userData.MaNguoiDung}`, {}, {headers})
+        const response = await axios.delete(`${BASE_URL}/cart/remove-cart/${userData.MaNguoiDung}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data
