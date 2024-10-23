@@ -1,21 +1,25 @@
 const db = require('../../config/firebase')
 const { optionsDateTime } = require('../../utils/helper')
 
-const getAllUserChatDAO = async (shipperId) => {
+const getAllUserChatDAO = async (shipperId, userId) => {
     try {
         const snapshot = await db.ref('TinNhan').once('value')
         const allUserChat = snapshot.val()
 
-        const allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaNhanVien === shipperId)
+        let allUserChatArray = []
+        if (userId) {
+            allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaKhachHang === userId)
+        } else {
+            allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaNhanVien === shipperId)
+        }
+
 
         const userInfo = allUserChatArray.map((key) => {
             const lastDetail = allUserChat[key].NoiDung[allUserChat[key].NoiDung.length - 1]
             return {
-                MaKhachHang: allUserChat[key].MaKhachHang,
-                HinhAnh: allUserChat[key].KhachHang.HinhAnh,
-                HoTen: allUserChat[key].KhachHang.HoTen,
                 NoiDung: lastDetail,
-                DaXem: lastDetail.DaXem,
+                KhachHang: allUserChat[key].KhachHang,
+                Shipper: allUserChat[key].Shipper,
             }
         })
 
@@ -63,7 +67,7 @@ const makeChatDAO = async (shipperId, userId) => {
     }
 }
 
-const sendMessageDAO = async (shipperId, userId, message) => {
+const sendMessageDAO = async (shipperId, userId, message, user) => {
     try {
         const id = shipperId + '-' + userId
         const snapshot = await db.ref('TinNhan/' + id).once('value')
@@ -78,12 +82,21 @@ const sendMessageDAO = async (shipperId, userId, message) => {
 
         const newId = chat.NoiDung ? Object.keys(chat.NoiDung).length : 0
 
-        await db.ref('TinNhan/' + id + '/NoiDung/' + newId).set({
-            MaNhanVien: shipperId,
-            ChiTiet: message,
-            ThoiGian: date,
-            DaXem: false,
-        })
+        if (user) {
+            await db.ref('TinNhan/' + id + '/NoiDung/' + newId).set({
+                MaKhachHang: userId,
+                ChiTiet: message,
+                ThoiGian: date,
+                DaXem: false,
+            })    
+        } else {
+            await db.ref('TinNhan/' + id + '/NoiDung/' + newId).set({
+                MaNhanVien: shipperId,
+                ChiTiet: message,
+                ThoiGian: date,
+                DaXem: false,
+            })
+        }
     } catch (error) {
         if (error.message === 'Không tìm thấy cuộc trò chuyện!') {
             throw new Error(error.message)
@@ -113,7 +126,7 @@ const getAllChatDAO = async (shipperId, userId) => {
     }
 }
 
-const setSeenDAO = async (shipperId, userId) => {
+const setSeenDAO = async (shipperId, userId, user) => {
     try {
         const id = shipperId + '-' + userId
         const snapshot = await db.ref('TinNhan/' + id + '/NoiDung').once('value')
@@ -123,11 +136,19 @@ const setSeenDAO = async (shipperId, userId) => {
             throw new Error('Không tìm thấy cuộc trò chuyện!')
         }
 
-        chat.forEach(async (message, index) => {
-            if (!message.DaXem && message.MaKhachHang) {
-                await db.ref(`TinNhan/${id}/NoiDung/${index}`).update({ DaXem: true });
-            }
-        });
+        if (user) {
+            chat.forEach(async (message, index) => {
+                if (!message.DaXem && message.MaNhanVien) {
+                    await db.ref(`TinNhan/${id}/NoiDung/${index}`).update({ DaXem: true });
+                }
+            });
+        } else {
+            chat.forEach(async (message, index) => {
+                if (!message.DaXem && message.MaKhachHang) {
+                    await db.ref(`TinNhan/${id}/NoiDung/${index}`).update({ DaXem: true });
+                }
+            });
+        }
         
     } catch (error) {
         if (error.message === 'Không tìm thấy cuộc trò chuyện!') {

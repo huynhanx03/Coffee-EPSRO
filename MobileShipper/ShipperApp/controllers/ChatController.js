@@ -4,7 +4,9 @@ const baseUrl = process.env.EXPO_PUBLIC_BASE_URL
 
 const getAllUserChat = async (shipperId) => {
     try {
-        const response = await axios.get(`${baseUrl}/chat/all-user-chat/${shipperId}`)
+        const response = await axios.get(`${baseUrl}/chat/all-user-chat/`, {
+            params: { shipperId }
+        })
         return response.data
     } catch (error) {
         throw new Error(error.response.data.message)

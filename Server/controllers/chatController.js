@@ -45,8 +45,8 @@ const addMessageHandler = async (req, res) => {
 //shipper
 const getAllUserChat = async (req, res) => {
     try {
-        const { shipperId } = req.params
-        const allUserChat = await getAllUserChatDAO(shipperId)
+        const { shipperId, userId } = req.query
+        const allUserChat = await getAllUserChatDAO(shipperId, userId)
 
         if (!allUserChat) {
             return res.status(200).json({ success: true, data: [] })
@@ -73,8 +73,13 @@ const makeChat = async (req, res) => {
 const sendMessage = async (req, res) => {
     try {
         const { shipperId, userId, message } = req.body
-        console.log(req.body)
-        await sendMessageDAO(shipperId, userId, message)
+        const { user } = req.params
+
+        if (user) {
+            await sendMessageDAO(shipperId, userId, message, true)
+        } else {
+            await sendMessageDAO(shipperId, userId, message, false)
+        }
 
         return res.status(200).json({ success: true, message: 'Gửi tin nhắn thành công' })
     } catch (error) {
@@ -95,7 +100,13 @@ const getAllChat = async (req, res) => {
 const setSeen = async (req, res) => {
     try {
         const { shipperId, userId } = req.body
-        await setSeenDAO(shipperId, userId)
+        const { user } = req.params
+
+        if (user) {
+            await setSeenDAO(shipperId, userId, true)
+        } else {
+            await setSeenDAO(shipperId, userId, false)
+        }
         return res.status(200).json({ success: true, message: 'Đã xem' })
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message })

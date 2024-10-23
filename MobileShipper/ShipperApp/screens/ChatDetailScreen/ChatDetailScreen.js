@@ -14,7 +14,7 @@ import useSeen from '../../hooks/useSeen'
 const ios = Platform.OS === 'ios'
 const MessageScreen = ({ route }) => {
     const navigation = useNavigation()
-    const { userId, HinhAnh, HoTen, who } = route.params
+    const { KhachHang, Shipper, who } = route.params
     const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
     const { mutate: setSeen, error: setSeenError, isLoading: setSeenLoading } = useSeen()
     const [message, setMessage] = useState('')
@@ -77,12 +77,12 @@ const MessageScreen = ({ route }) => {
                         </TouchableOpacity>
                         <View className="flex-row items-center space-x-3">
                             <Image
-                                source={{ uri: HinhAnh }}
+                                source={{ uri: KhachHang.HinhAnh }}
                                 contentFit="contain"
                                 style={{ width: wp(13), height: wp(13) }}
                                 className="rounded-full"
                             />
-                            <Text className="text-base font-bold">{HoTen}</Text>
+                            <Text className="text-base font-bold">{KhachHang.HoTen}</Text>
                         </View>
                     </View>
 
@@ -97,7 +97,7 @@ const MessageScreen = ({ route }) => {
             </SafeAreaView>
 
             <ScrollView>
-                <MessageList userId={userId} />
+                <MessageList userId={KhachHang.MaKhachHang} shipperId={Shipper.MaNhanVien} />
             </ScrollView>
 
             <View className="flex-row justify-between items-center mx-4 mb-5">

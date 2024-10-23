@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import MessageItem from './MessageItem'
 import React, { useEffect, useState } from 'react'
 import db from '../../firebase'
-import { getDatabase, onValue, orderByChild, query, ref } from 'firebase/database'
+import { getDatabase, onValue, orderByChild, query, ref, set } from 'firebase/database'
 
 const MessagesList = (props) => {
     const { userId } = props
@@ -10,6 +10,7 @@ const MessagesList = (props) => {
 
     const db = getDatabase()
     const getMessage = async () => {
+        setLoading(true)
         const messageRef = ref(db, `TinNhan/${'NV0004'+'-'+userId}/NoiDung`)
         const q = query(messageRef, orderByChild("ThoiGian"))
 
@@ -29,6 +30,7 @@ const MessagesList = (props) => {
             }
             setMessages([...allMessages])
         })
+        setLoading(false)
     }
 
     useEffect(() => {
