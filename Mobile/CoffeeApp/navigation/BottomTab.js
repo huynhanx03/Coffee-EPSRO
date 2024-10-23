@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -9,11 +9,12 @@ import ChatScreen from "../screens/ChatScreen";
 import MenuScreen from "../screens/MenuScreen";
 import ChatRoomScreen from "../screens/ChatRoomScreen";
 import useGetAllUserChat from "../customHooks/useGetAllUserChat";
+import { getDatabase, onValue, orderByChild, query, ref, equalTo } from "firebase/database";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
-    const { newMessage, setNewMessage } = useState(null);
+    const [ newMessage, setNewMessage ] = useState(null);
     const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('KH0001');
 
     useEffect(() => {

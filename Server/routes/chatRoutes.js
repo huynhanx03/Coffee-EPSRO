@@ -12,6 +12,6 @@ router.post('/messages/:userID', authenticateToken, chatController.addMessageHan
 router.post('/make-chat', chatController.makeChat)
 router.post('/send-message/:user?', chatController.sendMessage)
 
-router.put('/seen/:userId?', chatController.setSeen)
+router.put('/seen/:user?', chatController.setSeen)
 
 module.exports = router

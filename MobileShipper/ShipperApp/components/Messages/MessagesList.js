@@ -1,16 +1,16 @@
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import MessageItem from './MessageItem'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import db from '../../firebase'
 import { getDatabase, onValue, orderByChild, query, ref, set } from 'firebase/database'
 
 const MessagesList = (props) => {
     const { userId } = props
     const [messages, setMessages] = useState([]);
+    const scrollRef = useRef(null)
 
     const db = getDatabase()
     const getMessage = async () => {
-        setLoading(true)
         const messageRef = ref(db, `TinNhan/${'NV0004'+'-'+userId}/NoiDung`)
         const q = query(messageRef, orderByChild("ThoiGian"))
 
@@ -30,21 +30,27 @@ const MessagesList = (props) => {
             }
             setMessages([...allMessages])
         })
-        setLoading(false)
     }
+
+    const updateScrollView = () => {
+        setTimeout(() => {
+            scrollRef?.current?.scrollToEnd({ animated: true });
+        }, 100);
+    };
 
     useEffect(() => {
         getMessage()
+        updateScrollView()
     }, [])
 
     return (
-        <View className='my-2'>
+        <ScrollView className='my-2' ref={scrollRef} onContentSizeChange={() => scrollRef?.current?.scrollToEnd({ animated: true })}>
             {
                 messages.map((chat, index) => (
                     <MessageItem key={index} chat={chat} />
                 ))
             }
-        </View>
+        </ScrollView>
     )
 }
 

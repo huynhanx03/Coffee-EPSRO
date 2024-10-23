@@ -10,7 +10,7 @@ const ChatItem = (props) => {
     const { item } = props
 
     const who = item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : item.NoiDung.MaNhanVien
-    const seen = who.includes('NV') ? item.NoiDung.DaXem : true
+    const seen = who.includes('KH') ? item.NoiDung.DaXem : true
     
     return (
         <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, Shipper: item.Shipper, who: who})} className='mx-4'>
@@ -29,7 +29,7 @@ const ChatItem = (props) => {
                             item.NoiDung.MaKhachHang ? (
                                 null
                             ) : (
-                                <Text style={{color: colors.text}} className={`text-base ${!seen ? 'font-bold' : 'font-semibold'}`}>Bạn: </Text>
+                                <Text style={{color: colors.text}} className={`text-base ${!seen ? 'font-bold' : null}`}>Bạn: </Text>
                             )
                         }
                         <View className='flex-row justify-between items-center'>

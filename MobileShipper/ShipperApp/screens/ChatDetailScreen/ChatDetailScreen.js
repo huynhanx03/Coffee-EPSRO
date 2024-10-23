@@ -23,7 +23,7 @@ const MessageScreen = ({ route }) => {
     const phoneNumber = '0123456789'
 
     const handleSendMessage = (message) => {
-        sendMessage({shipperId: 'NV0004', userId: userId, message: message})
+        sendMessage({shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang, message: message})
         setMessage('')
     }
 
@@ -35,7 +35,7 @@ const MessageScreen = ({ route }) => {
 
     const handleSetSeen = () => {
         if (who.includes('KH')) {
-            setSeen({shipperId: 'NV0004', userId: userId})
+            setSeen({shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang})
         }
     }
 
@@ -96,9 +96,9 @@ const MessageScreen = ({ route }) => {
                 </View>
             </SafeAreaView>
 
-            <ScrollView>
+            <View className='flex-1'>
                 <MessageList userId={KhachHang.MaKhachHang} shipperId={Shipper.MaNhanVien} />
-            </ScrollView>
+            </View>
 
             <View className="flex-row justify-between items-center mx-4 mb-5">
                 <View className="flex-row justify-between bg-white border p-2 border-neutral-300 rounded-full pl-5">

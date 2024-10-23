@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 
 const MessageItem = (props) => {
     const { chat } = props
-    console.log(" ~ file: messageItem.js:10 ~ MessageItem ~ chat:", chat)
     
     if (chat.MaNhanVien) {
         return (
