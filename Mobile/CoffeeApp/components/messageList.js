@@ -8,7 +8,7 @@ const MessageList = ({ scrollRef, messages, currentUser }) => {
             {
                 messages.map((message, index) => {
                     return (
-                        currentUser && <MessageItem key={index} message={message} currentUser={currentUser}/>
+                        currentUser && <MessageItem key={index} message={message}/>
                     )
                 })
             }

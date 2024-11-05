@@ -8,10 +8,34 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
 import UserScreen from "../screens/UserScreen/UserScreen";
+import { useNewMessage } from "../context/NewMessageContext/NewMessageContext";
+import { useEffect } from "react";
+import useGetAllUserChat from "../hooks/useGetAllUserChat";
+import { getDatabase, onValue, orderByChild, query, ref, equalTo } from "firebase/database";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
+    const { newMessage, setNewMessage } = useNewMessage();
+    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('NV0004');
+
+    useEffect(() => {
+        const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaKhachHang).length;
+        setNewMessage(count > 0 ? count : null);
+    }, [allUserChat, isFetching]);
+
+    useEffect(() => {
+        const db = getDatabase();
+        const messageRef = ref(db, `TinNhan/`);
+        const q = query(messageRef, orderByChild("MaNhanVien"), equalTo('NV0004'));
+
+        const unsubscribe = onValue(q, (snapshot) => {
+            refetch();
+        });
+
+        return () => unsubscribe();
+    }, [refetch]);
+
     return (
         <Tab.Navigator screenOptions={{
             tabBarStyle: {
@@ -76,8 +100,8 @@ const BottomTab = () => {
                 options={{
                     headerShown: false,
                     tabBarLabel: "Trò chuyện",
+                    tabBarBadge: newMessage > 0 ? newMessage : null,
                     tabBarLabelStyle: { color: colors.primary },
-                    tabBarBadge: 3,
                     tabBarIcon: ({ focused }) =>
                         focused ? (
                             <Ionicons name="chatbox-ellipses" size={30} color={colors.primary} />

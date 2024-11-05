@@ -14,10 +14,10 @@ const OTP = () => {
 
 let otpGenerate = '';
 const {
-    service_id,
-    template_id,
-    public_key
-} = process.env
+    EXPO_PUBLIC_SERVICE_ID: service_id,
+    EXPO_PUBLIC_TEMPLATE_ID: template_id,
+    EXPO_PUBLIC_PUBLIC_KEY: public_key
+} = process.env;
 
 /**
  * @notice Send email that contain OTP to the user

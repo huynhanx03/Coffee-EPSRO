@@ -1,144 +1,149 @@
-import {
-    getDatabase,
-    onValue,
-    orderByChild,
-    query,
-    ref,
-} from "firebase/database";
-import React, { useEffect, useRef, useState } from "react";
-import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from "react-native";
-import * as Icons from "react-native-heroicons/solid";
-import {
-    heightPercentageToDP as hp
-} from "react-native-responsive-screen";
-import { SafeAreaView } from "react-native-safe-area-context";
-import MessageList from "../components/messageList";
-import { sendMessage } from "../controller/MessageController";
-import { getUserData } from "../controller/StorageController";
+import React, { useEffect, useRef, useState } from 'react'
+import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import * as Icons from 'react-native-heroicons/solid'
+import { Image } from 'expo-image'
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import Entypo from '@expo/vector-icons/Entypo'
+import MessagesListDetail from '../components/messageListDetail'
+import { useNavigation } from '@react-navigation/native'
+import useSendMessage from '../customHooks/useSendMessage'
+import useSeen from '../customHooks/useSeen'
 
-const ios = Platform.OS === "ios";
-const ChatScreen = () => {
-    const [message, setMessage] = useState("");
-    const [messages, setMessages] = useState([]);
-    const [currentUser, setCurrentUser] = useState(null);
-    const inputRef = useRef("");
-    const scrollRef = useRef(null);
+const ios = Platform.OS === 'ios'
+const ChatScreen = ({ route }) => {
+    const navigation = useNavigation()
+    const [message, setMessage] = useState('')
+    const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
+    const { mutate: setSeen, error: setSeenError } = useSeen()
+    const { KhachHang, Shipper, who, chatbot } = route.params
+    const inputRef = useRef(null)
 
-    const db = getDatabase();
+    const phoneNumber = '0123456789'
 
-    const getMessage = async () => {
-        const userData = await getUserData();
-        const messageRef = ref(db, `TinNhan/${userData.MaNguoiDung}/`);
-        const q = query(messageRef, orderByChild("ThoiGian"));
+    const makeCall = () => {
+        let phoneUrl = `tel:${phoneNumber}`
 
-        onValue(q, (snapShot) => {
-            const data = snapShot.val();
-            let allMessages = [];
-            if (data) {
-                for (const key in data) {
-                    const messageData = {
-                        MaKH: data[key].MaKH,
-                        NoiDung: data[key].NoiDung,
-                        ThoiGian: data[key].ThoiGian,
-                    };
-                    allMessages.push(messageData);
+        Linking.canOpenURL(phoneUrl)
+            .then((supported) => {
+                if (supported) {
+                    return Linking.openURL(phoneUrl)
+                } else {
+                    console.log('Không thể mở ứng dụng điện thoại: ' + phoneUrl)
                 }
-            }
+            })
+            .catch((err) => console.error('An error occurred', err))
+    }
 
-            setMessages([...allMessages]);
-        });
-    };
-
-    useEffect(() => {
-        updateScrollView();
-    }, [messages]);
-
-    const updateScrollView = () => {
-        setTimeout(() => {
-            scrollRef?.current?.scrollToEnd({ animated: true });
-        }, 100);
-    };
+    const handleSetSeen = () => {
+        if (who.includes('NV')) {
+            setSeen({ shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang })
+        }
+    }
 
     const handleSendMessage = async () => {
-        setMessage("");
-        await sendMessage(message);
-    };
-
-    const getCurrentUser = async () => {
-        try {
-            const user = await getUserData();
-            setCurrentUser(user);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+        setMessage('')
+        sendMessage({ shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang, message: message })
+    }
 
     useEffect(() => {
-        getCurrentUser();
-        getMessage();
-    }, []);
+        if (!chatbot) {
+            handleSetSeen()
+        }
+        inputRef.current.focus()
+    }, [])
 
     return (
         <KeyboardAvoidingView
-            behavior={ios ? "padding" : "height"}
+            behavior={ios ? 'padding' : 'height'}
             style={{ flex: 1 }}
             keyboardVerticalOffset={0}
         >
-            <ScrollView className='flex-1' contentContainerStyle={{flex: 1}} bounces={false} keyboardDismissMode="none" keyboardShouldPersistTaps='always'>
-                <View className="flex-1 mx-5">
-                    {/* header */}
-                    <SafeAreaView className="justify-center">
-                        <Text className="text-2xl text-center font-semibold">
-                            Chat
-                        </Text>
-                    </SafeAreaView>
-
-                    {/* chat */}
-                    <View className="flex-1">
-                        {messages && (
-                            <MessageList
-                                scrollRef={scrollRef}
-                                messages={messages}
-                                currentUser={currentUser}
+            <SafeAreaView>
+                <View className="flex-row justify-between items-center shadow-lg mx-4">
+                    <View className="flex-row items-center space-x-4">
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <Entypo
+                                name="chevron-left"
+                                size={30}
+                                color="black"
                             />
-                        )}
-                    </View>
-
-                    {/* input */}
-                    <View className="flex-row justify-between items-center -mx-4 mb-1">
-                        <View className="flex-row justify-between bg-white border p-2 border-neutral-300 rounded-full pl-5">
-                            <TextInput
-                                ref={inputRef}
-                                placeholder="Chat with me..."
-                                className="flex-1 mr-2 text-base"
-                                value={message}
-                                multiline={true}
-                                onChangeText={(e) => setMessage(e)}
-                                onFocus={updateScrollView}
-                            />
-                            <TouchableOpacity
-                                onPress={handleSendMessage}
-                                className="bg-neutral-200 p-2 mr-[1px] rounded-full"
-                            >
-                                <Icons.PaperAirplaneIcon
-                                    size={hp(2.7)}
-                                    color={"#737373"}
-                                />
-                            </TouchableOpacity>
+                        </TouchableOpacity>
+                        <View className="flex-row items-center space-x-3">
+                            {chatbot ? (
+                                <>
+                                    <Image
+                                        source={{ uri: 'https://img.icons8.com/nolan/64/message-bot.png' }}
+                                        contentFit="contain"
+                                        style={{ width: wp(13), height: wp(13) }}
+                                        className="rounded-full"
+                                    />
+                                    <Text className="text-base font-bold">Chat Bot If Else</Text>
+                                </>
+                            ) : (
+                                <>
+                                    <Image
+                                        source={{ uri: Shipper.HinhAnh }}
+                                        contentFit="contain"
+                                        style={{ width: wp(13), height: wp(13) }}
+                                        className="rounded-full"
+                                    />
+                                    <Text className="text-base font-bold">{Shipper.HoTen}</Text>
+                                </>
+                            )}
                         </View>
                     </View>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
-};
 
-export default ChatScreen;
+                    <TouchableOpacity onPress={makeCall}>
+                        <FontAwesome6
+                            name="phone"
+                            size={24}
+                            color="orange"
+                        />
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+
+            {/* chat */}
+            <View className="flex-1">
+                {chatbot ? (
+                    <MessagesListDetail
+                        userId={KhachHang.MaKhachHang}
+                        chatbot={'chatbot'}
+                    />
+                ) : (
+                    <MessagesListDetail
+                        userId={KhachHang.MaKhachHang}
+                        shipperId={Shipper.MaNhanVien}
+                    />
+                )}
+            </View>
+
+            {/* input */}
+            <View className="flex-row justify-between items-center mx-4 mb-3">
+                <View className="flex-row justify-between bg-white border p-2 border-neutral-300 rounded-full pl-5">
+                    <TextInput
+                        ref={inputRef}
+                        placeholder="Nhập tin nhắn..."
+                        className="flex-1 mr-2 text-base"
+                        value={message}
+                        multiline={true}
+                        onChangeText={(e) => setMessage(e)}
+                    />
+                    <TouchableOpacity
+                        onPress={handleSendMessage}
+                        className="bg-neutral-200 p-2 mr-[1px] rounded-full"
+                    >
+                        <Icons.PaperAirplaneIcon
+                            size={hp(2.7)}
+                            color={'#737373'}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
+    )
+}
+
+export default ChatScreen

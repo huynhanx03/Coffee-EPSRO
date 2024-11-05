@@ -5,32 +5,41 @@ import {
 } from "react-native-responsive-screen";
 import React, { useEffect } from "react";
 
-const MessageItem = ({ message, currentUser }) => {
-    if (message.NoiDung) {
-        if (currentUser?.MaNguoiDung === message.MaKH) {
-            return (
-                <View className="flex-row justify-end mb-2 items-center gap-2">
-                    <View style={{ width: wp(80) }}>
-                        <View className="flex self-end p-3 rounded-2xl bg-white border border-neutral-200">
-                            <Text style={{ fontSize: hp(1.9) }}>{message.NoiDung}</Text>
-                        </View>
-                        <Text className='italic text-gray-400' style={{alignSelf: 'flex-end'}}>{message.ThoiGian}</Text>
+const MessageItem = (props) => {
+    const { chat } = props
+    
+    if (chat.MaNhanVien) {
+        return (
+            <View className="flex-row justify-end mb-2 items-center gap-2 mx-4">
+                <View style={{ width: wp(80) }}>
+                    <View className="flex self-end p-3 rounded-2xl bg-white border border-neutral-200">
+                        <Text style={{ fontSize: hp(1.9) }}>{chat.ChiTiet}</Text>
                     </View>
+                    <Text
+                        className="italic text-gray-400"
+                        style={{ alignSelf: 'flex-end' }}
+                    >
+                        {chat.ThoiGian}
+                    </Text>
                 </View>
-            );
-        } else {
-            return (
-                <View style={{width: wp(80)}} className='mb-2'>
-                    <View className="flex self-start p-3 rounded-2xl bg-amber-400 border border-indigo-200">
-                        <Text style={{fontSize: hp(1.9)}}>{message.NoiDung}</Text>
-                    </View>
-                    <Text className='italic text-gray-400' style={{alignSelf: 'flex-start'}}>{message.ThoiGian}</Text>
-                </View>
-            )
-        }
+            </View>
+        )
     } else {
         return (
-            null
+            <View
+                style={{ width: wp(80) }}
+                className="mb-2 mx-4"
+            >
+                <View className="flex self-start p-3 rounded-2xl bg-amber-400 border border-indigo-200">
+                    <Text style={{ fontSize: hp(1.9) }}>{chat.ChiTiet}</Text>
+                </View>
+                <Text
+                    className="italic text-gray-400"
+                    style={{ alignSelf: 'flex-start' }}
+                >
+                    {chat.ThoiGian}
+                </Text>
+            </View>
         )
     }
 };

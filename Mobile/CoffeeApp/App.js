@@ -9,19 +9,24 @@ import Toast from 'react-native-toast-message'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { NotificationProvider } from './context/ModalContext'
 import CustomMessageBox from './components/customMessageBox'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient()
 
 const App = () => {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <NotificationProvider>
-        <PaperProvider>
-          <Provider store={store}>
-              <Navigation />
-              <Toast />
-              <CustomMessageBox />
-          </Provider>
-        </PaperProvider>
-      </NotificationProvider>
+      <QueryClientProvider client={queryClient}>
+        <NotificationProvider>
+          <PaperProvider>
+            <Provider store={store}>
+                <Navigation />
+                <Toast />
+                <CustomMessageBox />
+            </Provider>
+          </PaperProvider>
+        </NotificationProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   )
 }

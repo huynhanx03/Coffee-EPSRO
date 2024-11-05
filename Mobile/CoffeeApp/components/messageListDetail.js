@@ -1,17 +1,21 @@
 import { View, Text, ScrollView } from 'react-native'
-import MessageItem from './MessageItem'
 import React, { useEffect, useRef, useState } from 'react'
-import db from '../../firebase'
-import { getDatabase, onValue, orderByChild, query, ref, set } from 'firebase/database'
+import db from '../firebase'
+import { getDatabase, onValue, orderByChild, query, ref } from 'firebase/database'
+import MessageItemDetail from './messageItemDetail'
+import ModalLoading from './modalLoading'
 
-const MessagesList = (props) => {
-    const { userId } = props
+const MessagesListDetail = (props) => {
+    const { userId, shipperId, chatbot } = props
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
     const scrollRef = useRef(null)
 
     const db = getDatabase()
     const getMessage = async () => {
-        const messageRef = ref(db, `TinNhan/${'NV0004'+'-'+userId}/NoiDung`)
+        const id = chatbot ? userId + '-chatbot' : shipperId + '-' + userId
+        setLoading(true)
+        const messageRef = ref(db, `TinNhan/${id}/NoiDung`)
         const q = query(messageRef, orderByChild("ThoiGian"))
 
         onValue(q, (snapshot) => {
@@ -30,6 +34,7 @@ const MessagesList = (props) => {
             }
             setMessages([...allMessages])
         })
+        setLoading(false)
     }
 
     const updateScrollView = () => {
@@ -44,14 +49,15 @@ const MessagesList = (props) => {
     }, [])
 
     return (
-        <ScrollView className='my-2' ref={scrollRef} onContentSizeChange={() => scrollRef?.current?.scrollToEnd({ animated: true })}>
+        <ScrollView className='my-2' ref={scrollRef} onContentSizeChange={() => scrollRef?.current?.scrollToEnd({ animated: false })}>
             {
                 messages.map((chat, index) => (
-                    <MessageItem key={index} chat={chat} />
+                    <MessageItemDetail key={index} chat={chat} />
                 ))
             }
+            <ModalLoading isLoading={loading} />
         </ScrollView>
     )
 }
 
-export default MessagesList
+export default MessagesListDetail

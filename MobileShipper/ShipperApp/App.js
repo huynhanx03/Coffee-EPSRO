@@ -4,6 +4,7 @@ import { NotificationProvider } from './context/NotificationContext/Notification
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MessageBox from './components/MessageBox/MessageBox';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { NewMessageProvider } from './context/NewMessageContext/NewMessageContext';
 
 const queryClient = new QueryClient()
 
@@ -12,8 +13,10 @@ export default function App() {
     <GestureHandlerRootView style={{flex: 1}}>
       <QueryClientProvider client={queryClient}>
         <NotificationProvider>
-          <Navigation />
-          <MessageBox />
+          <NewMessageProvider>
+            <Navigation />
+            <MessageBox />
+          </NewMessageProvider>
         </NotificationProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>

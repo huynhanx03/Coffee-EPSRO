@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -7,10 +7,32 @@ import { colors } from "../theme";
 import { MaterialIcons } from '@expo/vector-icons';
 import ChatScreen from "../screens/ChatScreen";
 import MenuScreen from "../screens/MenuScreen";
+import ChatRoomScreen from "../screens/ChatRoomScreen";
+import useGetAllUserChat from "../customHooks/useGetAllUserChat";
+import { getDatabase, onValue, orderByChild, query, ref, equalTo } from "firebase/database";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
+    const [ newMessage, setNewMessage ] = useState(null);
+    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('KH0001');
+
+    useEffect(() => {
+        const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaNhanVien).length;
+        setNewMessage(count > 0 ? count : null);
+    }, [allUserChat, isFetching]);
+
+    useEffect(() => {
+        const db = getDatabase();
+        const messageRef = ref(db, `TinNhan/`);
+        const q = query(messageRef, orderByChild("MaKhachHang"), equalTo('KH0001'));
+
+        const unsubscribe = onValue(q, (snapshot) => {
+            refetch();
+        });
+
+        return () => unsubscribe();
+    }, [refetch]);
     return (
         <Tab.Navigator>
             <Tab.Screen
@@ -47,10 +69,11 @@ const BottomTab = () => {
 
             <Tab.Screen
                 name="Chat"
-                component={ChatScreen}
+                component={ChatRoomScreen}
                 options={{
                     headerShown: false,
                     tabBarLabel: "Chat",
+                    tabBarBadge: newMessage,
                     tabBarLabelStyle: { color: colors.primary },
                     tabBarIcon: ({ focused }) =>
                         focused ? (

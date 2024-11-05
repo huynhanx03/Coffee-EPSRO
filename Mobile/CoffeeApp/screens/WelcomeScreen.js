@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
     useEffect(() => {
         setTimeout(() => {
             navigation.replace("Login");
-        }, 3000);
+        }, 2000);
     });
     return (
         <View className="flex-1 justify-center items-center" style={{backgroundColor: colors.primary}}>

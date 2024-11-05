@@ -1,12 +1,12 @@
-import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-const MessageItem = (props) => {
-    const { chat } = props
-    const opacity = useSharedValue(0)
-    const translateY = useSharedValue(20)
+const MessageItemDetail = (props) => {
+    const { chat } = props;
+    const opacity = useSharedValue(0);
+    const translateY = useSharedValue(20);
 
     useEffect(() => {
         opacity.value = withTiming(1, { duration: 500 });
@@ -20,7 +20,7 @@ const MessageItem = (props) => {
         };
     });
 
-    if (chat.MaNhanVien) {
+    if (chat.MaKhachHang) {
         return (
             <Animated.View style={animatedStyle}>
                 <View className="flex-row justify-end mb-2 items-center gap-2 mx-4">
@@ -37,7 +37,7 @@ const MessageItem = (props) => {
                     </View>
                 </View>
             </Animated.View>
-        )
+        );
     } else {
         return (
             <Animated.View style={animatedStyle}>
@@ -56,8 +56,8 @@ const MessageItem = (props) => {
                     </Text>
                 </View>
             </Animated.View>
-        )
+        );
     }
-}
+};
 
-export default MessageItem
+export default MessageItemDetail;
