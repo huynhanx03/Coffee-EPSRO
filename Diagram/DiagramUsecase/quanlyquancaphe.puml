@@ -2,14 +2,11 @@
 skinparam monochrome true
 skinparam Shadowing true
 
-
 left to right direction
 
 actor "Quản Lý" as QL
-
 actor "Nhân viên" as NV
 actor "Khách hàng" as KH
-
 
 usecase "Quản lý thực đơn" as qltd
 usecase "Quản lý nhân viên" as qlnv
@@ -24,7 +21,8 @@ usecase "Nhắn tin" as nt
 usecase "Quản lý đơn hàng" as qldh
 usecase "Thanh toán tại quán" as tttq
 usecase "Đăng nhập" as dn
-usecase "đăng ký" as dk
+usecase "Đăng ký" as dk
+usecase "Thanh toán" as tt
 
 'quản lý thực đơn
 usecase "Thêm món ăn" as tma 
@@ -91,12 +89,9 @@ usecase "Đặt sản phẩm" as dsp
 usecase "Xem đơn hàng cũ" as xdhc
 usecase "Đánh giá sản phẩm" as dgsp
 
-
 usecase "Tìm kiếm sản phẩm" as tksp
 
 NV <|-left- QL
-
-
 
 QL --- qltd
 QL --- qlnv
@@ -122,8 +117,7 @@ KH --- xdssp
 KH --- dsp
 KH ---xdhc
 KH --- dgsp
-
-
+KH --- tt
 
 'quản lý thực đơn
 qltd --- tma:include
@@ -184,4 +178,3 @@ dn --- dttcn: include
 
 xdssp --- tksp:include
 @enduml
-
