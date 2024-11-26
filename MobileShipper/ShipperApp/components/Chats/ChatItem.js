@@ -32,7 +32,7 @@ const ChatItem = (props) => {
                                 <Text style={{color: colors.text}} className={`text-base ${!seen ? 'font-bold' : null}`}>Bạn: </Text>
                             )
                         }
-                        <View className='flex-row justify-between items-center'>
+                        <View className='flex-row justify-between items-center flex-1'>
                             <Text numberOfLines={1} style={{flex: 2, marginRight: wp(3)}} className={`text-base ${!seen ? 'font-bold italic' : ''}`}>{item.NoiDung.ChiTiet}</Text>
                             <Text style={{flex: 1, color: colors.text_gray}} className={`text-right`}>{item.NoiDung.ThoiGian.split(' ')[1]}</Text>
                         </View>
