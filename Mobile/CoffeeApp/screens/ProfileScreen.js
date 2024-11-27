@@ -31,12 +31,6 @@ const ProfileScreen = () => {
     const [rank, setRank] = useState("");
     const { showNotification } = useNotification();
 
-    const menuItems = [
-        { icon: "BookmarkIcon", title: "Đã lưu" },
-        { icon: "ClipBoardDocumentListIcon", title: "Đơn hàng" },
-        { icon: "HeartIcon", title: "Yêu thích" },
-    ];
-
     const getUser = async () => {
         try {
             const userData = await getUserData();
@@ -109,7 +103,7 @@ const ProfileScreen = () => {
                         <Image
                             source={{
                                 uri: user?.HinhAnh
-                                    ? user?.HinhAnh
+                                    ? user.HinhAnh
                                     : "https://user-images.githubusercontent.com/5709133/50445980-88299a80-0912-11e9-962a-6fd92fd18027.png",
                             }}
                             contentFit="cover"

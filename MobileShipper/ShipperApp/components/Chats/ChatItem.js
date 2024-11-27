@@ -13,7 +13,7 @@ const ChatItem = (props) => {
     const seen = who.includes('KH') ? item.NoiDung.DaXem : true
     
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, Shipper: item.Shipper, who: who})} className='mx-4'>
+        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, NhanVien: item.NhanVien, who: who})} className='mx-4'>
             <View className='flex-row space-x-3'>
                 <View>
                     <Image source={{uri: item.KhachHang.HinhAnh}} contentFit='contain' style={{width: wp(13), height: wp(13), marginTop: hp(1.4)}} className='rounded-full'/>

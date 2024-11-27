@@ -14,7 +14,7 @@ import useSeen from '../../hooks/useSeen'
 const ios = Platform.OS === 'ios'
 const MessageScreen = ({ route }) => {
     const navigation = useNavigation()
-    const { KhachHang, Shipper, who } = route.params
+    const { KhachHang, NhanVien, who } = route.params
     const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
     const { mutate: setSeen, error: setSeenError, isLoading: setSeenLoading } = useSeen()
     const [message, setMessage] = useState('')
@@ -23,7 +23,7 @@ const MessageScreen = ({ route }) => {
     const phoneNumber = '0123456789'
 
     const handleSendMessage = (message) => {
-        sendMessage({shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang, message: message})
+        sendMessage({shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang, message: message})
         setMessage('')
     }
 
@@ -35,7 +35,7 @@ const MessageScreen = ({ route }) => {
 
     const handleSetSeen = () => {
         if (who.includes('KH')) {
-            setSeen({shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang})
+            setSeen({shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang})
         }
     }
 
@@ -97,7 +97,7 @@ const MessageScreen = ({ route }) => {
             </SafeAreaView>
 
             <View className='flex-1'>
-                <MessageList userId={KhachHang.MaKhachHang} shipperId={Shipper.MaNhanVien} />
+                <MessageList userId={KhachHang.MaKhachHang} shipperId={NhanVien.MaNhanVien} />
             </View>
 
             <View className="flex-row justify-between items-center mx-4 mb-5">

@@ -7,23 +7,11 @@ import Draggable from 'react-native-draggable'
 import { useNavigation } from '@react-navigation/native'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import Tooltip from '../components/tooltip'
+import { useUser } from '../context/UserContext/UserContext'
 
 const ChatRoomScreen = () => {
     const navigation = useNavigation()
-    const [user, setUser] = useState(null)
-
-    const getUser = async () => {
-        try {
-            const data = await getUserData()
-            setUser(data)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    useEffect(() => {
-        getUser()
-    }, [])
+    const { userData: user } = useUser()
     return (
         <View className='flex-1'>
             <SafeAreaView

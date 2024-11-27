@@ -35,7 +35,8 @@ const addAddress = async (name, phone, detail_address, location) => {
 const getAddress = async () => {
     try {
         const userData = await getUserData();
-        const response = await axios.get(`${BASE_URL}/address/${userData.MaNguoiDung}`)
+        const headers = await getAuthHeaders();
+        const response = await axios.get(`${BASE_URL}/address/${userData.MaNguoiDung}`, {headers})
         return response.data
     } catch (error) {
         return error.response.data

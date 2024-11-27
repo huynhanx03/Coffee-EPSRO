@@ -60,9 +60,9 @@ const getAllUserChat = async (req, res) => {
 
 const makeChat = async (req, res) => {
     try {
-        const { shipperId, userId } = req.body
+        const { employee, user } = req.body
 
-        await makeChatDAO(shipperId, userId)
+        await makeChatDAO(employee, user)
 
         return res.status(200).json({ success: true, message: 'Tạo chat thành công' })
     } catch (error) {

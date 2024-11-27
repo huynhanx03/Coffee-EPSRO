@@ -10,6 +10,7 @@ import MessagesListDetail from '../components/messageListDetail'
 import { useNavigation } from '@react-navigation/native'
 import useSendMessage from '../customHooks/useSendMessage'
 import useSeen from '../customHooks/useSeen'
+import { blurhash } from '../utils'
 
 const ios = Platform.OS === 'ios'
 const ChatScreen = ({ route }) => {
@@ -17,7 +18,7 @@ const ChatScreen = ({ route }) => {
     const [message, setMessage] = useState('')
     const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
     const { mutate: setSeen, error: setSeenError } = useSeen()
-    const { KhachHang, Shipper, who, chatbot } = route.params
+    const { KhachHang, NhanVien, who, chatbot } = route.params
     const inputRef = useRef(null)
 
     const phoneNumber = '0123456789'
@@ -37,14 +38,14 @@ const ChatScreen = ({ route }) => {
     }
 
     const handleSetSeen = () => {
-        if (who.includes('NV')) {
-            setSeen({ shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang })
+        if (who.includes('NV') || who.includes('ND')) {
+            setSeen({ shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang })
         }
     }
 
     const handleSendMessage = async () => {
         setMessage('')
-        sendMessage({ shipperId: Shipper.MaNhanVien, userId: KhachHang.MaKhachHang, message: message })
+        sendMessage({ shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang, message: message })
     }
 
     useEffect(() => {
@@ -78,18 +79,22 @@ const ChatScreen = ({ route }) => {
                                         contentFit="contain"
                                         style={{ width: wp(13), height: wp(13) }}
                                         className="rounded-full"
+                                        placeholder={{ blurhash }}
+                                        transition={1000}
                                     />
                                     <Text className="text-base font-bold">Chat Bot If Else</Text>
                                 </>
                             ) : (
                                 <>
                                     <Image
-                                        source={{ uri: Shipper.HinhAnh }}
+                                        source={{ uri: NhanVien.HinhAnh }}
                                         contentFit="contain"
                                         style={{ width: wp(13), height: wp(13) }}
                                         className="rounded-full"
+                                        placeholder={{ blurhash }}
+                                        transition={1000}
                                     />
-                                    <Text className="text-base font-bold">{Shipper.HoTen}</Text>
+                                    <Text className="text-base font-bold">{NhanVien.HoTen}</Text>
                                 </>
                             )}
                         </View>
@@ -115,7 +120,7 @@ const ChatScreen = ({ route }) => {
                 ) : (
                     <MessagesListDetail
                         userId={KhachHang.MaKhachHang}
-                        shipperId={Shipper.MaNhanVien}
+                        shipperId={NhanVien.MaNhanVien}
                     />
                 )}
             </View>
