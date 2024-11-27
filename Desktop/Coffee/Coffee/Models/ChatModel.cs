@@ -9,8 +9,9 @@ namespace Coffee.Models
 {
     public class ChatModel
     {
-        public string MaKH { get; set; }
-        public string NoiDung { get; set; }
+        public string MaKhachHang { get; set; }
+        public string MaNhanVien { get; set; }
+        public string ChiTiet { get; set; }
         public string ThoiGian { get; set; }
     }
 }

@@ -3,7 +3,7 @@ const { getAllUserChatDAO, makeChatDAO, sendMessageDAO, getAllChatDAO, setSeenDA
 
 const getUserContactsHandler = async (req, res) => {
     try {
-        const userContacts = await getUserContacts()
+        const userContacts = await getUserContacts("ND0001")
 
         return res.status(200).json({ success: true, data: userContacts })
     } catch (error) {

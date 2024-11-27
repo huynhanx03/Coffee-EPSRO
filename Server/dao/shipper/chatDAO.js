@@ -13,7 +13,6 @@ const getAllUserChatDAO = async (shipperId, userId) => {
             allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaNhanVien === shipperId)
         }
 
-
         const userInfo = allUserChatArray.map((key) => {
             const lastDetail = allUserChat[key].NoiDung[allUserChat[key].NoiDung.length - 1]
             return {

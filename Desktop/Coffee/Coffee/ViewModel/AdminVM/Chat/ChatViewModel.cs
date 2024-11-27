@@ -129,8 +129,9 @@ namespace Coffee.ViewModel.AdminVM.Chat
 
             ChatModel chat = new ChatModel
             {
-                MaKH = "",
-                NoiDung = MessageText,
+                MaKhachHang = "",
+                MaNhanVien = "ND0001",
+                ChiTiet = MessageText,
                 ThoiGian = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")
             };
 
@@ -138,13 +139,13 @@ namespace Coffee.ViewModel.AdminVM.Chat
 
             if (isCreate)
             {
-                // Thêm vào danh sách
-                ChatList.Add(new ChatDTO
-                {
-                    IsReceived = false,
-                    NoiDung = chat.NoiDung,
-                    ThoiGian = chat.ThoiGian
-                });
+                //// Thêm vào danh sách
+                //ChatList.Add(new ChatDTO
+                //{
+                //    IsReceived = false,
+                //    ChiTiet = chat.ChiTiet,
+                //    ThoiGian = chat.ThoiGian
+                //});
 
                 ChatList = new ObservableCollection<ChatDTO>(ChatList);
 
