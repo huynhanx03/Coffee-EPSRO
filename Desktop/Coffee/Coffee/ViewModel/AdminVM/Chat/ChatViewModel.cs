@@ -132,7 +132,8 @@ namespace Coffee.ViewModel.AdminVM.Chat
                 MaKhachHang = "",
                 MaNhanVien = "ND0001",
                 ChiTiet = MessageText,
-                ThoiGian = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")
+                ThoiGian = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"),
+                DaXem = false
             };
 
             (string label, bool isCreate) = await ChatAPI.Ins.AddMessage(chat, UserID);

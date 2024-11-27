@@ -13,5 +13,6 @@ namespace Coffee.Models
         public string MaNhanVien { get; set; }
         public string ChiTiet { get; set; }
         public string ThoiGian { get; set; }
+        public bool DaXem { get; set; }
     }
 }
