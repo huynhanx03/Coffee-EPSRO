@@ -9,13 +9,30 @@ import { colors } from '../../theme/Theme'
 import { useNavigation } from '@react-navigation/native'
 import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
 import useGetProfitByShipper from '../../hooks/useGetProfitByShipper'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
+import { setStatusShipper } from '../../controllers/UserController'
+import { useNotification } from '../../context/NotificationContext/NotificationContext'
 
 const UserScreen = () => {
     const navigation = useNavigation()
+    const { showNotification } = useNotification()
     const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004')
     const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper('NV0004')
+    const { userData } = useUserData()
 
     const totalRevenue = profit.reduce((acc, item) => acc + item.DoanhThu, 0)
+
+    const handleLogOut = async () => {
+        try {
+            await AsyncStorage.removeItem('token')
+            await AsyncStorage.removeItem('user')
+            await setStatusShipper(userData.MaNguoiDung, 'offline')
+            navigation.replace('Login')
+        } catch (error) {
+            showNotification('Lỗi khi đăng xuất', 'error')
+        }
+    }
 
     return (
         <View className="flex-1 bg-white">
@@ -130,7 +147,7 @@ const UserScreen = () => {
                 </View>
 
                 <View>
-                    <TouchableOpacity onPress={() => navigation.replace('Login')} className='bg-red-400 rounded-lg shadow-md p-4 mx-4' style={{marginTop: hp(15)}}>
+                    <TouchableOpacity onPress={handleLogOut} className='bg-red-400 rounded-lg shadow-md p-4 mx-4' style={{marginTop: hp(15)}}>
                         <Text className='text-lg font-bold text-center'>Đăng xuất</Text>
                     </TouchableOpacity>
                 </View>

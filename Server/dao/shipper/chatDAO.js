@@ -1,7 +1,7 @@
 const db = require('../../config/firebase')
 const { optionsDateTime } = require('../../utils/helper')
 
-const getAllUserChatDAO = async (shipperId, userId) => {
+const getAllUserChatDAO = async (employeeId, userId) => {
     try {
         const snapshot = await db.ref('TinNhan').once('value')
         const allUserChat = snapshot.val()
@@ -10,7 +10,7 @@ const getAllUserChatDAO = async (shipperId, userId) => {
         if (userId) {
             allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaKhachHang === userId)
         } else {
-            allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaNhanVien === shipperId)
+            allUserChatArray = Object.keys(allUserChat).filter((key) => allUserChat[key].MaNhanVien === employeeId)
         }
 
         const userInfo = allUserChatArray.map((key) => {
@@ -18,7 +18,7 @@ const getAllUserChatDAO = async (shipperId, userId) => {
             return {
                 NoiDung: lastDetail,
                 KhachHang: allUserChat[key].KhachHang,
-                Shipper: allUserChat[key].Shipper,
+                NhanVien: allUserChat[key].NhanVien,
             }
         })
 
@@ -28,33 +28,33 @@ const getAllUserChatDAO = async (shipperId, userId) => {
     }
 }
 
-const makeChatDAO = async (shipperId, userId) => {
+const makeChatDAO = async (employee, user) => {
     try {
         const snapshot = await db.ref('TinNhan').once('value')
         const allUserChat = snapshot.val()
 
         const options = optionsDateTime
 
-        const flag = Object.keys(allUserChat).some((key) => key === shipperId + '-' + userId)
+        const flag = Object.keys(allUserChat).some((key) => key === employee.MaNhanVien + '-' + user.MaKhachHang)
 
         if (!allUserChat || !flag) {
-            await db.ref('TinNhan/' + shipperId + '-' + userId).set({
-                MaNhanVien: shipperId,
-                MaKhachHang: userId,
+            await db.ref('TinNhan/' + employee.MaNhanVien + '-' + user.MaKhachHang).set({
+                MaNhanVien: employee.MaNhanVien,
+                MaKhachHang: user.MaKhachHang,
                 KhachHang: {
-                    MaKhachHang: userId,
-                    HinhAnh: '',
-                    HoTen: '',
+                    MaKhachHang: user.MaKhachHang,
+                    HinhAnh: user.HinhAnh,
+                    HoTen: user.HoTen,
                 },
-                Shipper: {
-                    MaNhanVien: shipperId,
-                    HinhAnh: '',
-                    HoTen: '',
+                NhanVien: {
+                    MaNhanVien: employee.MaNhanVien,
+                    HinhAnh: employee.MaNhanVien === 'ND0001' ? 'https://res.cloudinary.com/dev9hnuhw/image/upload/v1715357953/coffee/jidfceqt6pbovf1ztnjc.png' : employee.HinhAnh,
+                    HoTen: employee.MaNhanVien === 'ND0001' ? 'Admin' : employee.HoTen,
                 },
                 NoiDung: {
                     0: {
-                        MaNhanVien: shipperId,
-                        ChiTiet: 'Xin chào, tôi là tài xế giao hàng cho bạn ✌️🫶',
+                        MaNhanVien: employee.MaNhanVien,
+                        ChiTiet: employee.MaNhanVien === 'ND0001' ? 'EPSRO xin chào, hân hạnh được phục vụ quý khách 🫶' : 'Xin chào, tôi là tài xế giao hàng cho bạn ✌️🫶',
                         ThoiGian: new Date().toLocaleString('vi-VN', options),
                         DaXem: false,
                     },
@@ -66,9 +66,9 @@ const makeChatDAO = async (shipperId, userId) => {
     }
 }
 
-const sendMessageDAO = async (shipperId, userId, message, user) => {
+const sendMessageDAO = async (employeeId, userId, message, user) => {
     try {
-        const id = shipperId + '-' + userId
+        const id = employeeId + '-' + userId
         const snapshot = await db.ref('TinNhan/' + id).once('value')
         const chat = snapshot.val()
 
@@ -90,7 +90,7 @@ const sendMessageDAO = async (shipperId, userId, message, user) => {
             })    
         } else {
             await db.ref('TinNhan/' + id + '/NoiDung/' + newId).set({
-                MaNhanVien: shipperId,
+                MaNhanVien: employeeId,
                 ChiTiet: message,
                 ThoiGian: date,
                 DaXem: false,
@@ -104,9 +104,9 @@ const sendMessageDAO = async (shipperId, userId, message, user) => {
     }
 }
 
-const getAllChatDAO = async (shipperId, userId) => {
+const getAllChatDAO = async (employeeId, userId) => {
     try {
-        const id = shipperId + '-' + userId
+        const id = employeeId + '-' + userId
         const snapshot = await db.ref('TinNhan/' + id).once('value')
         const chat = snapshot.val()
 
@@ -125,9 +125,9 @@ const getAllChatDAO = async (shipperId, userId) => {
     }
 }
 
-const setSeenDAO = async (shipperId, userId, user) => {
+const setSeenDAO = async (employeeId, userId, user) => {
     try {
-        const id = shipperId + '-' + userId
+        const id = employeeId + '-' + userId
         const snapshot = await db.ref('TinNhan/' + id + '/NoiDung').once('value')
         const chat = snapshot.val()
 

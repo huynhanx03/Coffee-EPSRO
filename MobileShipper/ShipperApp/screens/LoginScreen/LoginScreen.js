@@ -5,10 +5,48 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-nat
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import useLogin from '../../hooks/useLogin';
+import { useNotification } from '../../context/NotificationContext/NotificationContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { verifyToken } from '../../controllers/UserController';
 
 const LoginScreen = () => {
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
+    const { showNotification } = useNotification()
     const navigation = useNavigation()
+    const { mutateAsync: login } = useLogin()
+
+    useEffect(() => {
+        const verify = async () => {
+            try {
+                const data = await verifyToken()
+                console.log(data)
+                if (data) {
+                    navigation.replace('HomeTab')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        verify()
+    }, [])
+
+    const handleLogin = async () => {
+        setIsLoading(true)
+        try {
+            const data = await login({ username: username, password: password })
+            await AsyncStorage.setItem('token', data.token)
+            await AsyncStorage.setItem('user', JSON.stringify(data.data))
+            setIsLoading(false)
+            navigation.replace('HomeTab')
+        } catch (error) {
+            showNotification(error.message, 'error')
+            setIsLoading(false)
+        }
+    }
+
     return (
         <ScrollView className='mx-4'>
             <SafeAreaView style={{height: hp(100)}} className='flex-1'>
@@ -29,7 +67,7 @@ const LoginScreen = () => {
                             <FontAwesome name="phone" size={24} color="white" />
                         </View>
                         <View className='rounded-r-lg p-3 px-5 flex-1 border border-gray-300'>
-                            <TextInput className='text-base' placeholder='Nhập số điện thoại'/>
+                            <TextInput className='text-base' autoCapitalize='none' placeholder='Tên đăng nhập' value={username} onChangeText={(e) => setUsername(e)}/>
                         </View>
                     </View>
 
@@ -38,7 +76,7 @@ const LoginScreen = () => {
                             <MaterialIcons name="password" size={24} color="white" />
                         </View>
                         <View className='rounded-r-lg p-3 px-5 flex-1 border border-gray-300'>
-                            <TextInput className='text-base' placeholder='Nhập mật khẩu'/>
+                            <TextInput secureTextEntry={true} className='text-base' placeholder='Nhập mật khẩu' value={password} onChangeText={(e) => setPassword(e)}/>
                         </View>
                     </View>
 
@@ -46,7 +84,7 @@ const LoginScreen = () => {
                         <Text className='text-right italic font-bold text-base'>Quên mật khẩu?</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity className='p-3 rounded-lg' style={{backgroundColor: colors.primary}}>
+                    <TouchableOpacity onPress={handleLogin} className='p-3 rounded-lg' style={{backgroundColor: colors.primary}}>
                         <Text className='text-center text-white text-lg font-bold'>Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>

@@ -11,6 +11,7 @@ import { useNotification } from '../../context/NotificationContext/NotificationC
 import useGetAllUserChat from '../../hooks/useGetAllUserChat'
 import { useNavigation } from '@react-navigation/native'
 import { useNewMessage } from '../../context/NewMessageContext/NewMessageContext'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
 
 const HomeScreen = () => {
     const [isVisible, setIsVisible] = useState(false)
@@ -21,6 +22,7 @@ const HomeScreen = () => {
     const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('NV0004')
     const navigation = useNavigation()
     const { newMessage, setNewMessage } = useNewMessage()
+    const { userData } = useUserData()
 
     useEffect(() => {
         const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaKhachHang).length
@@ -31,7 +33,7 @@ const HomeScreen = () => {
 
     const setStatus = async (status) => {
         try {
-            const response = await setStatusShipper('NV0004', status)
+            const response = await setStatusShipper(userData.MaNguoiDung, status)
             showNotification(response.message, 'success')
             return response
         } catch (error) {

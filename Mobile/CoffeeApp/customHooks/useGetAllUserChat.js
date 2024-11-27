@@ -15,6 +15,7 @@ const useGetAllUserChat = (userId) => {
         onError: (err) => {
             console.log(err.response ? err.response.data.message : err.message)
         },
+        enabled: !!userId,
     })
     
     return { allUserChat: allUserChat?.data || [], isLoading, error, isFetching, refetch }

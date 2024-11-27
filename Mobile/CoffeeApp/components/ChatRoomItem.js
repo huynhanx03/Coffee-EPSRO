@@ -4,24 +4,25 @@ import { Image } from 'expo-image'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { useNavigation } from '@react-navigation/native'
 import { colors } from '../theme'
+import { blurhash } from '../utils'
 
 const ChatRoomItem = (props) => {
     const navigation = useNavigation()
     const { item } = props
 
     const who = item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : item.NoiDung.MaNhanVien
-    const seen = who.includes('NV') ? item.NoiDung.DaXem : true
+    const seen = (who.includes('NV') || who.includes('ND')) ? item.NoiDung.DaXem : true
     
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, Shipper: item.Shipper, who: who})} className='mx-4'>
+        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, NhanVien: item.NhanVien, who: who})} className='mx-4'>
             <View className='flex-row space-x-3'>
                 <View>
-                    <Image source={{uri: item.Shipper.HinhAnh}} contentFit='contain' style={{width: wp(13), height: wp(13), marginTop: hp(1.4)}} className='rounded-full'/>
+                    <Image source={{uri: item.NhanVien.HinhAnh}} contentFit='contain' style={{width: wp(13), height: wp(13), marginTop: hp(1.4)}} placeholder={{blurhash}} transition={1000} className='rounded-full'/>
                 </View>
 
                 <View className='space-y-1 flex-1' style={{marginTop: wp(4)}}>
                     <View>
-                        <Text className={`text-base ${!seen ? 'font-bold' : 'font-semibold'}`} style={{color: colors.text}}>{item.Shipper.HoTen}</Text>
+                        <Text className={`text-base ${!seen ? 'font-bold' : 'font-semibold'}`} style={{color: colors.text}}>{item.NhanVien.HoTen}</Text>
                     </View>
                     
                     <View className='flex-row items-center'>

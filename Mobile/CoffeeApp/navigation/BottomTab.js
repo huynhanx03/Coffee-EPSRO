@@ -10,12 +10,14 @@ import MenuScreen from "../screens/MenuScreen";
 import ChatRoomScreen from "../screens/ChatRoomScreen";
 import useGetAllUserChat from "../customHooks/useGetAllUserChat";
 import { getDatabase, onValue, orderByChild, query, ref, equalTo } from "firebase/database";
+import { useUser } from "../context/UserContext/UserContext";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
     const [ newMessage, setNewMessage ] = useState(null);
-    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('KH0001');
+    const { userData } = useUser()
+    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat(userData?.MaNguoiDung);
 
     useEffect(() => {
         const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaNhanVien).length;

@@ -15,6 +15,7 @@ const { width, height } = Dimensions.get("window");
 const RegisterScreen = () => {
     const navigation = useNavigation();
     const [isHide, setIsHide] = useState(true);
+    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -25,7 +26,7 @@ const RegisterScreen = () => {
     };
 
     const handleRegister = async () => {
-        if (!username || !email || !password || !rePassword) {
+        if (!username || !email || !password || !rePassword || !name) {
             ShowToast("error", "Đăng ký thất bại", "Vui lòng điền đầy đủ thông tin!")
             return;
         }
@@ -34,7 +35,7 @@ const RegisterScreen = () => {
             return;
         }
 
-        const response = await handleRegisterAccount(username, email, password);
+        const response = await handleRegisterAccount(name, username, email, password);
         if (response.success) {
             Toast.show({
                 type: "success",
@@ -48,6 +49,7 @@ const RegisterScreen = () => {
                 onPress: () => navigation.navigate('Login')
             })
         } else {
+            console.log(response)
             ShowToast("error", "Đăng ký thất bại", response.errors[0].msg)
         }
         
@@ -64,6 +66,15 @@ const RegisterScreen = () => {
                     Chào bạn mới!
                 </Text>
                 <View className="space-y-3" style={{ width: wp(90) }}>
+                    <TextInput
+                        mode="outlined"
+                        require = {true}
+                        autoCapitalize="none"
+                        label="Họ và tên"
+                        value={name}
+                        onChangeText={(text) => setName(text)}
+                        activeOutlineColor={colors.primary}
+                    />
                     <TextInput
                         mode="outlined"
                         require = {true}
