@@ -13,9 +13,9 @@ const getAllUserChat = async (shipperId) => {
     }
 }
 
-const makeChat = async (shipperId, userId) => {
+const makeChat = async (employee, user) => {
     try {
-        const response = await axios.post(`${baseUrl}/chat/make-chat`, { shipperId, userId })
+        const response = await axios.post(`${baseUrl}/chat/make-chat`, { employee, user })
         return response.data
     } catch (error) {
         throw new Error(error.response.data.message)

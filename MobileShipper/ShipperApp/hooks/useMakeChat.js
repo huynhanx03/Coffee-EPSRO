@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 const useMakeChat = (shipperId) => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({shipperId, userId}) => makeChat(shipperId, userId),
+        mutationFn: ({employee, user}) => makeChat(employee, user),
         onError: (err) => {
             console.error(err.response ? err.response.data.message : err.message)
         },

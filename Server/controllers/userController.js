@@ -129,8 +129,8 @@ const loginDesktopHandler = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
-    const userId = req.params.userId
     try {
+        const userId = req.params.userId
         const snapshot = await db.ref('NguoiDung/' + userId).once('value')
         const userData = snapshot.val()
 

@@ -1,15 +1,27 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 const OrderItem = (props) => {
     const navigation = useNavigation();
     const { order } = props
 
+    const info = useMemo(() => {
+        return {
+            hoTen: order.DiaChiGiaoHang.HoTen,
+            userId: order.MaNguoiDung,
+            orderId: order.MaDonHang,
+            address: order.DiaChiGiaoHang,
+            orderProducts: order.SanPham,
+            shipFee: order.PhiVanChuyen,
+            total: order.ThanhTien
+        }
+    }, [order])
+
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('OrderDetail', {userId: order.MaNguoiDung, orderId: order.MaDonHang, address: order.DiaChiGiaoHang, orderProducts: order.SanPham, shipFee: order.PhiVanChuyen, total: order.ThanhTien})} className='my-2 mx-4 flex'>
+        <TouchableOpacity onPress={() => navigation.navigate('OrderDetail', info)} className='my-2 mx-4 flex'>
             <View className='px-2 rounded-lg bg-white'>
                 <View className='flex-row space-x-5'>
                     <View className='items-center justify-center'>
