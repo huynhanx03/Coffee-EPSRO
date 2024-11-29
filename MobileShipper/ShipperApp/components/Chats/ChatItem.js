@@ -11,31 +11,12 @@ const ChatItem = (props) => {
     const navigation = useNavigation()
     const { item } = props
     const { userData } = useUserData()
-    const { cusData, isError: cusIsError, error: cusError } = useGetUserCus(item.KhachHang.MaKhachHang)
 
     const who = useMemo(() => item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : userData.MaNguoiDung, [cusData, userData])
     const seen = useMemo(() => who.includes('KH') ? item.NoiDung.DaXem : true, [who, item])
-
-    useEffect(() => {
-        if (cusIsError) {
-            showNotification(cusError.message, 'error');
-        }
-    }, [cusIsError, cusError]);
-
-    const user = useMemo(() => ({
-        HoTen: cusData.HoTen,
-        MaKhachHang: cusData.MaNguoiDung,
-        HinhAnh: cusData.HinhAnh
-    }), [cusData])
-
-    const employee = useMemo(() => ({
-        HoTen: userData.HoTen,
-        MaNhanVien: userData.MaNguoiDung,
-        HinhAnh: userData.HinhAnh
-    }), [userData])
     
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: {...user, phone: cusData?.SoDienThoai}, NhanVien: employee, who: who})} className='mx-4'>
+        <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, NhanVien: item.NhanVien, who: who})} className='mx-4'>
             <View className='flex-row space-x-3'>
                 <View>
                     <Image source={{uri: item.KhachHang.HinhAnh}} contentFit='contain' style={{width: wp(13), height: wp(13), marginTop: hp(1.4)}} className='rounded-full'/>

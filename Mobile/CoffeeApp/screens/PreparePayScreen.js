@@ -85,7 +85,7 @@ const PreparePayScreen = ({ route }) => {
         handleTotal()
     }, [totalProduct, transFee, voucher])
 
-    const handleCalDistance = useMemo(() => {
+    const handleCalDistance = () => {
         if (coord.latitude == 0 && coord.longtitude == 0) return 0
         const distance = geolib.getPreciseDistance(
             { latitude: 10.8700233, longitude: 106.8025735 },
@@ -102,7 +102,7 @@ const PreparePayScreen = ({ route }) => {
         })
 
         return distance
-    }, [coord])
+    }
 
     useEffect(() => {
         const distance = handleCalDistance()
@@ -110,7 +110,8 @@ const PreparePayScreen = ({ route }) => {
         setTransFee(TransFee)
     }, [coord])
 
-    const handleCheckDistance = useMemo(() => {
+    const isValidDistance = useMemo(() => {
+        if (!addressData) return false
         const isDistance = geolib.isPointWithinRadius(
             { latitude: 10.8700233, longitude: 106.8025735 }, // Default location
             { latitude: addressData.latitude, longitude: addressData.longtitude },
@@ -119,16 +120,17 @@ const PreparePayScreen = ({ route }) => {
 
         return isDistance
     }, [addressData])
+    console.log('isValidDistance', isValidDistance)
 
     const handleCancelVoucher = () => {
         dispatch(removeVoucher())
         setIsVisible(false)
     }
-    
+
     const checkStatusTransaction = async (orderId) => {
         const intervalId = setInterval(async () => {
             try {
-                const response = await getStatusTransaction(orderId)   
+                const response = await getStatusTransaction(orderId)
                 if (response.resultCode === 0) {
                     clearInterval(intervalId)
                     showNotification('Thanh toán thành công', 'success')
@@ -138,13 +140,16 @@ const PreparePayScreen = ({ route }) => {
                 clearInterval(intervalId)
                 showNotification(error.message, 'error')
             }
-        }, 1000);
+        }, 1000)
     }
 
     const checkOutByMomo = async () => {
         try {
-            const response = await paymentByMomo(total + transFee)
+            const sum = total + transFee
+            const rounded = Math.round(sum)
+            const response = await paymentByMomo(rounded)
             if (response.payUrl) {
+                console.log(response.payUrl)
                 Linking.openURL(response.payUrl).catch((err) => {
                     showNotification('Không thể mở MoMo', 'error')
                 })
@@ -166,14 +171,26 @@ const PreparePayScreen = ({ route }) => {
         setMethod(method)
     }
 
+    const handleSaveOrder = async (productList, total, transFee, addressData, status, isCart) => {
+        try {
+            await saveOrder(productList, total, transFee, addressData, status || 'Chờ xác nhận')
+            if (isCart) {
+                dispatch(clearCart())
+                await removeItemCart()
+            }
+        } catch (error) {
+            showNotification(error.message, 'error')
+        }
+    }
+
     const handleCheckOut = async () => {
         try {
             if (!addressData) {
                 ShowToast('error', 'Lỗi', 'Vui lòng chọn địa chỉ nhận hàng')
                 return
             }
-            const isDistance = handleCheckDistance()
-            if (!isDistance) {
+            
+            if (!isValidDistance) {
                 showNotification('Địa chỉ nhận hàng không hỗ trợ giao hàng', 'error')
                 return
             }
@@ -182,17 +199,14 @@ const PreparePayScreen = ({ route }) => {
 
             if (method === PAYMENT_TYPE.MOMO) {
                 setIsLoading(true)
-                const orderId = checkOutByMomo()
+                const orderId = await checkOutByMomo()
                 if (orderId) {
                     checkStatusTransaction(orderId)
                 }
+                await handleSaveOrder(productList, total, transFee, addressData, 'Đã thanh toán', isCart)
                 setIsLoading(false)
             } else {
-                await saveOrder(productList, total, transFee, addressData)
-                if (isCart) {
-                    dispatch(clearCart())
-                    await removeItemCart()
-                }
+                handleSaveOrder(productList, total, transFee, addressData, 'Chờ xác nhận', isCart)
             }
             if (voucher) {
                 try {
