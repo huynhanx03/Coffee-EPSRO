@@ -20,10 +20,7 @@ const MessageScreen = ({ route }) => {
     const [message, setMessage] = useState('')
     const scrollRef = useRef(null);
 
-    const phoneNumber = '0123456789'
-
     const phone = useMemo(() => KhachHang.phone, [KhachHang])
-    console.log(phone)
 
     const handleSendMessage = (message) => {
         sendMessage({shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang, message: message})

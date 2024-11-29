@@ -21,8 +21,8 @@ import useGetUserCus from '../../hooks/useGetUserCus'
 const OrderDetailScreen = ({ route }) => {
     const navigation = useNavigation()
     const { showNotification } = useNotification()
-    const { hoTen, userId, orderId, address, orderProducts, shipFee, total } = route.params
-    const { status, isLoading, error } = useGetStatusOrder(orderId)
+    const { userId, orderId, address, orderProducts, shipFee, total } = route.params
+    const { status } = useGetStatusOrder(orderId)
     const { userData } = useUserData()
     const { mutate: cancelOrder } = useCancelOrder()
     const { mutate: takeUpOrder, error: takeUpOrderError, isSuccess } = useTakeUpOrder()
@@ -70,6 +70,9 @@ const OrderDetailScreen = ({ route }) => {
         setStatusOrder({orderId: orderId, status: status})
         if (setStatusOrderError) {
             showNotification(setStatusOrderError.message, 'error')
+        } else {
+            showNotification('Cập nhật trạng thái đơn hàng thành công', 'success')
+            navigation.goBack()
         }
     }
 
@@ -78,7 +81,6 @@ const OrderDetailScreen = ({ route }) => {
         if (makeChatError) {
             showNotification(makeChatError.message, 'error')
         } else {
-            console.log('a')
             navigation.navigate('ChatDetail', {KhachHang: {...user, phone: cusData?.SoDienThoai}, NhanVien: employee, who: 'NV'})
         }
     }

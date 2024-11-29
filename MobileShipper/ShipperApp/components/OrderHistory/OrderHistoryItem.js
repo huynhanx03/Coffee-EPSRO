@@ -10,7 +10,7 @@ const OrderItem = (props) => {
     const navigation = useNavigation();
     const { order } = props
     return (
-        <TouchableOpacity onPress={() => console.log('a')} className='shadow-md my-2 flex'>
+        <TouchableOpacity className='shadow-md my-2 flex'>
             <View className='px-2 rounded-lg bg-white mx-4'>
                 <View className='flex-row space-x-5'>
                     <View className='items-center justify-center'>
