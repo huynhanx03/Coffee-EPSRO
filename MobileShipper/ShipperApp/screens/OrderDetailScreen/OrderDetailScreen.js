@@ -40,7 +40,8 @@ const OrderDetailScreen = ({ route }) => {
         return {
             HoTen: cusData?.HoTen,
             MaKhachHang: cusData?.MaNguoiDung,
-            HinhAnh: cusData?.HinhAnh
+            HinhAnh: cusData?.HinhAnh,
+            SoDienThoai: cusData?.SoDienThoai
         }
     }, [cusData])
 
@@ -48,7 +49,8 @@ const OrderDetailScreen = ({ route }) => {
         return {
             HoTen: userData.HoTen,
             MaNhanVien: userData.MaNguoiDung,
-            HinhAnh: userData.HinhAnh
+            HinhAnh: userData.HinhAnh,
+            SoDienThoai: userData.SoDienThoai
         }
     }, [userData])
 

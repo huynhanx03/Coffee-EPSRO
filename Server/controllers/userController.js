@@ -33,7 +33,7 @@ const verifyToken = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const { name, username, email, password } = req.body
+        const { name, username, phone, email, password } = req.body
         const hasPass = await hashPassword(password)
         const newId = await getNewId()
         const currentTime = new Date()
@@ -49,7 +49,7 @@ const register = async (req, res) => {
             HoTen: name,
             MaNguoiDung: newId,
             NgayTao: dateCreated,
-            SoDienThoai: '',
+            SoDienThoai: phone,
             HinhAnh: 'https://user-images.githubusercontent.com/5709133/50445980-88299a80-0912-11e9-962a-6fd92fd18027.png',
             NgaySinh: '',
         })
@@ -69,7 +69,7 @@ const register = async (req, res) => {
             },
         })
 
-        return res.status(200).json({ success: true, message: 'Đăng ký thành công!', data: { MaKhachHang: newId, HinhAnh: 'https://user-images.githubusercontent.com/5709133/50445980-88299a80-0912-11e9-962a-6fd92fd18027.png', HoTen: name } })
+        return res.status(200).json({ success: true, message: 'Đăng ký thành công!', data: { MaKhachHang: newId, HinhAnh: 'https://user-images.githubusercontent.com/5709133/50445980-88299a80-0912-11e9-962a-6fd92fd18027.png', HoTen: name, SoDienThoai: phone } })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ success: false, message: 'Đăng ký thất bại!' })
