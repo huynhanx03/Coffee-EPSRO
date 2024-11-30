@@ -17,6 +17,7 @@ const RegisterScreen = () => {
     const [isHide, setIsHide] = useState(true);
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
+    const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
@@ -35,7 +36,7 @@ const RegisterScreen = () => {
             return;
         }
 
-        const response = await handleRegisterAccount(name, username, email, password);
+        const response = await handleRegisterAccount(name, username, phone, email, password);
         if (response.success) {
             Toast.show({
                 type: "success",
@@ -82,6 +83,14 @@ const RegisterScreen = () => {
                         label="Tên đăng nhập"
                         value={username}
                         onChangeText={(text) => setUsername(text)}
+                        activeOutlineColor={colors.primary}
+                    />
+                    <TextInput
+                        mode="outlined"
+                        autoCapitalize="none"
+                        label="Email"
+                        value={phone}
+                        onChangeText={(text) => setPhone(text)}
                         activeOutlineColor={colors.primary}
                     />
                     <TextInput

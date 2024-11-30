@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { KeyboardAvoidingView, Linking, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import * as Icons from 'react-native-heroicons/solid'
 import { Image } from 'expo-image'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
@@ -11,17 +11,19 @@ import { useNavigation } from '@react-navigation/native'
 import useSendMessage from '../customHooks/useSendMessage'
 import useSeen from '../customHooks/useSeen'
 import { blurhash } from '../utils'
+import { useNotification } from '../context/ModalContext'
 
 const ios = Platform.OS === 'ios'
 const ChatScreen = ({ route }) => {
     const navigation = useNavigation()
     const [message, setMessage] = useState('')
+    const { showNotification } = useNotification()
     const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
     const { mutate: setSeen, error: setSeenError } = useSeen()
     const { KhachHang, NhanVien, who, chatbot } = route.params
     const inputRef = useRef(null)
 
-    const phoneNumber = '0123456789'
+    const phoneNumber = useMemo(() => NhanVien.SoDienThoai, [NhanVien])
 
     const makeCall = () => {
         let phoneUrl = `tel:${phoneNumber}`
@@ -31,6 +33,7 @@ const ChatScreen = ({ route }) => {
                 if (supported) {
                     return Linking.openURL(phoneUrl)
                 } else {
+                    showNotification('Thiết bị không hỗ trợ', 'error')
                     console.log('Không thể mở ứng dụng điện thoại: ' + phoneUrl)
                 }
             })

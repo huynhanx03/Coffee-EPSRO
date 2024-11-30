@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getAuthHeaders } from './TokenController'
 
 const baseUrl = process.env.EXPO_PUBLIC_BASE_URL
 
@@ -58,7 +59,8 @@ const cancelOrder = async (orderId, shipperId) => {
 
 const setStatusOrder = async (orderId, status) => {
     try {
-        const response = await axios.put(`${baseUrl}/order/set-status-order/${orderId}`, { status })
+        const headers = await getAuthHeaders()
+        const response = await axios.put(`${baseUrl}/order/set-status-order/${orderId}`, { status }, { headers })
         return response.data
     } catch (error) {
         throw new Error(error.response.data.message)

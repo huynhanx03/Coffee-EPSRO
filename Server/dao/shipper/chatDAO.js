@@ -45,11 +45,13 @@ const makeChatDAO = async (employee, user) => {
                     MaKhachHang: user.MaKhachHang,
                     HinhAnh: user.HinhAnh,
                     HoTen: user.HoTen,
+                    SoDienThoai: user.SoDienThoai
                 },
                 NhanVien: {
                     MaNhanVien: employee.MaNhanVien,
                     HinhAnh: employee.MaNhanVien === 'ND0001' ? 'https://res.cloudinary.com/dev9hnuhw/image/upload/v1715357953/coffee/jidfceqt6pbovf1ztnjc.png' : employee.HinhAnh,
                     HoTen: employee.MaNhanVien === 'ND0001' ? 'Admin' : employee.HoTen,
+                    SoDienThoai: employee.SoDienThoai
                 },
                 NoiDung: {
                     0: {

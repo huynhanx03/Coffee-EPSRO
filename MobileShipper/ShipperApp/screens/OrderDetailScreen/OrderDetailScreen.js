@@ -2,7 +2,7 @@ import Entypo from '@expo/vector-icons/Entypo'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native'
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -15,16 +15,44 @@ import useTakeUpOrder from '../../hooks/useTakeUpOrder'
 import { colors } from '../../theme/Theme'
 import { formatPrice } from '../../utils'
 import { useMakeChat } from '../../hooks/useMakeChat'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
+import useGetUserCus from '../../hooks/useGetUserCus'
 
 const OrderDetailScreen = ({ route }) => {
     const navigation = useNavigation()
     const { showNotification } = useNotification()
     const { userId, orderId, address, orderProducts, shipFee, total } = route.params
-    const { status, isLoading, error } = useGetStatusOrder(orderId)
+    const { status } = useGetStatusOrder(orderId)
+    const { userData } = useUserData()
     const { mutate: cancelOrder } = useCancelOrder()
     const { mutate: takeUpOrder, error: takeUpOrderError, isSuccess } = useTakeUpOrder()
     const { mutate: setStatusOrder, error: setStatusOrderError } = useSetStatusOrder()
-    const { mutate: makeChat, error: makeChatError } = useMakeChat(userId)
+    const { mutate: makeChat, error: makeChatError } = useMakeChat(userData.MaNguoiDung)
+    const { cusData, isError: cusIsError, error: cusError } = useGetUserCus(userId)
+
+    useEffect(() => {
+        if (cusIsError) {
+            showNotification(cusError.message, 'error');
+        }
+    }, [cusIsError, cusError]);
+
+    const user = useMemo(() => {
+        return {
+            HoTen: cusData?.HoTen,
+            MaKhachHang: cusData?.MaNguoiDung,
+            HinhAnh: cusData?.HinhAnh,
+            SoDienThoai: cusData?.SoDienThoai
+        }
+    }, [cusData])
+
+    const employee = useMemo(() => {
+        return {
+            HoTen: userData.HoTen,
+            MaNhanVien: userData.MaNguoiDung,
+            HinhAnh: userData.HinhAnh,
+            SoDienThoai: userData.SoDienThoai
+        }
+    }, [userData])
 
     const handleCancelOrder = (orderId, shipperId) => {
         cancelOrder({orderId: orderId, shipperId: shipperId})
@@ -44,15 +72,18 @@ const OrderDetailScreen = ({ route }) => {
         setStatusOrder({orderId: orderId, status: status})
         if (setStatusOrderError) {
             showNotification(setStatusOrderError.message, 'error')
+        } else {
+            showNotification('Cập nhật trạng thái đơn hàng thành công', 'success')
+            navigation.goBack()
         }
     }
 
-    const handleMakeChat = (shipperId, userId) => {
-        makeChat({shipperId: shipperId, userId: userId})
+    const handleMakeChat = (employee, user) => {
+        makeChat({employee: employee, user: user})
         if (makeChatError) {
             showNotification(makeChatError.message, 'error')
         } else {
-            navigation.navigate('ChatDetail', {userId: userId})
+            navigation.navigate('ChatDetail', {KhachHang: {...user, phone: cusData?.SoDienThoai}, NhanVien: employee, who: 'NV'})
         }
     }
 
@@ -205,7 +236,7 @@ const OrderDetailScreen = ({ route }) => {
                         </View>
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity onPress={status === 'Đã nhận' ? () => handleCancelOrder(orderId, 'NV0004') : () => handleTakeUpOrder('NV0004', orderId)}>
+                <TouchableOpacity onPress={status === 'Đã nhận' ? () => handleCancelOrder(orderId, userData.MaNguoiDung) : () => handleTakeUpOrder(userData.MaNguoiDung, orderId)}>
                     <View className={`flex-row justify-center items-center ${status === 'Đã nhận' ? 'bg-red-400' : 'bg-green-600'} p-4 rounded-lg`} style={{width: status === 'Đã nhận' ? wp(45) : null}}>
                         <Text className="text-base font-bold text-white">{status === 'Đã nhận' ? "Huỷ đơn hàng" : "Nhận đơn hàng"}</Text>
                     </View>
@@ -214,7 +245,7 @@ const OrderDetailScreen = ({ route }) => {
 
             {status === 'Đã nhận' && (
                 <View className='mx-4' style={{marginTop: hp(1.5), marginBottom: hp(2)}}>
-                    <TouchableOpacity onPress={() => handleMakeChat('NV0004', userId)} className='bg-blue-300 p-4 rounded-lg'>
+                    <TouchableOpacity disabled={cusIsError} onPress={() => handleMakeChat(employee, user)} className={`${cusIsError ? 'bg-gray-500' : 'bg-blue-300'} p-4 rounded-lg`}>
                         <Text className='text-base font-bold text-center text-white'>Liên hệ với người đặt hàng</Text>
                     </TouchableOpacity>
                 </View>

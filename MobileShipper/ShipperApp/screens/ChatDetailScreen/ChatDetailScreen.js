@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Linking, KeyboardAvoidingView, Platform, ScrollView, TextInput } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import MessageList from '../../components/Messages/MessagesList'
 import Entypo from '@expo/vector-icons/Entypo'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -20,7 +20,7 @@ const MessageScreen = ({ route }) => {
     const [message, setMessage] = useState('')
     const scrollRef = useRef(null);
 
-    const phoneNumber = '0123456789'
+    const phone = useMemo(() => KhachHang.SoDienThoai, [KhachHang])
 
     const handleSendMessage = (message) => {
         sendMessage({shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang, message: message})
@@ -45,7 +45,7 @@ const MessageScreen = ({ route }) => {
     }, [])
 
     const makeCall = () => {
-        let phoneUrl = `tel:${phoneNumber}`
+        let phoneUrl = `tel:${phone}`
 
         Linking.canOpenURL(phoneUrl)
             .then((supported) => {

@@ -41,4 +41,14 @@ const getProfitByShipper = async (shipperId) => {
     }
 }
 
-export { login, setStatusShipper, getProfitByShipper, verifyToken }
+const getCusData = async (userId) => {
+    try {
+        const headers = await getAuthHeaders()
+        const response = await axios.get(`${baseUrl}/user/user/${userId}`, { headers })
+        return response.data
+    } catch (error) {
+        throw new Error(error.response.data.message)
+    }
+}
+
+export { login, setStatusShipper, getProfitByShipper, verifyToken, getCusData }

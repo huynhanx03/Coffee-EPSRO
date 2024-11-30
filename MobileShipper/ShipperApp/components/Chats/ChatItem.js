@@ -1,16 +1,19 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Image } from 'expo-image'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import { colors } from '../../theme/Theme'
 import { useNavigation } from '@react-navigation/native'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
+import useGetUserCus from '../../hooks/useGetUserCus'
 
 const ChatItem = (props) => {
     const navigation = useNavigation()
     const { item } = props
+    const { userData } = useUserData()
 
-    const who = item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : item.NoiDung.MaNhanVien
-    const seen = who.includes('KH') ? item.NoiDung.DaXem : true
+    const who = useMemo(() => item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : userData.MaNguoiDung, [cusData, userData])
+    const seen = useMemo(() => who.includes('KH') ? item.NoiDung.DaXem : true, [who, item])
     
     return (
         <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, NhanVien: item.NhanVien, who: who})} className='mx-4'>
