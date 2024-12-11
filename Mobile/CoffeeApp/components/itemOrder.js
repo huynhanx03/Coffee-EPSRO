@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import Animated, { FadeOut, FlipInXUp } from "react-native-reanimated";
 import { setStatusOrder } from "../controller/OrderController";
 import ShowToast from "./toast";
+import { ORDER_STATUS } from "../constants";
 
 const ItemOrder = (props) => {
     const navigation = useNavigation();
@@ -44,20 +45,20 @@ const ItemOrder = (props) => {
 
     const handleReceive = () => {
         const status = props.order.TrangThai
-        setIsReceive(status === 'Đã xác nhận' ? false : true);
+        setIsReceive(status === ORDER_STATUS.ACCEPTED ? false : true);
     }
 
     const handleStatus = () => {
         const status = props.order.TrangThai
-        setIsReview(status === 'Đã nhận hàng' ? false : true)
+        setIsReview(status === ORDER_STATUS.RECEIVED ? false : true)
     }
 
     const handleStatusDelivery = (status) => {
         // const status = props.order.TrangThai
         
-        if (status === 'Chờ xác nhận') {
+        if (status === ORDER_STATUS.WAITING) {
             setStatus('Đơn hàng đang trong quá trình xác nhận')
-        } else if (status === 'Đã xác nhận') {
+        } else if (status === ORDER_STATUS.ACCEPTED) {
             setStatus('Đơn hàng đang trong quá trình vận chuyển')
         } else {
             setStatus('Đơn hàng đã được giao thành công')

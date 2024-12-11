@@ -11,6 +11,14 @@ const PAYMENT_TYPE = Object.freeze({
     MOMO: 'momo'
 })
 
-const BASE_URL = 'http://localhost:3000'
+const ORDER_STATUS = Object.freeze({
+    WAITING: 'Chờ xác nhận',
+    ACCEPTED: 'Đã xác nhận',
+    RECEIVED: 'Đã nhận hàng',
+    DELIVERED: 'Giao hàng thành công',
+    CANCELLED: 'Đã hủy'
+})
 
-export {GOOGLE_MAPS_API_KEY, MESSAGE_TYPE, BASE_URL, PAYMENT_TYPE} 
+const BASE_URL = 'http://localhost:3001'
+
+export { GOOGLE_MAPS_API_KEY, MESSAGE_TYPE, BASE_URL, PAYMENT_TYPE, ORDER_STATUS } 
