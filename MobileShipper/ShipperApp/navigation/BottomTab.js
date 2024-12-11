@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../screens/HomeScreen/HomeScreen";
+// import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import { colors } from "../theme/Theme";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import OrdersScreen from "../screens/OrdersScreen/OrdersScreen";
@@ -12,12 +12,15 @@ import { useNewMessage } from "../context/NewMessageContext/NewMessageContext";
 import { useEffect } from "react";
 import useGetAllUserChat from "../hooks/useGetAllUserChat";
 import { getDatabase, onValue, orderByChild, query, ref, equalTo } from "firebase/database";
+import HomeScreenIndex from "../screens/HomeScreen";
+import { useUserData } from "../context/UserDataContext/UserDataContext";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
+    const { userData } = useUserData()
     const { newMessage, setNewMessage } = useNewMessage();
-    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat('NV0004');
+    const { allUserChat, error, isLoading, isFetching, refetch } = useGetAllUserChat(userData?.MaNguoiDung);
 
     useEffect(() => {
         const count = allUserChat.filter((item) => item.NoiDung.DaXem === false && item.NoiDung.MaKhachHang).length;
@@ -25,16 +28,18 @@ const BottomTab = () => {
     }, [allUserChat, isFetching]);
 
     useEffect(() => {
-        const db = getDatabase();
-        const messageRef = ref(db, `TinNhan/`);
-        const q = query(messageRef, orderByChild("MaNhanVien"), equalTo('NV0004'));
-
-        const unsubscribe = onValue(q, (snapshot) => {
-            refetch();
-        });
-
-        return () => unsubscribe();
-    }, [refetch]);
+        if (userData) {
+            const db = getDatabase();
+            const messageRef = ref(db, `TinNhan/`);
+            const q = query(messageRef, orderByChild("MaNhanVien"), equalTo(userData?.MaNguoiDung));
+    
+            const unsubscribe = onValue(q, (snapshot) => {
+                refetch();
+            });
+    
+            return () => unsubscribe();
+        }
+    }, [refetch, userData?.MaNguoiDung]);
 
     return (
         <Tab.Navigator screenOptions={{
@@ -66,7 +71,7 @@ const BottomTab = () => {
         }}>
             <Tab.Screen 
                 name="Home"
-                component={HomeScreen}
+                component={HomeScreenIndex}
                 options={{
                     headerShown: false,
                     tabBarLabel: "Trang chủ",

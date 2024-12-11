@@ -16,10 +16,10 @@ import { useNotification } from '../../context/NotificationContext/NotificationC
 
 const UserScreen = () => {
     const navigation = useNavigation()
-    const { showNotification } = useNotification()
-    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004')
-    const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper('NV0004')
     const { userData } = useUserData()
+    const { showNotification } = useNotification()
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper(userData.MaNguoiDung)
+    const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper(userData.MaNguoiDung)
 
     const totalRevenue = profit.reduce((acc, item) => acc + item.DoanhThu, 0)
 

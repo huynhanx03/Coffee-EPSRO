@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const dotenv = require('dotenv');
 
 const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
@@ -21,7 +22,7 @@ const reviewRoutes = require('./routes/reviewRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use(cors())
 app.use(bodyParser.json())

@@ -5,10 +5,12 @@ import React, { useEffect } from 'react'
 import { formatPrice } from '../../utils'
 import useGetDataTable from '../../hooks/useGetDataTable'
 import { useNotification } from '../../context/NotificationContext/NotificationContext'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
 
 const EarningChart = () => {
     const { showNotification } = useNotification()
-    const { dataTable, maxValue, isLoading, error, isFetching, refetch } = useGetDataTable('NV0004')
+    const { userData } = useUserData()
+    const { dataTable, maxValue, isLoading, error, isFetching, refetch } = useGetDataTable(userData.MaNguoiDung)
 
     const formatYAxisLabel = (value) => {
         if (value >= 1000000000) {

@@ -20,9 +20,7 @@ const useGetUserData = () => {
         queryKey: ['userData'],
         queryFn: () => getUserData(),
         retry: 2,
-        onError: (err) => {
-            console.log(err.response ? err.response.data.message : err.message)
-        }
+        enabled: true
     })
 
     return { userData, isLoading, isError }

@@ -3,15 +3,17 @@ import MessageItem from './MessageItem'
 import React, { useEffect, useRef, useState } from 'react'
 import db from '../../firebase'
 import { getDatabase, onValue, orderByChild, query, ref, set } from 'firebase/database'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
 
 const MessagesList = (props) => {
     const { userId } = props
     const [messages, setMessages] = useState([]);
     const scrollRef = useRef(null)
+    const { userData } = useUserData()
 
     const db = getDatabase()
     const getMessage = async () => {
-        const messageRef = ref(db, `TinNhan/${'NV0004'+'-'+userId}/NoiDung`)
+        const messageRef = ref(db, `TinNhan/${userData.MaNguoiDung+'-'+userId}/NoiDung`)
         const q = query(messageRef, orderByChild("ThoiGian"))
 
         onValue(q, (snapshot) => {

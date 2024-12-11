@@ -4,6 +4,7 @@ import OrderHistoryItem from './OrderHistoryItem'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
 
 const renderSeperator = () => {
     return (
@@ -12,7 +13,8 @@ const renderSeperator = () => {
 }
 
 const OrderHistoryList = () => {
-    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004');
+    const { userData } = useUserData()
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper(userData.MaNguoiDung);
     return (
         <Animated.View entering={FadeIn} exiting={FadeOut}>
             <FlatList 

@@ -27,7 +27,7 @@ const BottomTab = () => {
     useEffect(() => {
         const db = getDatabase();
         const messageRef = ref(db, `TinNhan/`);
-        const q = query(messageRef, orderByChild("MaKhachHang"), equalTo('KH0001'));
+        const q = query(messageRef, orderByChild("MaKhachHang"), equalTo(userData.MaNguoiDung));
 
         const unsubscribe = onValue(q, (snapshot) => {
             refetch();

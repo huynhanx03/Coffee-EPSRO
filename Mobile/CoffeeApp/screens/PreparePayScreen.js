@@ -120,7 +120,6 @@ const PreparePayScreen = ({ route }) => {
 
         return isDistance
     }, [addressData])
-    console.log('isValidDistance', isValidDistance)
 
     const handleCancelVoucher = () => {
         dispatch(removeVoucher())

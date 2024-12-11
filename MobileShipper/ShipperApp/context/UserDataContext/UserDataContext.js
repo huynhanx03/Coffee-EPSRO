@@ -5,9 +5,10 @@ const UserDataContext = createContext();
 
 const UserDataProvider = ({ children }) => {
     const { userData } = useGetUserData();
+    const [status, setStatus] = useState('offline');
 
     return (
-        <UserDataContext.Provider value={{ userData }}>
+        <UserDataContext.Provider value={{ userData, status, setStatus }}>
             {children}
         </UserDataContext.Provider>
     )

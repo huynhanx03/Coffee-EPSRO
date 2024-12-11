@@ -2,9 +2,11 @@ import { View, Text, ActivityIndicator } from 'react-native'
 import React from 'react'
 import OrderRecentItem from './OrderRecentItem'
 import useGetOrderSuccessByShipper from '../../hooks/useGetOrderSuccessByShipper'
+import { useUserData } from '../../context/UserDataContext/UserDataContext'
 
 const OrderRecentList = () => {
-    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper('NV0004')
+    const { userData } = useUserData()
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper(userData.MaNguoiDung)
     const recentOrders = orderSuccess.slice(0, 5)
     return (
         <View>
