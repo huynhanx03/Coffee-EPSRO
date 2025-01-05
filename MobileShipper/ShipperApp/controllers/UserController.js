@@ -1,11 +1,14 @@
 import axios from 'axios'
 import { getAuthHeaders } from './TokenController'
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const baseUrl = process.env.EXPO_PUBLIC_BASE_URL
 
 const login = async (username, password) => {
     try {
         const response = await axios.post(`${baseUrl}/user/shipper/login`, { username, password })
+        await AsyncStorage.setItem('token', response.data.token)
+        await AsyncStorage.setItem('user', JSON.stringify(response.data.data))
         return response.data
     } catch (error) {
         throw new Error(error.response.data.message)

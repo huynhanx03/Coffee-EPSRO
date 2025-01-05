@@ -34,8 +34,8 @@ const HomeScreen = () => {
     const setStatus = async (status) => {
         try {
             const response = await setStatusShipper(userData.MaNguoiDung, status)
-            showNotification(response.message, 'success')
             ctx_setStatus(status)
+            showNotification(response.message, 'success')
             return response
         } catch (error) {
             showNotification(error.message, 'error')

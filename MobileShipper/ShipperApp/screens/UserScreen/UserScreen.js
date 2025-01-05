@@ -18,8 +18,8 @@ const UserScreen = () => {
     const navigation = useNavigation()
     const { userData } = useUserData()
     const { showNotification } = useNotification()
-    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper(userData.MaNguoiDung)
-    const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper(userData.MaNguoiDung)
+    const { orderSuccess, isLoading, error, isFetching, refetch } = useGetOrderSuccessByShipper(userData?.MaNguoiDung)
+    const { profit, isLoading: isLoadingProfit, error: errorProfit, isFetching: isFetchingProfit, refetch: refetchProfit } = useGetProfitByShipper(userData?.MaNguoiDung)
 
     const totalRevenue = profit.reduce((acc, item) => acc + item.DoanhThu, 0)
 
@@ -38,7 +38,7 @@ const UserScreen = () => {
         <View className="flex-1 bg-white">
             <View
                 style={{ height: hp(18) }}
-                className="bg-blue-500">
+                className="bg-yellow-950">
                 <View
                     className="justify-center items-center"
                     style={{ marginTop: hp(8) }}>
@@ -65,7 +65,7 @@ const UserScreen = () => {
 
                 <LinearGradient
                     className="p-5 rounded-lg mx-4"
-                    colors={['#b6ebb0', '#78faf6']}
+                    colors={['#99632e', '#bf9d7a']}
                     locations={[0, 1]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}>
@@ -75,7 +75,7 @@ const UserScreen = () => {
                             style={{ color: colors.text_gray }}>
                             Họ và tên:{' '}
                         </Text>
-                        <Text className='text-lg font-semibold'>Nguyễn Văn A</Text>
+                        <Text className='text-lg font-semibold'>{userData?.HoTen}</Text>
                     </View>
 
                     <View className="flex-row space-x-2 my-5 items-center">
@@ -84,7 +84,7 @@ const UserScreen = () => {
                             style={{ color: colors.text_gray }}>
                             Số điện thoại:{' '}
                         </Text>
-                        <Text className='text-lg font-semibold'>0123456789</Text>
+                        <Text className='text-lg font-semibold'>{userData?.SoDienThoai}</Text>
                     </View>
 
                     <View className="flex-row space-x-2 items-center">
@@ -93,7 +93,7 @@ const UserScreen = () => {
                             style={{ color: colors.text_gray }}>
                             Email:{' '}
                         </Text>
-                        <Text className='text-lg font-semibold'>a@gmail.com</Text>
+                        <Text className='text-lg font-semibold'>{userData?.Email}</Text>
                     </View>
                 </LinearGradient>
 
@@ -108,7 +108,7 @@ const UserScreen = () => {
                         <LinearGradient
                             className="p-5 rounded-lg"
                             style={{ width: wp(45), height: hp(15) }}
-                            colors={['#b6ebb0', '#78faf6']}
+                            colors={['#99632e', '#bf9d7a']}
                             locations={[0, 1]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}>
@@ -130,7 +130,7 @@ const UserScreen = () => {
                         <LinearGradient
                             className="p-5 rounded-lg"
                             style={{ width: wp(45), height: hp(15) }}
-                            colors={['#b6ebb0', '#78faf6']}
+                            colors={['#99632e', '#bf9d7a']}
                             locations={[0, 1]}
                             start={{ x: 1, y: 1 }}
                             end={{ x: 0, y: 0 }}>
@@ -147,7 +147,7 @@ const UserScreen = () => {
                 </View>
 
                 <View>
-                    <TouchableOpacity onPress={handleLogOut} className='bg-red-400 rounded-lg shadow-md p-4 mx-4' style={{marginTop: hp(15)}}>
+                    <TouchableOpacity onPress={handleLogOut} className='rounded-lg shadow-md p-4 mx-4' style={{marginTop: hp(15), backgroundColor: "#bf9d7a"}}>
                         <Text className='text-lg font-bold text-center'>Đăng xuất</Text>
                     </TouchableOpacity>
                 </View>

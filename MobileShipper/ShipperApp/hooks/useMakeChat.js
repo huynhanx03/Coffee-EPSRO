@@ -11,7 +11,7 @@ const useMakeChat = (shipperId) => {
         onSuccess: () => {
             console.log('Make chat successfully')
             queryClient.invalidateQueries(['allUserChat', shipperId])
-        }
+        },
     })
 }
 

@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Linking, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+    KeyboardAvoidingView,
+    Linking,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native'
 import * as Icons from 'react-native-heroicons/solid'
 import { Image } from 'expo-image'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
@@ -12,18 +21,23 @@ import useSendMessage from '../customHooks/useSendMessage'
 import useSeen from '../customHooks/useSeen'
 import { blurhash } from '../utils'
 import { useNotification } from '../context/ModalContext'
+import useSendChatBot from '../customHooks/useSendChatBot'
+import LoadingDot from '../components/LoadingDot'
 
 const ios = Platform.OS === 'ios'
 const ChatScreen = ({ route }) => {
     const navigation = useNavigation()
     const [message, setMessage] = useState('')
     const { showNotification } = useNotification()
-    const { mutate: sendMessage, error: sendMessageError } = useSendMessage()
-    const { mutate: setSeen, error: setSeenError } = useSeen()
+    const { mutate: sendMessage } = useSendMessage()
+    const { mutate: setSeen } = useSeen()
+    const { mutate: sendMessageChatBot } = useSendChatBot()
     const { KhachHang, NhanVien, who, chatbot } = route.params
+    const userId = useMemo(() => KhachHang.MaKhachHang || KhachHang.MaNguoiDung, [KhachHang])
     const inputRef = useRef(null)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const phoneNumber = useMemo(() => NhanVien.SoDienThoai, [NhanVien])
+    const phoneNumber = useMemo(() => NhanVien?.SoDienThoai, [NhanVien])
 
     const makeCall = () => {
         let phoneUrl = `tel:${phoneNumber}`
@@ -41,15 +55,32 @@ const ChatScreen = ({ route }) => {
     }
 
     const handleSetSeen = () => {
-        if (who.includes('NV') || who.includes('ND')) {
-            setSeen({ shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang })
+        if (who.includes('NV') || who.includes('ND') || who.includes('chatbot')) {
+            setSeen({ shipperId: NhanVien.MaNhanVien, userId: userId })
         }
     }
 
     const handleSendMessage = async () => {
+        if (!chatbot && NhanVien.MaNhanVien !== 'chatbot') {
+            sendMessage({ shipperId: NhanVien.MaNhanVien, userId: userId, message: message })
+        } else {
+            sendMessage({ shipperId: 'chatbot', userId: userId, message: message })
+            setIsLoading(true)
+            sendMessageChatBot(
+                { userId: userId, message: message },
+                {
+                    onSettled: () => {
+                        setIsLoading(false)
+                    },
+                }
+            )
+        }
         setMessage('')
-        sendMessage({ shipperId: NhanVien.MaNhanVien, userId: KhachHang.MaKhachHang, message: message })
     }
+
+    useEffect(() => {
+        console.log(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (!chatbot) {
@@ -59,20 +90,12 @@ const ChatScreen = ({ route }) => {
     }, [])
 
     return (
-        <KeyboardAvoidingView
-            behavior={ios ? 'padding' : 'height'}
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={0}
-        >
+        <KeyboardAvoidingView behavior={ios ? 'padding' : 'height'} style={{ flex: 1 }} keyboardVerticalOffset={0}>
             <SafeAreaView>
                 <View className="flex-row justify-between items-center shadow-lg mx-4">
                     <View className="flex-row items-center space-x-4">
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <Entypo
-                                name="chevron-left"
-                                size={30}
-                                color="black"
-                            />
+                            <Entypo name="chevron-left" size={30} color="black" />
                         </TouchableOpacity>
                         <View className="flex-row items-center space-x-3">
                             {chatbot ? (
@@ -103,30 +126,28 @@ const ChatScreen = ({ route }) => {
                         </View>
                     </View>
 
-                    <TouchableOpacity onPress={makeCall}>
-                        <FontAwesome6
-                            name="phone"
-                            size={24}
-                            color="orange"
-                        />
-                    </TouchableOpacity>
+                    {!chatbot ? (
+                        <TouchableOpacity onPress={makeCall}>
+                            <FontAwesome6 name="phone" size={24} color="orange" />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
             </SafeAreaView>
 
             {/* chat */}
             <View className="flex-1">
                 {chatbot ? (
-                    <MessagesListDetail
-                        userId={KhachHang.MaKhachHang}
-                        chatbot={'chatbot'}
-                    />
+                    <MessagesListDetail userId={userId} chatbot={'chatbot'} />
                 ) : (
-                    <MessagesListDetail
-                        userId={KhachHang.MaKhachHang}
-                        shipperId={NhanVien.MaNhanVien}
-                    />
+                    <MessagesListDetail userId={userId} shipperId={NhanVien.MaNhanVien} />
                 )}
             </View>
+
+            {isLoading && (
+                <View className='absolute' style={{ bottom: hp(8), left: wp(40)}}>
+                    <LoadingDot />
+                </View>
+            )}
 
             {/* input */}
             <View className="flex-row justify-between items-center mx-4 mb-3">
@@ -139,14 +160,8 @@ const ChatScreen = ({ route }) => {
                         multiline={true}
                         onChangeText={(e) => setMessage(e)}
                     />
-                    <TouchableOpacity
-                        onPress={handleSendMessage}
-                        className="bg-neutral-200 p-2 mr-[1px] rounded-full"
-                    >
-                        <Icons.PaperAirplaneIcon
-                            size={hp(2.7)}
-                            color={'#737373'}
-                        />
+                    <TouchableOpacity onPress={handleSendMessage} className="bg-neutral-200 p-2 mr-[1px] rounded-full">
+                        <Icons.PaperAirplaneIcon size={hp(2.7)} color={'#737373'} />
                     </TouchableOpacity>
                 </View>
             </View>

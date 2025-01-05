@@ -17,17 +17,18 @@ import { formatPrice } from '../../utils'
 import { useMakeChat } from '../../hooks/useMakeChat'
 import { useUserData } from '../../context/UserDataContext/UserDataContext'
 import useGetUserCus from '../../hooks/useGetUserCus'
+import { SHIPPER_STATUS } from '../../constants'
 
 const OrderDetailScreen = ({ route }) => {
     const navigation = useNavigation()
     const { showNotification } = useNotification()
     const { userId, orderId, address, orderProducts, shipFee, total } = route.params
     const { status } = useGetStatusOrder(orderId)
-    const { userData } = useUserData()
+    const { userData, status: ctx_status } = useUserData()
     const { mutate: cancelOrder } = useCancelOrder()
     const { mutate: takeUpOrder, error: takeUpOrderError, isSuccess } = useTakeUpOrder()
     const { mutate: setStatusOrder, error: setStatusOrderError } = useSetStatusOrder()
-    const { mutate: makeChat, error: makeChatError } = useMakeChat(userData.MaNguoiDung)
+    const { mutate: makeChat, error: makeChatError } = useMakeChat(userData?.MaNguoiDung)
     const { cusData, isError: cusIsError, error: cusError } = useGetUserCus(userId)
 
     useEffect(() => {
@@ -47,10 +48,10 @@ const OrderDetailScreen = ({ route }) => {
 
     const employee = useMemo(() => {
         return {
-            HoTen: userData.HoTen,
-            MaNhanVien: userData.MaNguoiDung,
-            HinhAnh: userData.HinhAnh,
-            SoDienThoai: userData.SoDienThoai
+            HoTen: userData?.HoTen,
+            MaNhanVien: userData?.MaNguoiDung,
+            HinhAnh: userData?.HinhAnh,
+            SoDienThoai: userData?.SoDienThoai
         }
     }, [userData])
 
@@ -59,6 +60,10 @@ const OrderDetailScreen = ({ route }) => {
     }
 
     const handleTakeUpOrder = (shipperId, orderId) => {
+        if (ctx_status == SHIPPER_STATUS.OFFLINE) {
+            showNotification('Vui lòng chuyển chế độ online để nhận đơn hàng', 'error')
+            return
+        }
         takeUpOrder({shipperId: shipperId, orderId: orderId})
         if (takeUpOrderError) {
             showNotification(takeUpOrderError.message, 'error')

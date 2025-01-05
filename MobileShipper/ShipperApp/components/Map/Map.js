@@ -34,7 +34,7 @@ const Map = () => {
         } else {
             setStartCoords(currentLocation)
         }
-    }, [routesData])
+    }, [routesData, status, statusLocation])
 
     return (
         <>

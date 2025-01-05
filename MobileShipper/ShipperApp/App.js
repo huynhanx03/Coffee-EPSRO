@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MessageBox from './components/MessageBox/MessageBox';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NewMessageProvider } from './context/NewMessageContext/NewMessageContext';
+import { UserDataProvider } from './context/UserDataContext/UserDataContext';
+import Toast from 'react-native-toast-message';
 
 const queryClient = new QueryClient()
 
@@ -14,8 +16,11 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <NotificationProvider>
           <NewMessageProvider>
-            <Navigation />
-            <MessageBox />
+            <UserDataProvider>
+              <Navigation />
+              <Toast />
+              <MessageBox />
+            </UserDataProvider>
           </NewMessageProvider>
         </NotificationProvider>
       </QueryClientProvider>

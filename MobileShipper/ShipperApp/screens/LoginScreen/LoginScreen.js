@@ -1,20 +1,21 @@
-import { ActivityIndicator, View, Text, ScrollView, SafeAreaView, TextInput, useWindowDimensions, TouchableOpacity, Modal } from 'react-native'
-import React, { useEffect } from 'react'
-import { colors } from '../../theme/Theme'
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import useLogin from '../../hooks/useLogin';
-import { useNotification } from '../../context/NotificationContext/NotificationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, Modal, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
+import ShowToast from '../../components/Toast/ShowToast';
 import { verifyToken } from '../../controllers/UserController';
+import useLogin from '../../hooks/useLogin';
+import { colors } from '../../theme/Theme';
+import { useUserData } from '../../context/UserDataContext/UserDataContext';
 
 const LoginScreen = () => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
-    const { showNotification } = useNotification()
+    const { setIsLoggedIn } = useUserData();
     const navigation = useNavigation()
     const { mutateAsync: login } = useLogin()
 
@@ -22,7 +23,6 @@ const LoginScreen = () => {
         const verify = async () => {
             try {
                 const data = await verifyToken()
-                console.log(data)
                 if (data) {
                     navigation.replace('HomeTab')
                 }
@@ -36,14 +36,13 @@ const LoginScreen = () => {
     const handleLogin = async () => {
         setIsLoading(true)
         try {
-            const data = await login({ username: username, password: password })
-            await AsyncStorage.setItem('token', data.token)
-            await AsyncStorage.setItem('user', JSON.stringify(data.data))
+            await login({ username: username, password: password })
+            setIsLoggedIn(true)
             setIsLoading(false)
             navigation.replace('HomeTab')
         } catch (error) {
-            showNotification(error.message, 'error')
             setIsLoading(false)
+            ShowToast("error", "Đăng nhập thất bại", "Tài khoản hoặc mật khẩu không đúng!")
         }
     }
 

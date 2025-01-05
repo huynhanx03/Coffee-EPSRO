@@ -13,7 +13,7 @@ const MessagesListDetail = (props) => {
 
     const db = getDatabase()
     const getMessage = async () => {
-        const id = chatbot ? userId + '-chatbot' : shipperId + '-' + userId
+        const id = chatbot ? 'chatbot' + '-' + userId : shipperId + '-' + userId
         setLoading(true)
         const messageRef = ref(db, `TinNhan/${id}/NoiDung`)
         const q = query(messageRef, orderByChild("ThoiGian"))

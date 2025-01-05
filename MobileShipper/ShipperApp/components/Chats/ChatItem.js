@@ -12,7 +12,7 @@ const ChatItem = (props) => {
     const { item } = props
     const { userData } = useUserData()
 
-    const who = useMemo(() => item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : userData.MaNguoiDung, [cusData, userData])
+    const who = useMemo(() => item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : userData.MaNguoiDung, [userData])
     const seen = useMemo(() => who.includes('KH') ? item.NoiDung.DaXem : true, [who, item])
     
     return (

@@ -1,6 +1,13 @@
 const db = require('../config/firebase')
 const { handleGetProductById } = require('../dao/productDAO')
-const { getOrdersSuccessByShipperDAO, getOrdersDAO, takeUpOrderDAO, getOrdersByShipperDAO, getStatusOrderDAO, cancelOrderDAO } = require('../dao/shipper/orderDAO')
+const {
+    getOrdersSuccessByShipperDAO,
+    getOrdersDAO,
+    takeUpOrderDAO,
+    getOrdersByShipperDAO,
+    getStatusOrderDAO,
+    cancelOrderDAO,
+} = require('../dao/shipper/orderDAO')
 const { optionsDateTime } = require('../utils/helper')
 
 const getNewId = async () => {
@@ -63,42 +70,41 @@ const saveOrder = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'Đặt hàng thành công' })
     } catch (error) {
-        return res.status(501).json({ success: false, message: error.message });
+        return res.status(501).json({ success: false, message: error.message })
     }
 }
 
 const getOrders = async (req, res) => {
     try {
         const userId = req.params.userId
-        var orders;
+        var orders
 
         if (userId) {
-            ordersSnapshot = await db.ref('DonHang/').orderByChild('MaNguoiDung').equalTo(userId).once('value');
+            ordersSnapshot = await db.ref('DonHang/').orderByChild('MaNguoiDung').equalTo(userId).once('value')
             orders = ordersSnapshot.val()
-
         } else {
-            const ordersSnapshot = await db.ref('DonHang/').once('value');
-            const ordersData = ordersSnapshot.val();
-            const ordersArray = Object.values(ordersData);
+            const ordersSnapshot = await db.ref('DonHang/').once('value')
+            const ordersData = ordersSnapshot.val()
+            const ordersArray = Object.values(ordersData)
 
-            const userSnapshot = await db.ref('NguoiDung').once('value');
-            const userData = userSnapshot.val();
-            const usersArray = Object.values(userData);
+            const userSnapshot = await db.ref('NguoiDung').once('value')
+            const userData = userSnapshot.val()
+            const usersArray = Object.values(userData)
 
-            const result = ordersArray.map(order => {
-                const user = usersArray.find(user => user.MaNguoiDung === order.MaNguoiDung);
-            
-                order.TenKhachHang = user ? user.HoTen : 'Unknown Customer';
-                
-                return order; 
-            });
+            const result = ordersArray.map((order) => {
+                const user = usersArray.find((user) => user.MaNguoiDung === order.MaNguoiDung)
 
-            orders = result;
+                order.TenKhachHang = user ? user.HoTen : 'Unknown Customer'
+
+                return order
+            })
+
+            orders = result
         }
 
         return res.status(200).json({ success: true, data: orders || 'Khách hàng chưa tạo đơn hàng' })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -106,32 +112,39 @@ const setStatusOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId
         const { status } = req.body
+        const orderSnapshot = await db.ref('DonHang/' + orderId).once('value')
+        const orderData = orderSnapshot.val()
+
+        if (!orderData) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng!' })
+        }
+
+        const cur = orderData.ThanhToan
         await db.ref('DonHang/' + orderId).update({
             TrangThai: status,
-            ThanhToan: ThanhToan ? true : status === 'Đã nhận hàng' ? true : false,
+            ThanhToan: cur ? true : status === 'Giao hàng thành công' ? true : false,
         })
 
         return res.status(200).json({ success: true, message: 'Cập nhật trạng thái đơn hàng thành công' })
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Lỗi server!" });
-        
+        return res.status(500).json({ success: false, message: 'Lỗi server!' })
     }
 }
 
 const setBillIDOrderHandler = async (req, res) => {
     try {
-        const orderId = req.params.orderId;
-        const { billID } = req.body;
+        const orderId = req.params.orderId
+        const { billID } = req.body
 
         await db.ref('DonHang/' + orderId).update({
             MaHoaDon: billID,
-        });
+        })
 
-        return res.status(200).json({ success: true, message: 'Cập nhật đơn hàng thành công' });
+        return res.status(200).json({ success: true, message: 'Cập nhật đơn hàng thành công' })
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Lỗi server!', error: error.message });
+        return res.status(500).json({ success: false, message: 'Lỗi server!', error: error.message })
     }
-};
+}
 
 //shipper
 const getAllOrders = async (req, res) => {
@@ -140,7 +153,7 @@ const getAllOrders = async (req, res) => {
 
         return res.status(200).json({ success: true, data: result.data })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -151,7 +164,7 @@ const getOrderByShipperId = async (req, res) => {
 
         return res.status(200).json({ success: true, data: result.data })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -162,7 +175,7 @@ const getOrdersSuccessByShipper = async (req, res) => {
 
         return res.status(200).json({ success: true, data: result.data })
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -174,9 +187,9 @@ const takeUpOrder = async (req, res) => {
         return res.status(200).json({ success: true, message: result.message })
     } catch (error) {
         if (error.message === 'Mã đơn hàng không tồn tại' || error.message === 'Đơn hàng đã được nhận') {
-            return res.status(400).json({ success: false, message: error.message });
+            return res.status(400).json({ success: false, message: error.message })
         }
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -188,9 +201,9 @@ const getStatusOrder = async (req, res) => {
         return res.status(200).json({ success: true, data: result.data })
     } catch (error) {
         if (error.message === 'Mã đơn hàng không tồn tại') {
-            return res.status(400).json({ success: false, message: error.message });
+            return res.status(400).json({ success: false, message: error.message })
         }
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -202,9 +215,9 @@ const cancelOrder = async (req, res) => {
         return res.status(200).json({ success: true, message: result.message })
     } catch (error) {
         if (error.message === 'Mã đơn hàng không tồn tại') {
-            return res.status(400).json({ success: false, message: error.message });
+            return res.status(400).json({ success: false, message: error.message })
         }
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -219,5 +232,5 @@ module.exports = {
     getOrderByShipperId,
     getStatusOrder,
     cancelOrder,
-    setBillIDOrderHandler
+    setBillIDOrderHandler,
 }

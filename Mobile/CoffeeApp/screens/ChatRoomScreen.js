@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Text, View, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getUserData } from '../controller/StorageController'
@@ -8,10 +8,24 @@ import { useNavigation } from '@react-navigation/native'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen'
 import Tooltip from '../components/tooltip'
 import { useUser } from '../context/UserContext/UserContext'
+import useMakeChat from '../customHooks/useMakeChat'
 
 const ChatRoomScreen = () => {
     const navigation = useNavigation()
     const { userData: user } = useUser()
+    const { mutate: makeChat } = useMakeChat()
+
+    const employee = useMemo(() => ({
+        MaNhanVien: 'chatbot',
+        HinhAnh: 'https://img.icons8.com/nolan/64/message-bot.png',
+        HoTen: 'ChatBot',
+        SoDienThoai: ''
+    }), [])
+
+    const handleClickChatBot = () => {
+        makeChat({employee: employee, user: user})
+        navigation.navigate('ChatDetail', {chatbot: true, NhanVien: employee, KhachHang: user, who: 'chatbot'})
+    }
     return (
         <View className='flex-1'>
             <SafeAreaView
@@ -45,7 +59,7 @@ const ChatRoomScreen = () => {
             >
                 <View>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('ChatDetail', {chatbot: true, KhachHang: user})}
+                        onPress={handleClickChatBot}
                         className="p-3 bg-white rounded-full"
                     >
                         <Image source={{uri: "https://img.icons8.com/nolan/64/message-bot.png"}} resizeMode='contain' width={wp(12)} height={wp(12)}/>

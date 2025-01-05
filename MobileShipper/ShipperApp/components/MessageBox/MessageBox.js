@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Modal, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect } from 'react';
 import { useNotification } from '../../context/NotificationContext/NotificationContext';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -16,7 +16,7 @@ const CustomMessageBox = () => {
         } else {
             setTitle('Thông báo');
         }
-    }, [])
+    }, [type])
 
     const handleOnClick = () => {
         if (onClick) {

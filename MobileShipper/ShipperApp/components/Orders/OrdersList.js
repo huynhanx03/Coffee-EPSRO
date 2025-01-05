@@ -25,7 +25,7 @@ const OrdersList = () => {
             if (selectedSegment === 'Đang chờ') {
                 newDisplayOrders = orders.filter((order) => !order.hasOwnProperty('MaNhanVien') || order.MaNhanVien === null || order.MaNhanVien === '')
             } else {
-                newDisplayOrders = orders.filter(order => order.MaNhanVien === userData.MaNguoiDung && order.TrangThai != ORDER_STATUS.DELIVERED && order.TrangThai != ORDER_STATUS.RECEIVED)
+                newDisplayOrders = orders.filter(order => order.MaNhanVien === userData?.MaNguoiDung && order.TrangThai != ORDER_STATUS.DELIVERED && order.TrangThai != ORDER_STATUS.RECEIVED)
             }
         }
         // Only update state if the new display orders are different from the current state

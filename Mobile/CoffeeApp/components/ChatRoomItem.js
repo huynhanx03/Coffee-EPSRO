@@ -11,7 +11,7 @@ const ChatRoomItem = (props) => {
     const { item } = props
 
     const who = item.NoiDung.MaKhachHang ? item.NoiDung.MaKhachHang : item.NoiDung.MaNhanVien
-    const seen = (who.includes('NV') || who.includes('ND')) ? item.NoiDung.DaXem : true
+    const seen = (who.includes('NV') || who.includes('ND') || who.includes('chatbot')) ? item.NoiDung.DaXem : true
     
     return (
         <TouchableOpacity onPress={() => navigation.navigate('ChatDetail', {KhachHang: item.KhachHang, NhanVien: item.NhanVien, who: who})} className='mx-4'>

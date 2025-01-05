@@ -28,6 +28,16 @@ const getAllUserChatDAO = async (employeeId, userId) => {
     }
 }
 
+const getFirstMessage = (employee) => {
+    if (employee.MaNhanVien === 'ND0001') {
+        return 'EPSRO xin chào, hân hạnh được phục vụ quý khách 🫶'
+    } else if (employee.MaNhanVien === 'chatbot') {
+        return 'Tôi là AI được tạo ra để hỗ trợ bạn, hãy hỏi tôi bất cứ điều gì bạn muốn biết, tôi sẽ trả lời trong khả năng của mình!!!'
+    } else {
+        return 'Xin chào, tôi là tài xế giao hàng cho bạn ✌️🫶'
+    }
+}
+
 const makeChatDAO = async (employee, user) => {
     try {
         const snapshot = await db.ref('TinNhan').once('value')
@@ -35,14 +45,18 @@ const makeChatDAO = async (employee, user) => {
 
         const options = optionsDateTime
 
-        const flag = Object.keys(allUserChat).some((key) => key === employee.MaNhanVien + '-' + user.MaKhachHang)
+        const userId = user.MaKhachHang || user.MaNguoiDung
+
+        const flag = Object.keys(allUserChat).some((key) => key === employee.MaNhanVien + '-' + userId)
+
+        const message = getFirstMessage(employee)
 
         if (!allUserChat || !flag) {
-            await db.ref('TinNhan/' + employee.MaNhanVien + '-' + user.MaKhachHang).set({
+            await db.ref('TinNhan/' + employee.MaNhanVien + '-' + userId).set({
                 MaNhanVien: employee.MaNhanVien,
-                MaKhachHang: user.MaKhachHang,
+                MaKhachHang: userId,
                 KhachHang: {
-                    MaKhachHang: user.MaKhachHang,
+                    MaKhachHang: userId,
                     HinhAnh: user.HinhAnh,
                     HoTen: user.HoTen,
                     SoDienThoai: user.SoDienThoai
@@ -56,7 +70,7 @@ const makeChatDAO = async (employee, user) => {
                 NoiDung: {
                     0: {
                         MaNhanVien: employee.MaNhanVien,
-                        ChiTiet: employee.MaNhanVien === 'ND0001' ? 'EPSRO xin chào, hân hạnh được phục vụ quý khách 🫶' : 'Xin chào, tôi là tài xế giao hàng cho bạn ✌️🫶',
+                        ChiTiet: message,
                         ThoiGian: new Date().toLocaleString('vi-VN', options),
                         DaXem: false,
                     },

@@ -11,6 +11,7 @@ const LocationProvider = ({ children }) => {
     const [currentLocation, setCurrentLocation] = useState(null)
     const [subscription, setSubscription] = useState(null)
     const [statusLocation, setStatusLocation] = useState(null)
+    const [loadingCurrentLocation, setLoadingCurrentLocation] = useState(false)
     const latitude = process.env.EXPO_PUBLIC_DEFAULT_ADDRESS_LATITUDE
     const longitude = process.env.EXPO_PUBLIC_DEFAULT_ADDRESS_LONGITUDE
     const { orders } = useGetOrders()
@@ -20,7 +21,7 @@ const LocationProvider = ({ children }) => {
         return orders
             .filter(
                 (order) =>
-                    order.MaNhanVien === userData.MaNguoiDung &&
+                    order.MaNhanVien === userData?.MaNguoiDung &&
                     order.TrangThai !== ORDER_STATUS.DELIVERED &&
                     order.TrangThai !== ORDER_STATUS.RECEIVED
             )
@@ -32,6 +33,7 @@ const LocationProvider = ({ children }) => {
 
     useEffect(() => {
         async function startWatchingLocation() {
+            setLoadingCurrentLocation(true)
             const { status } = await Location.requestForegroundPermissionsAsync()
             setStatusLocation(status)
             if (status !== 'granted') {
@@ -54,6 +56,7 @@ const LocationProvider = ({ children }) => {
             )
 
             setSubscription(sub)
+            setLoadingCurrentLocation(false)
         }
 
         startWatchingLocation()
@@ -70,7 +73,7 @@ const LocationProvider = ({ children }) => {
     const contextValue = useMemo(() => ({
         currentLocation,
         listCoordsAcceptedOrders,
-        isLoading,
+        isLoading: isLoading || loadingCurrentLocation,
         routesData,
         statusLocation
     }), [currentLocation, listCoordsAcceptedOrders, isLoading, routesData, statusLocation])
