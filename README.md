@@ -17,6 +17,8 @@
 > [4. Mục tiêu](#Muctieu)
 >
 > [5. Tính năng](#Tinhnang)
+>
+> [6. Màn hình](#ManHinh)
 
 [III. Tác giả](#Tacgia)
 
@@ -118,6 +120,32 @@ Mục tiêu của đề tài này là xây dựng phần mềm quản lý quán 
     * Phiếu giảm giá: khách hàng có thể sử dụng phiếu giảm giá khi thanh toán.
 
     * Thông tin cá nhân: khách hàng có thể xem điểm thân thiết để lên hạng và có thể thay đổi thông tin cá nhân.
+
+<div id="Manhinh"></div>
+
+### 6. Màn hình
+* Desktop:
+    * Login:
+    ![Login-desk](./Image/Desktop/LoginScreen.png)
+    
+    * Table:
+    ![Table](./Image/Desktop/tableScreen.png)
+
+    * Menu:
+    ![Menu-desk](./Image/Desktop/MenuScreen.png)
+
+* Mobile:
+    * Main:
+    ![Main](./Image/Mobile/MainScreen.png)
+    
+    * Menu:
+    ![Menu-mobile](./Image/Mobile/MenuScreen.png)
+
+    * Chat:
+    ![Chat](./Image/Mobile/ChatScreen.png)
+
+    * Voucher:
+    ![Voucher](./Image/Mobile/VoucherScreen.png)
     
 <!-- TÁC GIẢ -->
 <div id="Tacgia"></div>
